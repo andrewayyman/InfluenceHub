@@ -1,0 +1,89 @@
+Influencer Marketing Platform - Updated Project Proposal
+
+1. Project Overview
+This project is a web-based platform that connects Brands with Influencers to manage promotional campaigns in a structured and measurable way. The platform enables campaign creation, influencer matching using tag-based logic, application management, campaign tracking, and ROI performance reporting.
+2. System Roles
+• Brand
+• Influencer
+• Admin
+3. System Flow
+3.1 Registration
+Users register as either Brand or Influencer. After registration, each user is redirected to their respective dashboard.
+3.2 Brand Flow
+Brand can:
+• Create a Campaign (Title, Description, Budget, Deadline, Platform, Location, Tags)
+• View suggested influencers based on tag matching
+• Review influencer applications
+• Accept or reject influencers
+• Track campaign progress
+• View campaign performance and ROI indicators
+• Change campaign status (Open, Influencer Selected, Report Submitted, Completed, Closed)
+3.3 Influencer Flow
+Influencer can:
+• Create and update profile (Bio, Tags, Platforms, Followers Count, Location)
+• View suggested campaigns based on tag matching
+• Apply to campaigns
+• Submit campaign performance report after posting content
+• Track campaign status
+3.4 Tag-Based Matching System
+The system suggests relevant influencers or campaigns based on shared tags (Niche, Platform, Location). Matching score is calculated based on number of tag overlaps.
+4. Campaign Tracking & ROI System
+After influencer selection, the campaign enters tracking mode. The influencer must submit a Campaign Report including:
+• Post URL
+• Posting Date
+• Reporting Date Range (Start Date – End Date)
+• Views
+• Likes
+• Comments
+• Shares
+• Screenshot evidence of platform analytics
+The system automatically calculates the following performance indicators:
+• Total Engagement = Likes + Comments + Shares
+• Engagement Rate = Total Engagement / Views
+• Cost Per View (CPV) = Campaign Budget / Views
+• Cost Per Engagement (CPE) = Campaign Budget / Total Engagement
+5. Anti-Fraud & Data Validation Controls
+To reduce fraudulent metric submissions, the system includes:
+• Mandatory screenshot upload of analytics dashboard
+• Required post URL validation
+• Required reporting date range from posting date
+• Logical validation (e.g., engagement cannot exceed views)
+• Maximum value thresholds to prevent unrealistic entries
+• Admin review capability for submitted reports
+6. Admin Panel
+Admin can:
+• View dashboard statistics (Users, Campaigns, Applications)
+• Manage users (Enable/Disable/Delete)
+• Manage campaigns (Close/Delete)
+• Review campaign reports
+• View Contact Us messages and mark as replied
+7. Contact Us
+Visitors can submit inquiries through a Contact Us form (Name, Email, Subject, Message). Messages are stored and visible in the Admin panel.
+8. Functional Requirements
+Authentication & Authorization:
+• User registration and login
+• JWT authentication
+• Role-based authorization
+Brand Functional Requirements:
+• Create, update, delete campaigns
+• Review applications
+• Accept/reject influencers
+• View campaign reports and ROI metrics
+• Mark campaign as completed
+Influencer Functional Requirements:
+• Create/update profile
+• Apply to campaigns
+• Submit performance report with screenshot
+• Track campaign progress
+Admin Functional Requirements:
+• Dashboard statistics
+• User management
+• Campaign management
+• Report validation
+• Contact message management
+9. Deliverables
+• Backend API (.NET)
+• Database Design
+• Frontend
+• Admin Panel
+• Campaign Performance Tracking Module

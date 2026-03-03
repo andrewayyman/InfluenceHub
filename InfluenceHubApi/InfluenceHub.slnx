@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="InfluenceHub.Application/InfluenceHub.Application.csproj" />
+  <Project Path="InfluenceHub.Domain/InfluenceHub.Domain.csproj" />
+  <Project Path="InfluenceHub.Infrastructure/InfluenceHub.Infrastructure.csproj" />
+  <Project Path="InfluenceHub.WebApi/InfluenceHub.WebApi.csproj" />
+</Solution>
