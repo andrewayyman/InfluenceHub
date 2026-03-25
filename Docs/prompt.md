@@ -13,11 +13,6 @@ The platform includes features such as:
 - Admin panel
 - Contact Us module
 
-Full functional description is available in:
-@Docs/Proposal.txt
-
----
-
 ## Objective
 
 I need a **detailed backend architecture plan** for this project.
