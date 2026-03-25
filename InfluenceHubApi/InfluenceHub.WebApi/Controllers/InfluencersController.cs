@@ -5,10 +5,8 @@ using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
 [Authorize(Roles = "Influencer")]
-public class InfluencersController : ControllerBase
+public class InfluencersController : BaseApiController
 {
     private readonly IInfluencerService _influencerService;
 
@@ -19,7 +17,7 @@ public class InfluencersController : ControllerBase
 
     private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-    [HttpGet("profile")]
+    [HttpGet]
     public async Task<IActionResult> GetProfile(CancellationToken ct)
     {
         var profile = await _influencerService.GetProfileAsync(UserId, ct);
@@ -27,14 +25,14 @@ public class InfluencersController : ControllerBase
         return Ok(profile);
     }
 
-    [HttpPut("profile")]
+    [HttpPut]
     public async Task<IActionResult> UpdateProfile([FromBody] InfluenceHub.Application.DTOs.Request.UpdateInfluencerProfileRequest request, CancellationToken ct)
     {
         var profile = await _influencerService.UpdateProfileAsync(UserId, request, ct);
         return Ok(profile);
     }
 
-    [HttpGet("applications")]
+    [HttpGet]
     public async Task<IActionResult> GetMyApplications(CancellationToken ct)
     {
         var applications = await _influencerService.GetMyApplicationsAsync(UserId, ct);

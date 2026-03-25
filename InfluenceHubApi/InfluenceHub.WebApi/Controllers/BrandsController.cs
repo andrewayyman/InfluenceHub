@@ -6,10 +6,8 @@ using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
 [Authorize(Roles = "Brand")]
-public class BrandsController : ControllerBase
+public class BrandsController : BaseApiController
 {
     private readonly IBrandService _brandService;
 
@@ -20,7 +18,7 @@ public class BrandsController : ControllerBase
 
     private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-    [HttpGet("profile")]
+    [HttpGet]
     public async Task<IActionResult> GetProfile(CancellationToken ct)
     {
         var profile = await _brandService.GetProfileAsync(UserId, ct);
@@ -28,28 +26,28 @@ public class BrandsController : ControllerBase
         return Ok(profile);
     }
 
-    [HttpPut("profile")]
+    [HttpPut]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateBrandProfileRequest request, CancellationToken ct)
     {
         var profile = await _brandService.UpdateProfileAsync(UserId, request, ct);
         return Ok(profile);
     }
 
-    [HttpPost("campaigns")]
+    [HttpPost]
     public async Task<IActionResult> CreateCampaign([FromBody] CreateCampaignRequest request, CancellationToken ct)
     {
         var campaign = await _brandService.CreateCampaignAsync(UserId, request, ct);
         return CreatedAtAction(nameof(GetCampaign), new { campaignId = campaign.Id }, campaign);
     }
 
-    [HttpGet("campaigns")]
+    [HttpGet]
     public async Task<IActionResult> GetCampaigns(CancellationToken ct)
     {
         var campaigns = await _brandService.GetCampaignsAsync(UserId, ct);
         return Ok(campaigns);
     }
 
-    [HttpGet("campaigns/{campaignId:guid}")]
+    [HttpGet("{campaignId:guid}")]
     public async Task<IActionResult> GetCampaign(Guid campaignId, CancellationToken ct)
     {
         var campaign = await _brandService.GetCampaignAsync(UserId, campaignId, ct);
@@ -57,7 +55,7 @@ public class BrandsController : ControllerBase
         return Ok(campaign);
     }
 
-    [HttpPut("campaigns/{campaignId:guid}")]
+    [HttpPut("{campaignId:guid}")]
     public async Task<IActionResult> UpdateCampaign(Guid campaignId, [FromBody] UpdateCampaignRequest request, CancellationToken ct)
     {
         var campaign = await _brandService.UpdateCampaignAsync(UserId, campaignId, request, ct);
@@ -65,7 +63,7 @@ public class BrandsController : ControllerBase
         return Ok(campaign);
     }
 
-    [HttpDelete("campaigns/{campaignId:guid}")]
+    [HttpDelete("{campaignId:guid}")]
     public async Task<IActionResult> DeleteCampaign(Guid campaignId, CancellationToken ct)
     {
         var deleted = await _brandService.DeleteCampaignAsync(UserId, campaignId, ct);

@@ -5,10 +5,8 @@ using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
 [Authorize(Roles = "Brand,Influencer")]
-public class MatchingController : ControllerBase
+public class MatchingController : BaseApiController
 {
     private readonly IMatchingService _matchingService;
 
@@ -19,7 +17,7 @@ public class MatchingController : ControllerBase
 
     private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-    [HttpGet("suggested-influencers/{campaignId:guid}")]
+    [HttpGet("{campaignId:guid}")]
     [Authorize(Roles = "Brand")]
     public async Task<IActionResult> GetSuggestedInfluencers(Guid campaignId, [FromQuery] int limit = 20, CancellationToken ct = default)
     {
@@ -27,7 +25,7 @@ public class MatchingController : ControllerBase
         return Ok(influencers);
     }
 
-    [HttpGet("suggested-campaigns")]
+    [HttpGet]
     [Authorize(Roles = "Influencer")]
     public async Task<IActionResult> GetSuggestedCampaigns([FromQuery] int limit = 20, CancellationToken ct = default)
     {

@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InfluenceHub.WebApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
 [Authorize(Roles = "Brand,Influencer")]
-public class CampaignsController : ControllerBase
+public class CampaignsController : BaseApiController
 {
     private readonly ICampaignService _campaignService;
 
@@ -24,7 +22,7 @@ public class CampaignsController : ControllerBase
         return Ok(campaign);
     }
 
-    [HttpGet("open")]
+    [HttpGet]
     public async Task<IActionResult> GetOpenCampaigns([FromQuery] string? platform, [FromQuery] string? location, CancellationToken ct)
     {
         var campaigns = await _campaignService.GetOpenCampaignsAsync(platform, location, ct);

@@ -6,9 +6,7 @@ using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ApplicationsController : ControllerBase
+public class ApplicationsController : BaseApiController
 {
     private readonly IApplicationService _applicationService;
 
@@ -34,7 +32,7 @@ public class ApplicationsController : ControllerBase
         }
     }
 
-    [HttpPatch("accept-reject")]
+    [HttpPatch]
     [Authorize(Roles = "Brand")]
     public async Task<IActionResult> AcceptOrReject([FromBody] AcceptRejectRequest request, CancellationToken ct)
     {
@@ -43,7 +41,7 @@ public class ApplicationsController : ControllerBase
         return Ok(application);
     }
 
-    [HttpGet("campaign/{campaignId:guid}")]
+    [HttpGet("{campaignId:guid}")]
     [Authorize(Roles = "Brand")]
     public async Task<IActionResult> GetCampaignApplications(Guid campaignId, CancellationToken ct)
     {

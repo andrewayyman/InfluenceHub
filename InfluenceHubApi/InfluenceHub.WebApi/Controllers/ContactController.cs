@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InfluenceHub.WebApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ContactController : ControllerBase
+public class ContactController : BaseApiController
 {
     private readonly IContactService _contactService;
 

@@ -40,11 +40,8 @@ app.UseMiddleware<InfluenceHub.WebApi.Middleware.GlobalExceptionHandler>();
 
 await SeedAdminAsync(app.Services);
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

@@ -7,10 +7,8 @@ using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
 [Authorize(Roles = "Influencer")]
-public class ReportsController : ControllerBase
+public class ReportsController : BaseApiController
 {
     private readonly IReportService _reportService;
 
@@ -53,7 +51,7 @@ public class ReportsController : ControllerBase
         return Ok(reports);
     }
 
-    [HttpGet("{reportId:guid}/roi")]
+    [HttpGet("{reportId:guid}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetReportRoi(Guid reportId, CancellationToken ct)
     {
