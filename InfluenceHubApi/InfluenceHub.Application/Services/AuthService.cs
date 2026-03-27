@@ -37,6 +37,9 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken ct = default)
     {
+        if (request.Role == UserRole.Admin)
+            throw new InvalidOperationException("Admin role cannot be assigned during registration.");
+
         if (await _userRepository.GetByEmailAsync(request.Email, ct) is not null)
             throw new InvalidOperationException("User with this email already exists");
 
@@ -58,7 +61,7 @@ public class AuthService : IAuthService
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
-                CompanyName = request.Email.Split('@')[0],
+                Name = request.Email.Split('@')[0],
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -70,6 +73,7 @@ public class AuthService : IAuthService
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
+                Name = string.Empty,
                 Bio = string.Empty,
                 Platforms = "[]",
                 FollowersCount = 0,

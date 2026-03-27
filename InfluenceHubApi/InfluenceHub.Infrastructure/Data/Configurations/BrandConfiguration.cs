@@ -16,6 +16,6 @@ public class BrandConfiguration : IEntityTypeConfiguration<Brand>
             .HasForeignKey<Brand>(b => b.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Property(b => b.CompanyName).HasMaxLength(500).IsRequired();
+        builder.Property(b => b.Name).HasMaxLength(500).IsRequired();
     }
 }

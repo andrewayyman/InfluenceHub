@@ -67,7 +67,7 @@ public class MatchingService : IMatchingService
             var i = g.Key!;
             var platforms = string.IsNullOrEmpty(i.Platforms) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(i.Platforms) ?? [];
             result.Add(new InfluencerMatchResponse(
-                i.Id, i.Bio, platforms, i.FollowersCount, i.Location,
+                i.Id, i.Name, i.Bio, platforms, i.FollowersCount, i.Location,
                 g.Select(it => it.Tag.Name).ToList(),
                 scores.GetValueOrDefault(i.Id, 0)));
         }

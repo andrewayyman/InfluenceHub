@@ -19,6 +19,7 @@ public class CampaignReport
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ReviewedAt { get; set; }
     public Guid? ReviewedBy { get; set; }
+    public string? RejectionReason { get; set; }
 
     public Application Application { get; set; } = null!;
 }

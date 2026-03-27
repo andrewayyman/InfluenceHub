@@ -56,7 +56,7 @@ Base route: `/api/admin`
 ### `GET /api/admin/GetUsers`
 - Parameters: none
 - Response: array of `AdminUserResponse`
-  - `id`, `email`, `role`, `isEnabled`, `createdAt`
+  - `id`, `email`, `roleId`, `roleName`, `isActive`, `createdAt`
   - Note: excludes users with role `Admin` by contract.
 - Error mapping:
   - `401 Unauthorized`: missing/invalid JWT
@@ -155,7 +155,8 @@ Base route: `/api/admin`
 - Response: array of `ReportResponse`
   - `id`, `applicationId`, `postUrl`, `postingDate`, `startDate`, `endDate`
   - `views`, `likes`, `comments`, `shares`
-  - `screenshotPath`, `status`
+  - `screenshotPath`, `status`, `rejectionReason`
+  - `influencerName`, `influencerEmail`, `campaignTitle`
 - Error mapping:
   - `401 Unauthorized`: missing/invalid JWT
   - `403 Forbidden`: authenticated user does not have role `Admin`
@@ -180,6 +181,8 @@ Base route: `/api/admin`
 ### `PATCH /api/admin/RejectReport/{reportId}`
 - Parameters:
   - `reportId` (path, GUID)
+  - Body (optional): `RejectReportRequest`
+    - `rejectionReason` (string, optional)
 - Response: `204 No Content`
 - Error mapping:
   - `401 Unauthorized`: missing/invalid JWT
