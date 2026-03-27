@@ -1,4 +1,5 @@
 using InfluenceHub.Application.DTOs.Request;
+using InfluenceHub.Domain.Enums;
 using FluentValidation;
 
 namespace InfluenceHub.Application.Validators;
@@ -9,6 +10,9 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
     {
         RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
         RuleFor(x => x.Password).NotEmpty().MinimumLength(6).MaximumLength(100);
-        RuleFor(x => x.Role).IsInEnum();
+        RuleFor(x => x.Role)
+            .IsInEnum()
+            .Must(r => r != UserRole.Admin)
+            .WithMessage("Registration as Admin is not permitted.");
     }
 }

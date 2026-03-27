@@ -37,18 +37,18 @@ public class BrandService : IBrandService
     {
         var brand = await _brandRepository.GetByUserIdAsync(userId, ct);
         if (brand is null) return null;
-        return new BrandProfileResponse(brand.Id, brand.UserId, brand.CompanyName);
+        return new BrandProfileResponse(brand.Id, brand.UserId, brand.Name);
     }
 
     public async Task<BrandProfileResponse> UpdateProfileAsync(Guid userId, UpdateBrandProfileRequest request, CancellationToken ct = default)
     {
         var brand = await _brandRepository.GetByUserIdAsync(userId, ct)
             ?? throw new InvalidOperationException("Brand profile not found");
-        brand.CompanyName = request.CompanyName;
+        brand.Name = request.Name;
         brand.UpdatedAt = DateTime.UtcNow;
         _brandRepo.Update(brand);
         await _brandRepo.SaveChangesAsync(ct);
-        return new BrandProfileResponse(brand.Id, brand.UserId, brand.CompanyName);
+        return new BrandProfileResponse(brand.Id, brand.UserId, brand.Name);
     }
 
     public async Task<CampaignResponse> CreateCampaignAsync(Guid userId, CreateCampaignRequest request, CancellationToken ct = default)

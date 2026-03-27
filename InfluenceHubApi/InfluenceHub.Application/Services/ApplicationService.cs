@@ -57,7 +57,7 @@ public class ApplicationService : IApplicationService
         var app = await _applicationRepository.Query()
             .Include(a => a.Campaign)
             .FirstAsync(a => a.Id == application.Id, ct);
-        return new ApplicationResponse(app.Id, app.CampaignId, app.Campaign.Title, app.InfluencerId, influencer.Bio, app.Status, app.Message, app.CreatedAt);
+        return new ApplicationResponse(app.Id, app.CampaignId, app.Campaign.Title, app.InfluencerId, influencer.Name, app.Status, app.Message, app.CreatedAt);
     }
 
     public async Task<ApplicationResponse?> AcceptOrRejectAsync(Guid brandUserId, AcceptRejectRequest request, CancellationToken ct = default)
@@ -85,7 +85,7 @@ public class ApplicationService : IApplicationService
 
         return new ApplicationResponse(
             application.Id, application.CampaignId, application.Campaign.Title,
-            application.InfluencerId, application.Influencer.Bio, application.Status,
+            application.InfluencerId, application.Influencer.Name, application.Status,
             application.Message, application.CreatedAt);
     }
 
@@ -102,6 +102,6 @@ public class ApplicationService : IApplicationService
             .ToListAsync(ct);
 
         return applications.Select(a => new ApplicationResponse(
-            a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, a.Influencer.Bio, a.Status, a.Message, a.CreatedAt)).ToList();
+            a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, a.Influencer.Name, a.Status, a.Message, a.CreatedAt)).ToList();
     }
 }

@@ -19,5 +19,5 @@ public interface IAdminService
 
     Task<IReadOnlyList<ReportResponse>> GetReportsAsync(ReportStatus? status, CancellationToken ct = default);
 
-    Task<bool> ApproveRejectReportAsync(Guid reportId, bool approve, Guid adminUserId, CancellationToken ct = default);
+    Task<bool> ApproveRejectReportAsync(Guid reportId, bool approve, Guid adminUserId, string? rejectionReason = null, CancellationToken ct = default);
 }

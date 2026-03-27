@@ -1,4 +1,5 @@
 using InfluenceHub.Application.Interfaces;
+using InfluenceHub.Application.DTOs.Request;
 using InfluenceHub.Application.DTOs.Response;
 using InfluenceHub.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -61,15 +62,15 @@ public class AdminController : BaseApiController
     [HttpPatch("{reportId:guid}")]
     public async Task<IActionResult> ApproveReport(Guid reportId, CancellationToken ct)
     {
-        var success = await _adminService.ApproveRejectReportAsync(reportId, true, UserId, ct);
+        var success = await _adminService.ApproveRejectReportAsync(reportId, true, UserId, ct: ct);
         if (!success) return NotFound();
         return NoContent();
     }
 
     [HttpPatch("{reportId:guid}")]
-    public async Task<IActionResult> RejectReport(Guid reportId, CancellationToken ct)
+    public async Task<IActionResult> RejectReport(Guid reportId, [FromBody] RejectReportRequest? request, CancellationToken ct)
     {
-        var success = await _adminService.ApproveRejectReportAsync(reportId, false, UserId, ct);
+        var success = await _adminService.ApproveRejectReportAsync(reportId, false, UserId, request?.RejectionReason, ct);
         if (!success) return NotFound();
         return NoContent();
     }

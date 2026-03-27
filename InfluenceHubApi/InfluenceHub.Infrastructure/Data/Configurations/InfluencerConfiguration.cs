@@ -18,6 +18,13 @@ public class InfluencerConfiguration : IEntityTypeConfiguration<Influencer>
 
         builder.Property(i => i.Bio).HasMaxLength(2000);
         builder.Property(i => i.Platforms).HasMaxLength(2000).IsRequired();
+        builder.Property(i => i.Name).HasMaxLength(500).IsRequired();
         builder.Property(i => i.Location).HasMaxLength(256);
+        builder.Property(i => i.InstagramUrl).HasMaxLength(2000);
+        builder.Property(i => i.FacebookUrl).HasMaxLength(2000);
+        builder.Property(i => i.TwitterUrl).HasMaxLength(2000);
+        builder.Property(i => i.YouTubeUrl).HasMaxLength(2000);
+        builder.Property(i => i.TikTokUrl).HasMaxLength(2000);
+        builder.Property(i => i.LinkedInUrl).HasMaxLength(2000);
     }
 }

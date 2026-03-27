@@ -42,10 +42,17 @@ public class InfluencerService : IInfluencerService
         var influencer = await _influencerRepository.GetByUserIdAsync(userId, ct)
             ?? throw new InvalidOperationException("Influencer profile not found");
 
+        influencer.Name = request.Name;
         influencer.Bio = request.Bio;
         influencer.Platforms = JsonSerializer.Serialize(request.Platforms);
         influencer.FollowersCount = request.FollowersCount;
         influencer.Location = request.Location;
+        influencer.InstagramUrl = request.InstagramUrl;
+        influencer.FacebookUrl = request.FacebookUrl;
+        influencer.TwitterUrl = request.TwitterUrl;
+        influencer.YouTubeUrl = request.YouTubeUrl;
+        influencer.TikTokUrl = request.TikTokUrl;
+        influencer.LinkedInUrl = request.LinkedInUrl;
         influencer.UpdatedAt = DateTime.UtcNow;
 
         var existingTags = influencer.InfluencerTags.ToList();
@@ -88,13 +95,15 @@ public class InfluencerService : IInfluencerService
             .ToListAsync(ct);
 
         return applications.Select(a => new ApplicationResponse(
-            a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, influencer.Bio, a.Status, a.Message, a.CreatedAt)).ToList();
+            a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, influencer.Name, a.Status, a.Message, a.CreatedAt)).ToList();
     }
 
     private static InfluencerProfileResponse MapToResponse(Influencer i)
     {
         var platforms = string.IsNullOrEmpty(i.Platforms) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(i.Platforms) ?? [];
         var tags = i.InfluencerTags.Select(it => it.Tag.Name).ToList();
-        return new InfluencerProfileResponse(i.Id, i.UserId, i.Bio, platforms, i.FollowersCount, i.Location, tags);
+        return new InfluencerProfileResponse(
+            i.Id, i.UserId, i.Name, i.Bio, platforms, i.FollowersCount, i.Location, tags,
+            i.InstagramUrl, i.FacebookUrl, i.TwitterUrl, i.YouTubeUrl, i.TikTokUrl, i.LinkedInUrl);
     }
 }

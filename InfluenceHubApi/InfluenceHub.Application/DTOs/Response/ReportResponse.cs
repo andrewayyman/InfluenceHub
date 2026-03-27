@@ -14,5 +14,9 @@ public record ReportResponse(
     long Comments,
     long Shares,
     string ScreenshotPath,
-    ReportStatus Status
+    ReportStatus Status,
+    string? RejectionReason,
+    string InfluencerName,
+    string InfluencerEmail,
+    string CampaignTitle
 );

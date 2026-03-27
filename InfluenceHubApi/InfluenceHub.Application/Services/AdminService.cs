@@ -85,7 +85,13 @@ public class AdminService : IAdminService
         var users = await _userRepository.Query()
             .Where(u => u.Role != UserRole.Admin)
             .OrderByDescending(u => u.CreatedAt)
-            .Select(u => new AdminUserResponse(u.Id, u.Email, u.Role, u.IsEnabled, u.CreatedAt))
+            .Select(u => new AdminUserResponse(
+                u.Id,
+                u.Email,
+                (int)u.Role,
+                u.Role.ToString(),
+                u.IsEnabled,
+                u.CreatedAt))
             .ToListAsync(ct);
 
         return users;
@@ -200,6 +206,11 @@ public class AdminService : IAdminService
         var targetStatus = status ?? ReportStatus.Pending;
 
         var reports = await _reportRepository.Query()
+            .Include(r => r.Application)
+            .ThenInclude(a => a.Influencer)
+            .ThenInclude(i => i.User)
+            .Include(r => r.Application)
+            .ThenInclude(a => a.Campaign)
             .Where(r => r.Status == targetStatus)
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync(ct);
@@ -216,12 +227,16 @@ public class AdminService : IAdminService
                 r.Comments,
                 r.Shares,
                 r.ScreenshotPath,
-                r.Status
+                r.Status,
+                r.RejectionReason,
+                r.Application.Influencer.Name,
+                r.Application.Influencer.User.Email,
+                r.Application.Campaign.Title
             ))
             .ToList();
     }
 
-    public async Task<bool> ApproveRejectReportAsync(Guid reportId, bool approve, Guid adminUserId, CancellationToken ct = default)
+    public async Task<bool> ApproveRejectReportAsync(Guid reportId, bool approve, Guid adminUserId, string? rejectionReason = null, CancellationToken ct = default)
     {
         var report = await _reportRepository.Query()
             .Include(r => r.Application)
@@ -232,6 +247,7 @@ public class AdminService : IAdminService
         report.Status = approve ? ReportStatus.Approved : ReportStatus.Rejected;
         report.ReviewedAt = DateTime.UtcNow;
         report.ReviewedBy = adminUserId;
+        report.RejectionReason = approve ? null : rejectionReason;
 
         if (approve)
         {

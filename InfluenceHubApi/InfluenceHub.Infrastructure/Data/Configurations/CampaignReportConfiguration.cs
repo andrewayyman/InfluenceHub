@@ -19,5 +19,6 @@ public class CampaignReportConfiguration : IEntityTypeConfiguration<CampaignRepo
 
         builder.Property(r => r.PostUrl).HasMaxLength(2000).IsRequired();
         builder.Property(r => r.ScreenshotPath).HasMaxLength(1000).IsRequired();
+        builder.Property(r => r.RejectionReason).HasMaxLength(2000);
     }
 }
