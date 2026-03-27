@@ -19,7 +19,10 @@ public class AdminController : BaseApiController
         _adminService = adminService;
     }
 
-    private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private Guid UserId => Guid.Parse(
+        User.FindFirstValue(ClaimTypes.NameIdentifier)
+        ?? User.FindFirstValue("sub")
+        ?? throw new InvalidOperationException("Authenticated user id claim is missing."));
 
     [HttpGet]
     public async Task<IActionResult> GetDashboard(CancellationToken ct)
@@ -29,9 +32,9 @@ public class AdminController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetContactMessages([FromQuery] bool? isReplied, CancellationToken ct)
+    public async Task<IActionResult> GetContactMessages([FromQuery] bool? isReplied, [FromQuery] string? search, CancellationToken ct)
     {
-        var messages = await _adminService.GetContactMessagesAsync(isReplied, ct);
+        var messages = await _adminService.GetContactMessagesAsync(isReplied, search, ct);
         return Ok(messages);
     }
 
@@ -76,9 +79,9 @@ public class AdminController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetUsers(CancellationToken ct)
+    public async Task<IActionResult> GetUsers([FromQuery] string? search, [FromQuery] UserRole? role, [FromQuery] bool? isActive, CancellationToken ct)
     {
-        var users = await _adminService.GetUsersAsync(ct);
+        var users = await _adminService.GetUsersAsync(search, role, isActive, ct);
         return Ok(users);
     }
 
@@ -91,9 +94,9 @@ public class AdminController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetCampaigns([FromQuery] CampaignStatus? status, CancellationToken ct)
+    public async Task<IActionResult> GetCampaigns([FromQuery] CampaignStatus? status, [FromQuery] string? search, CancellationToken ct)
     {
-        var campaigns = await _adminService.GetCampaignsAsync(status, ct);
+        var campaigns = await _adminService.GetCampaignsAsync(status, search, ct);
         return Ok(campaigns);
     }
 
@@ -114,9 +117,9 @@ public class AdminController : BaseApiController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetReports([FromQuery] ReportStatus? status, CancellationToken ct)
+    public async Task<IActionResult> GetReports([FromQuery] ReportStatus? status, [FromQuery] string? search, CancellationToken ct)
     {
-        var reports = await _adminService.GetReportsAsync(status, ct);
+        var reports = await _adminService.GetReportsAsync(status, search, ct);
         return Ok(reports);
     }
 }

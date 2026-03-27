@@ -16,6 +16,7 @@ public record ReportResponse(
     string ScreenshotPath,
     ReportStatus Status,
     string? RejectionReason,
+    DateTime? ReviewedAt,
     string InfluencerName,
     string InfluencerEmail,
     string CampaignTitle

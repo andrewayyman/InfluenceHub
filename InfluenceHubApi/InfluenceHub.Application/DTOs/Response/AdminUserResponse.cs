@@ -5,6 +5,7 @@ public record AdminUserResponse(
     string Email,
     int RoleId,
     string RoleName,
+    string DisplayName,
     bool IsActive,
     DateTime CreatedAt
 );

@@ -5,6 +5,7 @@ namespace InfluenceHub.Application.DTOs.Response;
 public record CampaignListResponse(
     Guid Id,
     string Title,
+    string BrandName,
     decimal Budget,
     DateTime Deadline,
     string Platform,

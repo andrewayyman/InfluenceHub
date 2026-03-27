@@ -136,7 +136,7 @@ public class BrandService : IBrandService
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync(ct);
         return campaigns.Select(c => new CampaignListResponse(
-            c.Id, c.Title, c.Budget, c.Deadline, c.Platform, c.Location, c.Status,
+            c.Id, c.Title, brand.Name, c.Budget, c.Deadline, c.Platform, c.Location, c.Status,
             c.Applications.Count, c.CampaignTags.Select(ct => ct.Tag.Name).ToList())).ToList();
     }
 

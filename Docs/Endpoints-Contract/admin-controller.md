@@ -4,6 +4,8 @@ All endpoints below are under `InfluenceHubApi` and require an authenticated use
 
 Base route: `/api/admin`
 
+Note: enum fields are now serialized as string names (`"Open"`, `"Pending"`, `"Brand"`, etc.) rather than numeric values.
+
 ## Dashboard
 
 ### `GET /api/admin/GetDashboard`
@@ -29,6 +31,8 @@ Base route: `/api/admin`
     - omitted: returns both replied and unreplied messages
     - `true`: replied only
     - `false`: unreplied only
+  - `search` (optional, string)
+    - searches `name`, `email`, `subject`, and `message`
 - Response: array of `ContactResponse`
   - `id`, `name`, `email`, `subject`, `message`, `isReplied`, `createdAt`
 - Error mapping:
@@ -54,13 +58,18 @@ Base route: `/api/admin`
 ## User Management (Non-Admin Users)
 
 ### `GET /api/admin/GetUsers`
-- Parameters: none
+- Parameters:
+  - `search` (optional, string)
+    - searches `email` and linked profile name (`Brand.Name` / `Influencer.Name`)
+  - `role` (optional): `Brand` or `Influencer`
+  - `isActive` (optional, boolean)
 - Response: array of `AdminUserResponse`
-  - `id`, `email`, `roleId`, `roleName`, `isActive`, `createdAt`
+  - `id`, `email`, `roleId`, `roleName`, `displayName`, `isActive`, `createdAt`
   - Note: excludes users with role `Admin` by contract.
 - Error mapping:
   - `401 Unauthorized`: missing/invalid JWT
   - `403 Forbidden`: authenticated user does not have role `Admin`
+  - `400 Bad Request`: `role=Admin` is rejected because admin users are excluded from this endpoint
 - FE usage:
   - Admin user management table/list.
 
@@ -110,8 +119,10 @@ Base route: `/api/admin`
   - `status` (optional): `CampaignStatus` enum name
     - omitted: returns all campaigns
     - example values: `Open`, `InfluencerSelected`, `ReportSubmitted`, `Completed`, `Closed`
+  - `search` (optional, string)
+    - searches `title`, `brandName`, `platform`, `location`, and tags
 - Response: array of `CampaignListResponse`
-  - `id`, `title`, `budget`, `deadline`, `platform`, `location`, `status`, `applicationCount`, `tags`
+  - `id`, `title`, `brandName`, `budget`, `deadline`, `platform`, `location`, `status`, `applicationCount`, `tags`
 - Error mapping:
   - `401 Unauthorized`: missing/invalid JWT
   - `403 Forbidden`: authenticated user does not have role `Admin`
@@ -152,10 +163,12 @@ Base route: `/api/admin`
   - `status` (optional): `ReportStatus` enum name
     - omitted: returns only `Pending` reports (review queue)
     - example values: `Pending`, `Approved`, `Rejected`
+  - `search` (optional, string)
+    - searches `campaignTitle`, `influencerName`, `influencerEmail`, and `postUrl`
 - Response: array of `ReportResponse`
   - `id`, `applicationId`, `postUrl`, `postingDate`, `startDate`, `endDate`
   - `views`, `likes`, `comments`, `shares`
-  - `screenshotPath`, `status`, `rejectionReason`
+  - `screenshotPath` (public `/uploads/reports/...` path), `status`, `rejectionReason`, `reviewedAt`
   - `influencerName`, `influencerEmail`, `campaignTitle`
 - Error mapping:
   - `401 Unauthorized`: missing/invalid JWT
@@ -192,4 +205,3 @@ Base route: `/api/admin`
   - `404 Not Found`: report not found
 - FE usage:
   - Reject report action; after success, refresh the queue/list.
-

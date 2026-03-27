@@ -1,5 +1,7 @@
-import { Navigate } from "react-router-dom";
 import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { getRoleDashboardPath, normalizeRole } from "../utils/auth";
 
 /*
   ProtectedRoute Component
@@ -14,21 +16,22 @@ import React from "react";
 */
 
 function ProtectedRoute({ children, role }) {
-  
-  // Get the current user from localStorage (assuming you store user info there)
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+  const requiredRoles = Array.isArray(role)
+    ? role.map(normalizeRole).filter(Boolean)
+    : role
+      ? [normalizeRole(role)].filter(Boolean)
+      : [];
 
-  // 1️⃣ If no user is logged in, redirect to login page
-  if (!user) {
-    return <Navigate to="/auth/login" />;
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/auth/login" replace state={{ from: location.pathname }} />;
   }
 
-  // 2️⃣ If a role is specified and the user's role does NOT match, redirect to home page
-  if (role && user.role !== role) {
-    return <Navigate to="/" />;
+  if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
+    return <Navigate to={getRoleDashboardPath(user.role)} replace />;
   }
 
-  // 3️⃣ If user exists and role matches (or role not specified), render the child component
   return children;
 }
 
