@@ -1,118 +1,112 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { ArrowRight, Building2, CheckCircle2, Play, TrendingUp } from "lucide-react";
+import { TransitionLink } from "../../Components/Motion/TransitionLink";
+import { prefersReducedMotion } from "../../utils/overdrive";
+
+const proofPoints = [
+  {
+    value: "500+",
+    label: "brand teams using campaign workflows",
+    icon: Building2,
+    iconClass: "ih-icon-chip-brand",
+    valueClass: "ih-stat-value-brand",
+  },
+  {
+    value: "10K+",
+    label: "influencer profiles organized by niche, platform, and location",
+    icon: TrendingUp,
+    iconClass: "ih-icon-chip-success",
+    valueClass: "ih-stat-value-emerald",
+  },
+  {
+    value: "$2.5M",
+    label: "campaign budget tracked with reporting and ROI metrics",
+    icon: CheckCircle2,
+    iconClass: "ih-icon-chip-warning",
+    valueClass: "ih-stat-value-warm",
+  },
+];
 
 const Hero = () => {
-
-  // ===== Floating Shapes Animation =====
-  useEffect(() => {
-    const shapes = document.querySelectorAll(".floating-shape");
-    // Apply different animation durations for each shape
-    shapes.forEach((shape, index) => {
-      shape.style.animation = `float ${15 + index * 2}s infinite`;
+  const handleViewWorkflow = () => {
+    document.getElementById("services")?.scrollIntoView({
+      behavior: prefersReducedMotion() ? "auto" : "smooth",
+      block: "start",
     });
-  }, []);
+  };
 
   return (
-    <section id="Hero" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-26 pb-20 bg-[#0F172A]">
+    <section
+      id="Hero"
+      className="ih-section-shell ih-section-tint-brand relative overflow-hidden px-6 pb-20 pt-32 sm:pt-36"
+      aria-labelledby="hero-heading"
+    >
+      <div className="ih-section-beam pointer-events-none absolute inset-x-0 top-0 h-px" />
+      <div className="pointer-events-none absolute left-[18%] top-20 h-72 w-72 rounded-full blur-3xl" style={{ background: "var(--ih-aurora-plum)" }} />
+      <div className="pointer-events-none absolute right-[12%] top-24 h-56 w-56 rounded-full blur-3xl" style={{ background: "var(--ih-aurora-emerald)" }} />
+      <div className="pointer-events-none absolute bottom-10 right-[24%] h-40 w-40 rounded-full blur-3xl" style={{ background: "var(--ih-aurora-warm)" }} />
 
-      {/* ===== Floating Gradient Shapes in Background ===== */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="floating-shape absolute top-20 left-20 w-96 h-96 rounded-full bg-gradient-to-r from-purple-600 to-emerald-500 opacity-20 blur-3xl"></div>
+      <div className="relative mx-auto grid max-w-7xl gap-16 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-end">
+        <div className="ih-home-hero-copy max-w-3xl" data-ih-reveal style={{ "--ih-delay": "80ms" }}>
+          <p className="ih-kicker ih-kicker-warm mb-6">Campaign management for brands, influencers, and admins</p>
 
-        <div
-          className="floating-shape absolute bottom-20 right-20 w-[500px] h-[500px] rounded-full bg-gradient-to-r from-amber-400 to-purple-600 opacity-20 blur-3xl"
-          style={{ animationDelay: "-5s" }} // start offset
-        ></div>
+          <h1 id="hero-heading" className="max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
+            Create campaigns, match the right influencers, and track results in one place.
+          </h1>
 
-        <div
-          className="floating-shape absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-emerald-500 to-amber-400 opacity-10 blur-3xl"
-          style={{ animationDelay: "-10s" }}
-        ></div>
+          <p className="ih-text-secondary mt-6 max-w-2xl text-lg leading-8 sm:text-xl">
+            InfluenceHub helps brands launch campaigns, helps influencers apply and report results, and gives admins clear oversight.
+          </p>
+
+          <div className="ih-home-cta-group mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <TransitionLink to="/auth/register" className="ih-button-primary ih-home-cta ih-focus-ring inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-base font-semibold">
+              Create account
+              <ArrowRight size={18} aria-hidden="true" className="ih-home-cta-icon" />
+            </TransitionLink>
+
+            <button type="button" onClick={handleViewWorkflow} className="ih-button-secondary ih-home-cta ih-home-cta-secondary ih-focus-ring inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-base font-medium">
+              <Play size={16} aria-hidden="true" className="ih-home-cta-icon" />
+              View workflow
+            </button>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <span className="ih-pill-tint ih-pill-brand">Campaign creation</span>
+            <span className="ih-pill-tint ih-pill-emerald">Tag matching</span>
+            <span className="ih-pill-tint ih-pill-warm">ROI tracking</span>
+          </div>
+        </div>
+
+        <aside className="ih-panel-outline ih-hero-panel ih-home-hero-panel rounded-[1.75rem] p-6 sm:p-8" aria-label="Marketplace proof points" data-ih-reveal style={{ "--ih-delay": "180ms" }}>
+          <div className="ih-divider-bottom mb-6 pb-5">
+            <p className="ih-kicker ih-kicker-warm mb-3">Operational signal</p>
+            <p className="text-xl font-semibold text-white sm:text-2xl">One workspace for campaign setup, matching, applications, reporting, and review.</p>
+          </div>
+
+          <div className="space-y-5">
+            {proofPoints.map((point) => {
+              const Icon = point.icon;
+
+              return (
+                <div key={point.label} className="ih-home-proof-item flex items-start gap-4">
+                  <div className={`ih-icon-chip h-11 w-11 shrink-0 rounded-2xl ${point.iconClass}`}>
+                    <Icon size={20} aria-hidden="true" />
+                  </div>
+
+                  <div>
+                    <p className={`text-2xl font-semibold ${point.valueClass}`}>{point.value}</p>
+                    <p className="ih-text-muted mt-1 text-sm leading-6">{point.label}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="ih-divider-top mt-6 pt-5">
+            <p className="ih-text-subtle text-sm leading-6">Built for teams that need clear handoffs between brand, influencer, and admin work.</p>
+          </div>
+        </aside>
       </div>
-
-      {/* ===== Main Content ===== */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
-
-        {/* ===== Badge ===== */}
-        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 mb-8 backdrop-blur-sm animate-bounce-slow">
-          <span className="h-3 w-3 rounded-full bg-emerald-500 animate-ping"></span>
-          <span className="text-sm text-white/90">Top Influencer Platform in MENA</span>
-        </div>
-
-        {/* ===== Heading ===== */}
-        <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-
-          <span className="bg-gradient-to-r from-white to-emerald-400 bg-clip-text text-transparent">
-            MENA's Leading
-          </span>
-          <br />
-          <span className="bg-gradient-to-r from-purple-500 via-amber-400 to-emerald-400 bg-clip-text text-transparent">
-            Content & Influencer
-          </span>
-          <br />
-          <span className="bg-gradient-to-r from-emerald-400 to-purple-500 bg-clip-text text-transparent">
-            Marketing Agency
-          </span>
-
-        </h1>
-
-        {/* ===== Description ===== */}
-        <p className="text-xl text-white/80 mb-12 max-w-3xl mx-auto">
-          A network that helps your channel grow and connects you with
-          <span className="text-amber-400 font-semibold"> great brand partnerships</span>
-        </p>
-
-        {/* ===== Call to Action Buttons ===== */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-
-          <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-emerald-500 rounded-xl font-semibold text-lg hover:scale-105 transition">
-            Join Now
-          </button>
-
-          <button className="px-8 py-4 bg-white/10 border border-white/20 rounded-xl font-semibold text-lg hover:bg-white/20 transition">
-            Watch Demo
-          </button>
-
-        </div>
-
-        {/* ===== Stats ===== */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-
-          <div className="p-6 bg-white/5 rounded-xl border border-white/10">
-            <div className="text-3xl font-bold text-emerald-400">500+</div>
-            <div className="text-white/70">Active Brands</div>
-          </div>
-
-          <div className="p-6 bg-white/5 rounded-xl border border-white/10">
-            <div className="text-3xl font-bold text-purple-400">10K+</div>
-            <div className="text-white/70">Influencers</div>
-          </div>
-
-          <div className="p-6 bg-white/5 rounded-xl border border-white/10">
-            <div className="text-3xl font-bold text-amber-400">$2.5M</div>
-            <div className="text-white/70">Campaign Value</div>
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* ===== Animations ===== */}
-      <style>{`
-        @keyframes float {
-          0%,100% { transform: translate(0,0) rotate(0deg);}
-          50% { transform: translate(60px,-60px) rotate(180deg);}
-        }
-
-        @keyframes bounce-slow {
-          0%,100% { transform: translateY(0);}
-          50% { transform: translateY(-10px);}
-        }
-
-        .animate-bounce-slow{
-          animation:bounce-slow 3s infinite;
-        }
-      `}</style>
-
     </section>
   );
 };

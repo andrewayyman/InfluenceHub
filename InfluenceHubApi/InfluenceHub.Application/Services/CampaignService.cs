@@ -33,6 +33,7 @@ public class CampaignService : ICampaignService
     public async Task<IReadOnlyList<CampaignListResponse>> GetOpenCampaignsAsync(string? platform, string? location, CancellationToken ct = default)
     {
         var query = _campaignRepository.Query()
+            .Include(c => c.Brand)
             .Include(c => c.CampaignTags).ThenInclude(ct => ct.Tag)
             .Include(c => c.Applications)
             .Where(c => c.Status == CampaignStatus.Open && c.Deadline > DateTime.UtcNow);
@@ -44,7 +45,7 @@ public class CampaignService : ICampaignService
 
         var campaigns = await query.OrderByDescending(c => c.CreatedAt).ToListAsync(ct);
         return campaigns.Select(c => new CampaignListResponse(
-            c.Id, c.Title, c.Budget, c.Deadline, c.Platform, c.Location, c.Status,
+            c.Id, c.Title, c.Brand.Name, c.Budget, c.Deadline, c.Platform, c.Location, c.Status,
             c.Applications.Count, c.CampaignTags.Select(ct => ct.Tag.Name).ToList())).ToList();
     }
 }

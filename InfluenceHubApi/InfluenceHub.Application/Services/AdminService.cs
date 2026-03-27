@@ -48,11 +48,23 @@ public class AdminService : IAdminService
         return new AdminDashboardResponse(users, brands, influencers, campaigns, applications, pendingReports);
     }
 
-    public async Task<IReadOnlyList<ContactResponse>> GetContactMessagesAsync(bool? isReplied, CancellationToken ct = default)
+    public async Task<IReadOnlyList<ContactResponse>> GetContactMessagesAsync(bool? isReplied, string? search, CancellationToken ct = default)
     {
         var query = _contactRepository.Query().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(c =>
+                EF.Functions.Like(c.Name, term) ||
+                EF.Functions.Like(c.Email, term) ||
+                EF.Functions.Like(c.Subject, term) ||
+                EF.Functions.Like(c.Message, term));
+        }
+
         if (isReplied.HasValue)
             query = query.Where(c => c.IsReplied == isReplied.Value);
+
         var messages = await query.OrderByDescending(c => c.CreatedAt).ToListAsync(ct);
         return messages.Select(m => new ContactResponse(m.Id, m.Name, m.Email, m.Subject, m.Message, m.IsReplied, m.CreatedAt)).ToList();
     }
@@ -79,17 +91,41 @@ public class AdminService : IAdminService
         return true;
     }
 
-    public async Task<IReadOnlyList<AdminUserResponse>> GetUsersAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyList<AdminUserResponse>> GetUsersAsync(string? search, UserRole? role, bool? isActive, CancellationToken ct = default)
     {
-        // Excludes Admin users by contract; FE should manage admin role users separately.
-        var users = await _userRepository.Query()
-            .Where(u => u.Role != UserRole.Admin)
+        IQueryable<User> query = _userRepository.Query()
+            .Where(u => u.Role != UserRole.Admin);
+
+        if (role.HasValue)
+        {
+            if (role.Value == UserRole.Admin)
+                throw new InvalidOperationException("Admin users are excluded from admin user management.");
+
+            query = query.Where(u => u.Role == role.Value);
+        }
+
+        if (isActive.HasValue)
+            query = query.Where(u => u.IsEnabled == isActive.Value);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(u =>
+                EF.Functions.Like(u.Email, term) ||
+                (u.Brand != null && EF.Functions.Like(u.Brand.Name, term)) ||
+                (u.Influencer != null && EF.Functions.Like(u.Influencer.Name, term)));
+        }
+
+        var users = await query
             .OrderByDescending(u => u.CreatedAt)
             .Select(u => new AdminUserResponse(
                 u.Id,
                 u.Email,
                 (int)u.Role,
                 u.Role.ToString(),
+                u.Role == UserRole.Brand
+                    ? (u.Brand != null ? u.Brand.Name : u.Email)
+                    : (u.Influencer != null && u.Influencer.Name != string.Empty ? u.Influencer.Name : u.Email),
                 u.IsEnabled,
                 u.CreatedAt))
             .ToListAsync(ct);
@@ -146,15 +182,27 @@ public class AdminService : IAdminService
         return true;
     }
 
-    public async Task<IReadOnlyList<CampaignListResponse>> GetCampaignsAsync(CampaignStatus? status, CancellationToken ct = default)
+    public async Task<IReadOnlyList<CampaignListResponse>> GetCampaignsAsync(CampaignStatus? status, string? search, CancellationToken ct = default)
     {
         IQueryable<Campaign> query = _campaignRepository.Query()
+            .Include(c => c.Brand)
             .Include(c => c.CampaignTags)
             .ThenInclude(ct => ct.Tag)
             .Include(c => c.Applications);
 
         if (status.HasValue)
             query = query.Where(c => c.Status == status.Value);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(c =>
+                EF.Functions.Like(c.Title, term) ||
+                EF.Functions.Like(c.Brand.Name, term) ||
+                EF.Functions.Like(c.Platform, term) ||
+                EF.Functions.Like(c.Location, term) ||
+                c.CampaignTags.Any(ct => EF.Functions.Like(ct.Tag.Name, term)));
+        }
 
         var campaigns = await query
             .OrderByDescending(c => c.CreatedAt)
@@ -163,6 +211,7 @@ public class AdminService : IAdminService
         return campaigns.Select(c => new CampaignListResponse(
                 c.Id,
                 c.Title,
+                c.Brand.Name,
                 c.Budget,
                 c.Deadline,
                 c.Platform,
@@ -201,17 +250,29 @@ public class AdminService : IAdminService
         return true;
     }
 
-    public async Task<IReadOnlyList<ReportResponse>> GetReportsAsync(ReportStatus? status, CancellationToken ct = default)
+    public async Task<IReadOnlyList<ReportResponse>> GetReportsAsync(ReportStatus? status, string? search, CancellationToken ct = default)
     {
         var targetStatus = status ?? ReportStatus.Pending;
 
-        var reports = await _reportRepository.Query()
+        IQueryable<CampaignReport> query = _reportRepository.Query()
             .Include(r => r.Application)
             .ThenInclude(a => a.Influencer)
             .ThenInclude(i => i.User)
             .Include(r => r.Application)
             .ThenInclude(a => a.Campaign)
-            .Where(r => r.Status == targetStatus)
+            .Where(r => r.Status == targetStatus);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(r =>
+                EF.Functions.Like(r.Application.Influencer.Name, term) ||
+                EF.Functions.Like(r.Application.Influencer.User.Email, term) ||
+                EF.Functions.Like(r.Application.Campaign.Title, term) ||
+                EF.Functions.Like(r.PostUrl, term));
+        }
+
+        var reports = await query
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync(ct);
 
@@ -226,14 +287,23 @@ public class AdminService : IAdminService
                 r.Likes,
                 r.Comments,
                 r.Shares,
-                r.ScreenshotPath,
+                ToPublicScreenshotPath(r.ScreenshotPath),
                 r.Status,
                 r.RejectionReason,
+                r.ReviewedAt,
                 r.Application.Influencer.Name,
                 r.Application.Influencer.User.Email,
                 r.Application.Campaign.Title
             ))
             .ToList();
+    }
+
+    private static string ToPublicScreenshotPath(string relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return string.Empty;
+
+        return $"/uploads/reports/{relativePath.Replace("\\", "/")}";
     }
 
     public async Task<bool> ApproveRejectReportAsync(Guid reportId, bool approve, Guid adminUserId, string? rejectionReason = null, CancellationToken ct = default)

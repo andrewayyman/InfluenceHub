@@ -61,7 +61,7 @@ public class AuthService : IAuthService
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
-                Name = request.Email.Split('@')[0],
+                Name = request.Name.Trim(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -73,7 +73,7 @@ public class AuthService : IAuthService
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
-                Name = string.Empty,
+                Name = request.Name.Trim(),
                 Bio = string.Empty,
                 Platforms = "[]",
                 FollowersCount = 0,

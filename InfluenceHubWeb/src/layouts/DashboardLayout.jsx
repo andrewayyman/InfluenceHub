@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // Outlet is used to render the child routes inside this layout
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 // Importing layout components
 import Sidebar from "../Components/Layout/Sidebar";
 import NavBarr from "../Components/Layout/NavBarr";
 import Footer from "../Components/Layout/Footer";
+import { useAuth } from "../hooks/useAuth";
 
 /*
   DashboardLayout Component
@@ -24,20 +25,15 @@ import Footer from "../Components/Layout/Footer";
 */
 
 const DashboardLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const sidebarTriggerRef = useRef(null);
+  const location = useLocation();
+  const { user } = useAuth();
+  const role = user?.role ?? "admin";
 
-  /*
-    Temporary role variable
-
-    This will later come from:
-    - Authentication system
-    - JWT token
-    - Context / Global state
-
-    It will control:
-    - Sidebar menu items
-    - Page access permissions
-  */
-  const role = "admin"; // temporary until login system is implemented
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
 
   return (
 
@@ -48,7 +44,16 @@ const DashboardLayout = () => {
       - Light dashboard background
     */
 
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="ih-dashboard-shell ih-page-shell relative flex min-h-screen overflow-hidden">
+
+      <a href="#dashboard-content" className="ih-skip-link">
+        Skip to dashboard content
+      </a>
+
+      <div
+        aria-hidden="true"
+        className="ih-dashboard-atmosphere pointer-events-none absolute inset-0"
+      />
 
 
       {/* =========================
@@ -59,17 +64,26 @@ const DashboardLayout = () => {
         Sidebar receives the user role
         so it can render role-based navigation links
       */}
-      <Sidebar role={role} />
+      <Sidebar
+        role={role}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        triggerRef={sidebarTriggerRef}
+      />
 
 
       {/* =========================
           Right Content Area
          ========================= */}
 
-      <div className="flex flex-col flex-1">
+      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
 
         {/* Top Navigation Bar */}
-        <NavBarr />
+        <NavBarr
+          isSidebarOpen={isSidebarOpen}
+          onOpenSidebar={() => setIsSidebarOpen(true)}
+          triggerRef={sidebarTriggerRef}
+        />
 
 
         {/* =========================
@@ -84,8 +98,13 @@ const DashboardLayout = () => {
           /analytics → AnalyticsPage
         */}
 
-        <main className="flex-1">
-          <Outlet />
+        <main
+          id="dashboard-content"
+          className="ih-dashboard-main flex-1 min-w-0 overflow-x-hidden"
+        >
+          <div className="min-w-0">
+            <Outlet />
+          </div>
         </main>
 
 

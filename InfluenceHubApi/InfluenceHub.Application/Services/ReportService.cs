@@ -78,8 +78,8 @@ public class ReportService : IReportService
 
         return new ReportResponse(
             report.Id, report.ApplicationId, report.PostUrl, report.PostingDate, report.StartDate, report.EndDate,
-            report.Views, report.Likes, report.Comments, report.Shares, report.ScreenshotPath, report.Status,
-            report.RejectionReason, influencer.Name, influencer.User?.Email ?? string.Empty, application.Campaign.Title);
+            report.Views, report.Likes, report.Comments, report.Shares, ToPublicScreenshotPath(report.ScreenshotPath), report.Status,
+            report.RejectionReason, report.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, application.Campaign.Title);
     }
 
     public async Task<IReadOnlyList<ReportResponse>> GetMyReportsAsync(Guid influencerUserId, CancellationToken ct = default)
@@ -101,8 +101,16 @@ public class ReportService : IReportService
 
         return reports.Select(r => new ReportResponse(
             r.Id, r.ApplicationId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
-            r.Views, r.Likes, r.Comments, r.Shares, r.ScreenshotPath, r.Status,
-            r.RejectionReason, influencer.Name, influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title)).ToList();
+            r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
+            r.RejectionReason, r.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title)).ToList();
+    }
+
+    private static string ToPublicScreenshotPath(string relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return string.Empty;
+
+        return $"/uploads/reports/{relativePath.Replace("\\", "/")}";
     }
 
     public async Task<RoiResponse?> GetReportRoiAsync(Guid reportId, CancellationToken ct = default)

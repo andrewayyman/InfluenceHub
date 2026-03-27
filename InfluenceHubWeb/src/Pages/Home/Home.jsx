@@ -1,63 +1,54 @@
-import React from "react";
-
-/*
-  Layout Components
-  ------------------------------------------------
-  These components are shared across multiple pages
-  such as the main navigation bar and the footer.
-*/
-import Footer from "../../components/layout/Footer";
-import Navbar from "../../components/layout/Navbar";
-
-/*
-  Page Sections
-  ------------------------------------------------
-  These components represent different sections
-  of the landing page.
-*/
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import Footer from "../../Components/Layout/Footer";
+import Navbar from "../../Components/Layout/Navbar";
 import Hero from "./Hero";
 import Services from "./Services";
 import Subscription from "./Subscription";
-
-/*
-  Home Component
-  ------------------------------------------------
-  This component represents the main landing page
-  of the website.
-
-  Structure:
-  1. Navbar (top navigation)
-  2. Hero Section (main introduction)
-  3. Services Section (platform features)
-  4. Subscription Section (pricing / plans)
-  5. Footer (site information and links)
-*/
+import { prefersReducedMotion } from "../../utils/overdrive";
 
 const Home = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash) {
+      return;
+    }
+
+    const sectionId = decodeURIComponent(location.hash.slice(1));
+    const scrollToHash = () => {
+      const section = document.getElementById(sectionId);
+
+      if (section) {
+        section.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+      }
+    };
+
+    window.requestAnimationFrame(scrollToHash);
+  }, [location.hash]);
+
   return (
+    <div className="ih-home-shell ih-page-shell ih-motion-stage relative min-h-screen overflow-hidden">
+      <a href="#main-content" className="ih-skip-link">
+        Skip to main content
+      </a>
 
-    /*
-      Main Page Container
-      - Light background color
-      - Wraps the entire landing page content
-    */
-    <div className="bg-gray-50">
+      <div aria-hidden="true" className="ih-home-atmosphere pointer-events-none" />
+      <div aria-hidden="true" className="ih-home-grid pointer-events-none" />
+      <div aria-hidden="true" className="ih-home-sheen pointer-events-none" />
+      <div aria-hidden="true" className="ih-home-orb ih-home-orb-plum pointer-events-none" />
+      <div aria-hidden="true" className="ih-home-orb ih-home-orb-emerald pointer-events-none" />
+      <div aria-hidden="true" className="ih-home-orb ih-home-orb-warm pointer-events-none" />
 
-      {/* Top navigation bar */}
-      <Navbar />
-
-      {/* Hero section (first section users see) */}
-      <Hero />
-
-      {/* Services section explaining platform features */}
-      <Services />
-
-      {/* Subscription / Pricing plans section */}
-      <Subscription />
-
-      {/* Footer section */}
-      <Footer />
-
+      <div className="relative z-10">
+        <Navbar />
+        <main id="main-content">
+          <Hero />
+          <Services />
+          <Subscription />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 };

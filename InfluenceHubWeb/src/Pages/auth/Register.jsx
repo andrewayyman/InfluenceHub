@@ -1,57 +1,85 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { register as registerRequest } from "../../services/api/authService";
+import { TransitionLink } from "../../Components/Motion/TransitionLink";
+import { navigateWithOverdrive } from "../../utils/overdrive";
 
-/*
-  Validation Schema using Yup
-  ---------------------------
-  Ensures that all fields are correctly filled before submission
-*/
+const roleOptions = [
+  {
+    label: "Brand",
+    value: "Brand",
+    helper: "Create campaigns and review applications.",
+    activeClass: "ih-choice-chip-brand-active",
+  },
+  {
+    label: "Influencer",
+    value: "Influencer",
+    helper: "Apply to campaigns and submit reports.",
+    activeClass: "ih-choice-chip-emerald-active",
+  },
+];
+
 const RegisterSchema = Yup.object().shape({
-  role: Yup.string().required("Please select a role"), // role must be selected
-  name: Yup.string().min(3, "Too short").required("Name is required"), // name min 3 chars
-  email: Yup.string().email("Invalid email").required("Email is required"), // valid email
+  role: Yup.string().required("Please select a role"),
+  name: Yup.string().min(3, "Too short").required("Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
     .min(6, "Password too short")
-    .required("Password is required"), // password min 6 chars
+    .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm your password"), // must match password
+    .required("Confirm your password"),
 });
 
 const Register = () => {
-  const navigate = useNavigate(); // for programmatic navigation
+  const navigate = useNavigate();
 
-  // Form submission handler
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log("Register Values:", values);
+  const handleSubmit = async (values, { setStatus, setSubmitting }) => {
+    setStatus(null);
 
-    // simulate API request delay
-    setTimeout(() => {
+    try {
+      await registerRequest({
+        name: values.name.trim(),
+        email: values.email.trim(),
+        password: values.password,
+        role: values.role,
+      });
+
+      await navigateWithOverdrive(navigate, "/auth/login", {
+        state: { registered: values.email.trim() },
+      });
+    } catch (error) {
+      setStatus(error.message || "Unable to create your account right now.");
+    } finally {
       setSubmitting(false);
-      navigate("/auth/login"); // redirect to login after registration
-    }, 1000);
+    }
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#0F172A] px-10 pt-10 relative overflow-hidden">
-      
-      {/* ================= Glow Background ================= */}
-      <div className="absolute w-[450px] h-[450px] bg-purple-600 opacity-20 blur-3xl rounded-full"></div>
+    <div className="ih-auth-shell ih-page-shell ih-motion-stage relative flex min-h-[calc(100vh-4rem)] w-full items-center justify-center overflow-hidden px-4 pb-10 pt-24 sm:px-6">
+      <div aria-hidden="true" className="ih-auth-atmosphere pointer-events-none absolute inset-0" />
+      <div aria-hidden="true" className="ih-auth-grid pointer-events-none absolute inset-0" />
 
-      {/* ================= Registration Card ================= */}
-      <div className="relative w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
+      <div className="ih-auth-card relative w-full max-w-lg rounded-[1.75rem] p-6 sm:p-8" data-ih-reveal style={{ "--ih-delay": "90ms" }}>
+        <div className="inline-flex items-center gap-3">
+          <span className="ih-brand-mark">IH</span>
+          <div>
+            <p className="ih-kicker">Create account</p>
+            <p className="ih-text-subtle mt-1 text-xs uppercase tracking-[0.18em]">
+              Brands and influencers
+            </p>
+          </div>
+        </div>
 
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-center text-white mb-2">
-          Create Account
+        <h2 className="mb-2 mt-6 text-3xl font-semibold text-white">
+          Create your InfluenceHub account
         </h2>
-        <p className="text-center text-white/60 mb-8">
-          Join InfluenceHub today
+        <p className="ih-text-muted mb-8 leading-7">
+          Pick your role, add your details, and set up the account you will use to sign in.
         </p>
 
-        {/* ================= Formik Form ================= */}
         <Formik
           initialValues={{
             role: "",
@@ -63,107 +91,191 @@ const Register = () => {
           validationSchema={RegisterSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
-            <Form className="space-y-5">
+          {({ isSubmitting, errors, status, touched, values }) => (
+            <Form className="space-y-4">
 
-              {/* ----- Role Selection ----- */}
-              <div className="flex gap-6 justify-center mb-2">
-                <label className="flex items-center gap-2 text-white">
-                  <Field type="radio" name="role" value="Brand" />
-                  Brand
-                </label>
-                <label className="flex items-center gap-2 text-white">
-                  <Field type="radio" name="role" value="Influencer" />
-                  Influencer
-                </label>
-              </div>
-              <ErrorMessage
-                name="role"
-                component="div"
-                className="text-red-400 text-sm text-center"
-              />
+              <fieldset>
+                <legend className="ih-label">Account type</legend>
+                <p id="register-role-help" className="ih-helper-text mt-0">
+                  Choose how you will use InfluenceHub.
+                </p>
+                <div
+                  className="mt-4 grid grid-cols-2 gap-3"
+                  role="radiogroup"
+                  aria-describedby="register-role-help register-role-error"
+                  aria-invalid={touched.role && errors.role ? "true" : "false"}
+                >
+                  {roleOptions.map((option) => {
+                    const isSelected = values.role === option.value;
 
-              {/* ----- Name Input ----- */}
+                    return (
+                      <label
+                        key={option.value}
+                        className={`ih-focus-ring ih-choice-chip inline-flex min-h-[5.5rem] w-full cursor-pointer items-start gap-3 rounded-2xl px-4 py-3 text-left ${
+                          isSelected ? option.activeClass : ""
+                        }`}
+                      >
+                        <span className="mt-0.5">
+                          <Field
+                            type="radio"
+                            name="role"
+                            value={option.value}
+                            className="ih-focus-ring h-4 w-4"
+                          />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-current">{option.label}</span>
+                          <span className="mt-1 block text-xs leading-5 text-current/80">
+                            {option.helper}
+                          </span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+                {touched.role && errors.role ? (
+                  <p id="register-role-error" className="ih-error-text" role="alert">
+                    {errors.role}
+                  </p>
+                ) : null}
+              </fieldset>
+
               <div>
+                <label className="ih-label" htmlFor="register-name">
+                  Name
+                </label>
                 <Field
+                  id="register-name"
                   type="text"
                   name="name"
-                  placeholder="Full Name"
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  autoComplete="name"
+                  placeholder="Full name"
+                  aria-invalid={touched.name && errors.name ? "true" : "false"}
+                  aria-describedby="register-name-help register-name-error"
+                  className={`ih-input ih-focus-ring ${
+                    touched.name && errors.name ? "ih-input-error" : ""
+                  }`}
                 />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-400 text-sm mt-1"
-                />
+                <p id="register-name-help" className="ih-helper-text">
+                  This is shown on your profile and campaigns.
+                </p>
+                {touched.name && errors.name ? (
+                  <p id="register-name-error" className="ih-error-text" role="alert">
+                    {errors.name}
+                  </p>
+                ) : null}
               </div>
 
-              {/* ----- Email Input ----- */}
               <div>
+                <label className="ih-label" htmlFor="register-email">
+                  Email address
+                </label>
                 <Field
+                  id="register-email"
                   type="email"
                   name="email"
-                  placeholder="Email address"
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  autoComplete="email"
+                  placeholder="name@company.com"
+                  aria-invalid={touched.email && errors.email ? "true" : "false"}
+                  aria-describedby="register-email-help register-email-error"
+                  className={`ih-input ih-focus-ring ${
+                    touched.email && errors.email ? "ih-input-error" : ""
+                  }`}
                 />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-400 text-sm mt-1"
-                />
+                <p id="register-email-help" className="ih-helper-text">
+                  We use this for sign-in and campaign updates.
+                </p>
+                {touched.email && errors.email ? (
+                  <p id="register-email-error" className="ih-error-text" role="alert">
+                    {errors.email}
+                  </p>
+                ) : null}
               </div>
 
-              {/* ----- Password Input ----- */}
               <div>
+                <label className="ih-label" htmlFor="register-password">
+                  Password
+                </label>
                 <Field
+                  id="register-password"
                   type="password"
                   name="password"
-                  placeholder="Password"
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  autoComplete="new-password"
+                  placeholder="Create a password"
+                  aria-invalid={touched.password && errors.password ? "true" : "false"}
+                  aria-describedby="register-password-help register-password-error"
+                  className={`ih-input ih-focus-ring ${
+                    touched.password && errors.password ? "ih-input-error" : ""
+                  }`}
                 />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-400 text-sm mt-1"
-                />
+                <p id="register-password-help" className="ih-helper-text">
+                  At least 6 characters.
+                </p>
+                {touched.password && errors.password ? (
+                  <p id="register-password-error" className="ih-error-text" role="alert">
+                    {errors.password}
+                  </p>
+                ) : null}
               </div>
 
-              {/* ----- Confirm Password Input ----- */}
               <div>
+                <label className="ih-label" htmlFor="register-confirm-password">
+                  Confirm password
+                </label>
                 <Field
+                  id="register-confirm-password"
                   type="password"
                   name="confirmPassword"
-                  placeholder="Confirm Password"
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  autoComplete="new-password"
+                  placeholder="Re-enter your password"
+                  aria-invalid={touched.confirmPassword && errors.confirmPassword ? "true" : "false"}
+                  aria-describedby="register-confirm-password-help register-confirm-password-error"
+                  className={`ih-input ih-focus-ring ${
+                    touched.confirmPassword && errors.confirmPassword ? "ih-input-error" : ""
+                  }`}
                 />
-                <ErrorMessage
-                  name="confirmPassword"
-                  component="div"
-                  className="text-red-400 text-sm mt-1"
-                />
+                <p id="register-confirm-password-help" className="ih-helper-text">
+                  Enter the same password again.
+                </p>
+                {touched.confirmPassword && errors.confirmPassword ? (
+                  <p
+                    id="register-confirm-password-error"
+                    className="ih-error-text"
+                    role="alert"
+                  >
+                    {errors.confirmPassword}
+                  </p>
+                ) : null}
               </div>
 
-              {/* ----- Submit Button ----- */}
+              <p className="ih-text-subtle text-sm leading-6">
+                Admin accounts are managed separately. Brand and influencer access starts here.
+              </p>
+
+              {status ? (
+                <p className="ih-error-text" role="alert">{status}</p>
+              ) : null}
+
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 rounded-lg font-semibold bg-gradient-to-r from-purple-600 to-emerald-500 hover:scale-[1.02] transition text-white"
+                aria-busy={isSubmitting}
+                className="ih-button-primary ih-focus-ring w-full py-3"
               >
-                {isSubmitting ? "Registering..." : "Register"}
+                {isSubmitting ? "Creating account..." : "Create account"}
               </button>
             </Form>
           )}
         </Formik>
 
-        {/* ----- Login Link ----- */}
-        <p className="text-center text-white/60 mt-6">
+        <p className="ih-divider-top ih-text-muted mt-6 pt-5 text-center">
           Already have an account?{" "}
-          <Link
+          <TransitionLink
             to="/auth/login"
-            className="text-purple-400 hover:text-purple-300 font-medium"
+            className="ih-link ih-focus-ring rounded-sm font-medium"
           >
             Login
-          </Link>
+          </TransitionLink>
         </p>
       </div>
     </div>

@@ -1,233 +1,139 @@
-import React, { useState } from "react";
-
-// Link is used for navigation between pages without page reload (React Router)
-import { Link } from "react-router-dom";
-
-// Icons used for mobile menu toggle (hamburger / close icon)
+import React, { useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { TransitionLink } from "../Motion/TransitionLink";
+import { useOverlayAccessibility } from "../../hooks/useOverlayAccessibility";
+import { prefersReducedMotion } from "../../utils/overdrive";
 
-/*
-  Navbar Component
-  ------------------------------------------------
-  This component represents the main navigation bar of the website.
+const navigationLinks = [
+  { label: "Home", sectionId: "Hero" },
+  { label: "Platform", sectionId: "services" },
+  { label: "Briefing", sectionId: "Subscription" },
+];
 
-  Features:
-  - Responsive design (Desktop + Mobile)
-  - React Router navigation
-  - Smooth scrolling to page sections
-  - Mobile menu toggle
-*/
-
-const Navbar = () => {
-
-  /*
-    State to control mobile menu visibility
-    open = true  -> mobile menu is visible
-    open = false -> mobile menu is hidden
-  */
+const Navbar = ({ showSectionLinks = true }) => {
   const [open, setOpen] = useState(false);
+  const mobileMenuRef = useRef(null);
+  const mobileToggleRef = useRef(null);
 
-  /*
-    Function: scrollToSection
-    ----------------------------------------
-    Used to scroll smoothly to a specific section in the page.
+  useOverlayAccessibility({
+    containerRef: mobileMenuRef,
+    isOpen: open,
+    lockBodyScroll: true,
+    onClose: () => setOpen(false),
+    triggerRef: mobileToggleRef,
+  });
 
-    Steps:
-    1. Find the section using document.getElementById
-    2. If the section exists → scroll to it smoothly
-  */
   const scrollToSection = (id) => {
     const section = document.getElementById(id);
 
     if (section) {
-      section.scrollIntoView({
-        behavior: "smooth"
-      });
+      section.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
     }
   };
 
+  const handleSectionClick = (sectionId) => {
+    scrollToSection(sectionId);
+    setOpen(false);
+  };
+
   return (
-
-    /*
-      Main navbar container
-      - fixed position so it stays at the top
-      - backdrop blur effect
-      - dark transparent background
-      - border bottom
-    */
-    <nav className="fixed w-full top-0 z-50 backdrop-blur-md bg-[#0F172A]/80 border-b border-white/10">
-
-      {/* Navbar content wrapper */}
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-
-        {/* =========================
-            Logo / Brand Name
-           ========================= */}
-
-        <Link
-          to="/"
-          className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-emerald-400 bg-clip-text text-transparent"
-        >
-          InfluenceHub
-        </Link>
-
-
-
-        {/* =========================
-            Desktop Navigation Menu
-           ========================= */}
-
-        {/* 
-          Hidden on small screens
-          Visible on medium screens and above (md:flex)
-        */}
-        <div className="hidden md:flex items-center gap-8 text-white/80">
-
-          {/* Home link */}
-          <Link
-            to="/"
-            className="hover:text-purple-400 transition"
-          >
-            Home
-          </Link>
-
-
-          {/* Scroll to Services section */}
-          <button
-            onClick={() => scrollToSection("services")}
-            className="hover:text-purple-400 transition"
-          >
-            Services
-          </button>
-
-
-          {/* Scroll to Contact section */}
-          <button
-            onClick={() => scrollToSection("contact")}
-            className="hover:text-purple-400 transition"
-          >
-            Contact
-          </button>
-
-
-          {/* Login page navigation */}
-          <Link
-            to="/auth/login"
-            className="px-4 py-2 rounded-lg border border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white transition"
-          >
-            Login
-          </Link>
-
-
-          {/* Register page navigation */}
-          <Link
-            to="/auth/register"
-            className="px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-emerald-500 text-white hover:scale-105 transition"
-          >
-            Register
-          </Link>
-
+    <nav className="ih-nav-shell fixed top-0 z-50 w-full border-b backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+        <div className="min-w-0">
+          <TransitionLink to="/" className="ih-focus-ring inline-flex items-center gap-3 rounded-sm text-xl font-semibold tracking-[-0.03em] text-white sm:text-2xl">
+            <span className="ih-brand-mark">IH</span>
+            <span>InfluenceHub</span>
+          </TransitionLink>
+          <p className="ih-text-subtle mt-1 hidden text-xs tracking-[0.22em] uppercase sm:block">Campaign matching and reporting for MENA teams</p>
         </div>
 
+        <div className={`hidden items-center md:flex ${showSectionLinks ? "gap-8" : "gap-0"}`}>
+          {showSectionLinks ? (
+            <div className="flex items-center gap-6">
+              {navigationLinks.map((link) => (
+                <button
+                  key={link.label}
+                  type="button"
+                  onClick={() => handleSectionClick(link.sectionId)}
+                  className="ih-link ih-focus-ring rounded-sm text-sm font-medium"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
 
-
-        {/* =========================
-            Mobile Menu Toggle Button
-           ========================= */}
+          <div className="flex items-center gap-3">
+            <TransitionLink to="/auth/login" className="ih-link-strong ih-focus-ring rounded-sm px-2 py-2 text-sm font-medium">
+              Login
+            </TransitionLink>
+            <TransitionLink to="/auth/register" className="ih-button-primary ih-focus-ring rounded-xl px-5 py-2.5 text-sm font-semibold">
+              Create account
+            </TransitionLink>
+          </div>
+        </div>
 
         <button
-          className="md:hidden text-white"
-          onClick={() => setOpen(!open)} // Toggle mobile menu
+          ref={mobileToggleRef}
+          type="button"
+          className="ih-focus-ring ih-text-primary rounded-lg p-2.5 md:hidden"
+          onClick={() => setOpen(!open)}
+          aria-expanded={open}
+          aria-controls="mobile-navigation"
+          aria-haspopup="dialog"
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         >
-
-          {/* 
-            If menu is open → show close icon (X)
-            If menu is closed → show hamburger icon (Menu)
-          */}
-          {open ? <X size={28} /> : <Menu size={28} />}
-
+          {open ? <X size={28} aria-hidden="true" /> : <Menu size={28} aria-hidden="true" />}
         </button>
-
       </div>
 
-
-
-      {/* =========================
-          Mobile Navigation Menu
-         ========================= */}
-
-      {/* 
-        Render this menu ONLY if open === true
-        This is called Conditional Rendering
-      */}
       {open && (
+        <div
+          id="mobile-navigation"
+          ref={mobileMenuRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="mobile-navigation-heading"
+          tabIndex={-1}
+          className="ih-nav-panel border-t px-6 py-6 md:hidden"
+        >
+          <p id="mobile-navigation-heading" className="ih-kicker mb-3">Site navigation</p>
 
-        <div className="md:hidden bg-[#0F172A] border-t border-white/10 px-6 py-6 space-y-4 text-white">
+          {showSectionLinks ? (
+            <div className="space-y-2">
+              {navigationLinks.map((link) => (
+                <button
+                  key={link.label}
+                  type="button"
+                  onClick={() => handleSectionClick(link.sectionId)}
+                  className="ih-link ih-focus-ring block w-full rounded-sm py-2 text-left text-base"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
 
-          {/* Home */}
-          <Link
-            to="/"
-            className="block hover:text-purple-400"
-            onClick={() => {
-              scrollToSection("Hero");
-              setOpen(false); // close menu after clicking
-            }}
-          >
-            Home
-          </Link>
-
-
-          {/* Services */}
-          <button
-            onClick={() => {
-              scrollToSection("services");
-              setOpen(false);
-            }}
-            className="block hover:text-purple-400"
-          >
-            Services
-          </button>
-
-
-          {/* Contact */}
-          <button
-            onClick={() => {
-              scrollToSection("Subscription");
-              setOpen(false);
-            }}
-            className="block hover:text-purple-400"
-          >
-            Contact
-          </button>
-
-
-          {/* Login */}
-          <Link
-            to="/auth/login"
-            className="block px-4 py-2 rounded-lg border border-purple-500 text-purple-400 text-center"
-            onClick={() => setOpen(false)}
-          >
-            Login
-          </Link>
-
-
-          {/* Register */}
-          <Link
-            to="/auth/register"
-            className="block px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-emerald-500 text-center"
-            onClick={() => setOpen(false)}
-          >
-            Register
-          </Link>
-
+          <div className={`flex flex-col gap-3 ${showSectionLinks ? "ih-divider-top mt-5 pt-5" : "mt-2"}`}>
+            <TransitionLink
+              to="/auth/login"
+              className="ih-button-secondary ih-focus-ring block rounded-xl px-4 py-3 text-center"
+              onClick={() => setOpen(false)}
+            >
+              Login
+            </TransitionLink>
+            <TransitionLink
+              to="/auth/register"
+              className="ih-button-primary ih-focus-ring block rounded-xl px-4 py-3 text-center"
+              onClick={() => setOpen(false)}
+            >
+              Create account
+            </TransitionLink>
+          </div>
         </div>
-
       )}
-
     </nav>
   );
 };
 
-// Exporting the Navbar component so it can be used in other pages/layouts
 export default Navbar;
