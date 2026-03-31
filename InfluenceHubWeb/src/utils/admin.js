@@ -56,6 +56,10 @@ export const getStatusTone = (value) => {
       return "danger";
     case "Open":
       return "brand";
+    case "InfluencerSelected":
+      return "emerald";
+    case "ReportSubmitted":
+      return "warning";
     case "Closed":
       return "neutral";
     default:
