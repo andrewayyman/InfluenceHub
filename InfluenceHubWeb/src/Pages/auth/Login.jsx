@@ -6,7 +6,7 @@ import { ShieldCheck } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { TransitionLink } from "../../Components/Motion/TransitionLink";
 import { navigateWithOverdrive } from "../../utils/overdrive";
-import { getRoleDashboardPath } from "../../utils/auth";
+import { canReturnToDashboardPath, getRoleDashboardPath } from "../../utils/auth";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -29,7 +29,7 @@ const Login = () => {
 
       const fallbackTarget = getRoleDashboardPath(session.user.role);
       const requestedTarget = location.state?.from;
-      const nextTarget = session.user.role === "admin" && requestedTarget
+      const nextTarget = canReturnToDashboardPath(session.user.role, requestedTarget)
         ? requestedTarget
         : fallbackTarget;
 

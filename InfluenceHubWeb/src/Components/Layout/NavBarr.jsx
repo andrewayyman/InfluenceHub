@@ -6,6 +6,36 @@ import { getRoleLabel, getUserInitials } from "../../utils/auth";
 
 const navMeta = [
   {
+    match: (pathname) => pathname === "/dashboard/brand",
+    kicker: "Brand overview",
+    title: "Campaign momentum, applications, and delivery in one glance",
+    description: "Stay ahead of deadlines, monitor open briefs, and keep creator volume aligned with your growth targets.",
+  },
+  {
+    match: (pathname) => pathname.includes("/dashboard/brand/create-campaign"),
+    kicker: "Campaign launch",
+    title: "Publish a brief creators can champion",
+    description: "Shape budget, timelines, and requirements so matching stays precise and applications stay on-brand.",
+  },
+  {
+    match: (pathname) => pathname.includes("/dashboard/brand/campaigns"),
+    kicker: "Portfolio",
+    title: "Every campaign you run on InfluenceHub",
+    description: "Audit statuses, adjust live briefs, and close finished work without leaving your brand workspace.",
+  },
+  {
+    match: (pathname) => pathname.includes("/dashboard/brand/applications"),
+    kicker: "Selection",
+    title: "Decide which creators earn the collaboration",
+    description: "Review pitches, compare fit, and clear applications quickly so influencers are never left waiting.",
+  },
+  {
+    match: (pathname) => pathname.includes("/dashboard/brand/reports"),
+    kicker: "Performance",
+    title: "Proof and ROI from delivered campaigns",
+    description: "Consolidate influencer metrics and outcomes to defend spend and plan the next activation.",
+  },
+  {
     match: (pathname) => pathname === "/dashboard/admin",
     kicker: "Admin overview",
     title: "Trust, delivery, and operations at a glance",
@@ -37,7 +67,25 @@ const navMeta = [
   },
 ];
 
-const getNavMeta = (pathname) => navMeta.find((item) => item.match(pathname)) ?? navMeta[0];
+const brandFallback = {
+  kicker: "Brand workspace",
+  title: "Stay close to campaigns, creators, and deadlines",
+  description: "Navigate via the sidebar to move between your brand home and deeper workflows.",
+};
+
+const getNavMeta = (pathname) => {
+  const matched = navMeta.find((item) => item.match(pathname));
+
+  if (matched) {
+    return matched;
+  }
+
+  if (pathname.startsWith("/dashboard/brand")) {
+    return brandFallback;
+  }
+
+  return navMeta.find((item) => item.match("/dashboard/admin")) ?? navMeta[0];
+};
 
 const Navbar = ({ isSidebarOpen, onOpenSidebar, triggerRef }) => {
   const location = useLocation();
@@ -84,7 +132,13 @@ const Navbar = ({ isSidebarOpen, onOpenSidebar, triggerRef }) => {
               <ShieldCheck size={16} aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <p className="ih-text-primary truncate text-sm font-medium">Admin session secured</p>
+              <p className="ih-text-primary truncate text-sm font-medium">
+                {user?.role === "admin"
+                  ? "Admin session secured"
+                  : user?.role === "brand"
+                    ? "Brand workspace secured"
+                    : "Influencer session secured"}
+              </p>
               <p className="ih-text-subtle truncate text-xs">{user?.email || "Signed in"}</p>
             </div>
           </div>
@@ -94,7 +148,9 @@ const Navbar = ({ isSidebarOpen, onOpenSidebar, triggerRef }) => {
               {getUserInitials(user)}
             </div>
             <div className="hidden min-w-0 sm:block">
-              <p className="ih-text-primary truncate text-sm font-medium">{user?.displayName || "Admin"}</p>
+              <p className="ih-text-primary truncate text-sm font-medium">
+                {user?.displayName || getRoleLabel(user?.role)}
+              </p>
               <p className="ih-text-subtle truncate text-xs">{user?.email || "Operations"}</p>
             </div>
           </div>

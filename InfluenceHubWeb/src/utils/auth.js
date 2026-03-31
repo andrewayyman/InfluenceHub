@@ -30,9 +30,29 @@ export const getRoleDashboardPath = (value) => {
   switch (role) {
     case "admin":
       return "/dashboard/admin";
+    case "brand":
+      return "/dashboard/brand";
     default:
       return "/";
   }
+};
+
+export const canReturnToDashboardPath = (roleValue, path) => {
+  if (!path || typeof path !== "string" || !path.startsWith("/dashboard/")) {
+    return false;
+  }
+
+  const role = normalizeRole(roleValue);
+
+  if (role === "admin" && path.startsWith("/dashboard/admin")) {
+    return true;
+  }
+
+  if (role === "brand" && path.startsWith("/dashboard/brand")) {
+    return true;
+  }
+
+  return false;
 };
 
 export const getUserInitials = (user) => {
