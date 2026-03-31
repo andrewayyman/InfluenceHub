@@ -84,14 +84,40 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
 
         <div className="px-4 pt-4 sm:px-5">
           <div className="ih-sidebar-status rounded-[1.35rem] p-4">
-            <p className="ih-kicker ih-kicker-warm mb-2">Operations focus</p>
-            <p className="text-sm leading-6 text-white">
-              Keep platform trust high by reviewing reports, responding to contact requests, and removing friction from campaign delivery.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              <span className="ih-pill-tint ih-pill-brand">Marketplace trust</span>
-              <span className="ih-pill-tint ih-pill-emerald">Admin controls</span>
-            </div>
+            {activeRole === "brand" ? (
+              <>
+                <p className="ih-kicker ih-kicker-warm mb-2">Growth focus</p>
+                <p className="text-sm leading-6 text-white">
+                  Fund sharp briefs, watch applications land, and move influencers through selection without losing momentum on deadlines.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  <span className="ih-pill-tint ih-pill-brand">Campaign velocity</span>
+                  <span className="ih-pill-tint ih-pill-emerald">Creator fit</span>
+                </div>
+              </>
+            ) : activeRole === "influencer" ? (
+              <>
+                <p className="ih-kicker ih-kicker-warm mb-2">Partnership focus</p>
+                <p className="text-sm leading-6 text-white">
+                  Discover briefs that match your voice, submit standout applications, and keep active collaborations accountable.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  <span className="ih-pill-tint ih-pill-brand">Quality matches</span>
+                  <span className="ih-pill-tint ih-pill-emerald">On-time delivery</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="ih-kicker ih-kicker-warm mb-2">Operations focus</p>
+                <p className="text-sm leading-6 text-white">
+                  Keep platform trust high by reviewing reports, responding to contact requests, and removing friction from campaign delivery.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  <span className="ih-pill-tint ih-pill-brand">Marketplace trust</span>
+                  <span className="ih-pill-tint ih-pill-emerald">Admin controls</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

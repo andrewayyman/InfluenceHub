@@ -6,7 +6,13 @@
 !/InfluenceHubApi/
 !/InfluenceHubWeb/
 !/openspec/
+!/.agents/
 !/.gitignore
+!/.github/
+!/.cursor/
+!/.opencode/
+!/.windsurf/    
+!/.impeccable/  
 
 # Standard developer environment ignores
 **/.vs/

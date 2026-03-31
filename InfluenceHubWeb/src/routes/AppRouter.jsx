@@ -13,6 +13,8 @@ const AdminUsers = lazy(() => import("../Pages/admin/AdminUsers"));
 const AdminCampaigns = lazy(() => import("../Pages/admin/AdminCampaigns"));
 const AdminReports = lazy(() => import("../Pages/admin/AdminReports"));
 const AdminMessages = lazy(() => import("../Pages/admin/AdminMessages"));
+const BrandDashboard = lazy(() => import("../Pages/brand/BrandDashboard"));
+const BrandStub = lazy(() => import("../Pages/brand/BrandStub"));
 
 const withSuspense = (element) => (
   <Suspense fallback={<RouteLoader />}>
@@ -68,6 +70,59 @@ export const router = createBrowserRouter([
       { path: "campaigns", element: withSuspense(<AdminCampaigns />) },
       { path: "reports", element: withSuspense(<AdminReports />) },
       { path: "messages", element: withSuspense(<AdminMessages />) },
+    ],
+  },
+  {
+    path: "/dashboard/brand",
+    element: (
+      withSuspense(
+        <ProtectedRoute role="brand">
+          <DashboardLayout />
+        </ProtectedRoute>,
+      )
+    ),
+    children: [
+      { index: true, element: withSuspense(<BrandDashboard />) },
+      {
+        path: "create-campaign",
+        element: withSuspense(
+          <BrandStub
+            kicker="Campaign launch"
+            title="Create a new campaign"
+            description="You will define budget, creative guardrails, and matching tags so the right influencers can apply with confidence."
+          />,
+        ),
+      },
+      {
+        path: "campaigns",
+        element: withSuspense(
+          <BrandStub
+            kicker="Portfolio"
+            title="My campaigns"
+            description="Full list views, editing, and archival controls will live here with the same precision as this dashboard snapshot."
+          />,
+        ),
+      },
+      {
+        path: "applications",
+        element: withSuspense(
+          <BrandStub
+            kicker="Selection"
+            title="Applications inbox"
+            description="Accept or pass on creators per campaign with context from their pitch and historical performance."
+          />,
+        ),
+      },
+      {
+        path: "reports",
+        element: withSuspense(
+          <BrandStub
+            kicker="Performance"
+            title="Campaign reports"
+            description="Consolidated influencer submissions and ROI signals will surface here once reporting endpoints are wired for brands."
+          />,
+        ),
+      },
     ],
   },
   {
