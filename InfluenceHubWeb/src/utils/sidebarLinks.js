@@ -10,7 +10,8 @@ import {
   Users,
   MessageSquare,
   BarChart3,
-  ClipboardList
+  ClipboardList,
+  User
 } from "lucide-react";
 
 /*
@@ -72,6 +73,11 @@ export const sidebarLinks = {
       name: "Dashboard",
       path: "/dashboard/influencer",
       icon: LayoutDashboard,
+    },
+    {
+      name: "My Profile",
+      path: "/dashboard/influencer/profile",
+      icon: User,
     },
     {
       name: "Suggested Campaigns",

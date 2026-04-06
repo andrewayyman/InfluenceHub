@@ -106,19 +106,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
                   <span className="ih-pill-tint ih-pill-emerald">On-time delivery</span>
                 </div>
               </>
-            ) : (
-              <>
-                <p className="ih-kicker ih-kicker-warm mb-2">Operations focus</p>
-                <p className="text-sm leading-6 text-white">
-                  Keep platform trust high by reviewing reports, responding to contact requests, and removing friction from campaign delivery.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2.5">
-                  <span className="ih-pill-tint ih-pill-brand">Marketplace trust</span>
-                  <span className="ih-pill-tint ih-pill-emerald">Admin controls</span>
-                </div>
-              </>
-            )}
-          </div>
+            ) : null}</div>
         </div>
 
         {/* ===== Navigation Menu ===== */}

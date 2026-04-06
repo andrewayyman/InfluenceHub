@@ -191,66 +191,7 @@ const AdminDashboard = () => {
 
   return (
     <AdminPage>
-      <AdminHero
-        kicker="Admin dashboard"
-        title="Keep platform trust, campaign delivery, and support queues aligned."
-        description="This workspace brings together the accounts, reports, campaigns, and contact requests that shape marketplace confidence every day."
-        badges={[
-          { label: `${stats?.totalBrands || 0} brands`, className: "ih-pill-brand" },
-          { label: `${stats?.totalInfluencers || 0} influencers`, className: "ih-pill-emerald" },
-          { label: `${campaignPulse.open} open campaigns`, className: "ih-pill-warm" },
-          { label: `${dashboardData?.unreadMessages.length || 0} messages waiting`, className: "ih-pill-brand" },
-        ]}
-        aside={(
-          <div className="space-y-5">
-            <div className="flex items-start gap-3">
-              <div className="ih-icon-chip ih-icon-chip-success h-10 w-10 shrink-0 rounded-2xl">
-                <ShieldCheck size={18} aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">Trust first</p>
-                <p className="ih-text-muted mt-1 text-sm leading-6">
-                  Review pending reports and unresolved messages before they slow active campaigns.
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-start gap-3">
-              <div className="ih-icon-chip ih-icon-chip-warning h-10 w-10 shrink-0 rounded-2xl">
-                <ClipboardList size={18} aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">Queue health</p>
-                <p className="ih-text-muted mt-1 text-sm leading-6">
-                  {stats?.pendingReports || 0} reports still need review and {dashboardData?.unreadMessages.length || 0} messages still need a reply.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <div className="ih-icon-chip ih-icon-chip-brand h-10 w-10 shrink-0 rounded-2xl">
-                <Users size={18} aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">Marketplace balance</p>
-                <p className="ih-text-muted mt-1 text-sm leading-6">
-                  Watch the mix between brands and influencers so campaigns always have matching supply and demand.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      >
-        <div className="flex flex-wrap gap-3">
-          <TransitionLink to="/dashboard/admin/reports" className="ih-button-primary ih-focus-ring inline-flex items-center gap-2 px-4 py-3 text-sm">
-            Review reports
-            <ArrowUpRight size={16} aria-hidden="true" />
-          </TransitionLink>
-          <TransitionLink to="/dashboard/admin/messages" className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-4 py-3 text-sm">
-            Open support inbox
-          </TransitionLink>
-        </div>
-      </AdminHero>
 
       {error ? <ErrorState message={error} onRetry={() => loadDashboard()} /> : null}
 
