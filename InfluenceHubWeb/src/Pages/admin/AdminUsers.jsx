@@ -146,31 +146,7 @@ const AdminUsers = () => {
 
   return (
     <AdminPage>
-      <AdminHero
-        kicker="User management"
-        title="Manage marketplace accounts without leaving the admin flow."
-        description="Search by user, filter by role or status, and keep the platform healthy by disabling or removing accounts when needed."
-        badges={[
-          { label: `${summary.total} visible users`, className: "ih-pill-brand" },
-          { label: `${summary.active} active`, className: "ih-pill-emerald" },
-          { label: `${summary.disabled} disabled`, className: "ih-pill-warm" },
-        ]}
-        aside={(
-          <div className="space-y-4">
-            <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
-              <p className="ih-text-muted text-sm">Brand accounts</p>
-              <p className="mt-2 text-3xl font-semibold text-white">{summary.brand}</p>
-            </div>
-            <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
-              <p className="ih-text-muted text-sm">Influencer accounts</p>
-              <p className="mt-2 text-3xl font-semibold text-white">{summary.influencer}</p>
-            </div>
-            <p className="ih-text-muted text-sm leading-6">
-              Create/add user has been removed because admin can manage only existing non-admin accounts through the current backend contract.
-            </p>
-          </div>
-        )}
-      />
+
 
       {error ? <ErrorState message={error} onRetry={() => loadUsers()} /> : null}
 

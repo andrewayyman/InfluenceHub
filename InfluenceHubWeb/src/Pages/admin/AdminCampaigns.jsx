@@ -143,28 +143,6 @@ const AdminCampaigns = () => {
 
   return (
     <AdminPage>
-      <AdminHero
-        kicker="Campaign management"
-        title="Watch campaign health from launch through closure."
-        description="Filter by lifecycle stage, search by title or brand, and step in quickly when delivery stalls or cleanup is needed."
-        badges={[
-          { label: `${summary.total} visible campaigns`, className: "ih-pill-brand" },
-          { label: `${summary.open} open`, className: "ih-pill-emerald" },
-          { label: `${summary.completed} completed`, className: "ih-pill-warm" },
-        ]}
-        aside={(
-          <div className="space-y-4">
-            <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
-              <p className="ih-text-muted text-sm">Closed campaigns</p>
-              <p className="mt-2 text-3xl font-semibold text-white">{summary.closed}</p>
-            </div>
-            <p className="ih-text-muted text-sm leading-6">
-              Closing keeps outdated campaigns from accepting more activity. Deleting is reserved for campaigns with no applications attached.
-            </p>
-          </div>
-        )}
-      />
-
       {error ? <ErrorState message={error} onRetry={() => loadCampaigns()} /> : null}
 
       <AdminPanel tone="emerald">

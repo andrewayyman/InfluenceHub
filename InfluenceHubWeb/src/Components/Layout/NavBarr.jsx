@@ -127,22 +127,6 @@ const Navbar = ({ isSidebarOpen, onOpenSidebar, triggerRef }) => {
         </div>
 
         <div className="flex items-center gap-3 self-stretch sm:self-start">
-          <div className="ih-dashboard-profile hidden items-center gap-3 rounded-xl px-3 py-2 sm:flex">
-            <div className="ih-icon-chip ih-icon-chip-success h-9 w-9 rounded-full">
-              <ShieldCheck size={16} aria-hidden="true" />
-            </div>
-            <div className="min-w-0">
-              <p className="ih-text-primary truncate text-sm font-medium">
-                {user?.role === "admin"
-                  ? "Admin session secured"
-                  : user?.role === "brand"
-                    ? "Brand workspace secured"
-                    : "Influencer session secured"}
-              </p>
-              <p className="ih-text-subtle truncate text-xs">{user?.email || "Signed in"}</p>
-            </div>
-          </div>
-
           <div className="ih-dashboard-profile flex items-center gap-3 rounded-xl px-3 py-2">
             <div className="ih-gradient-brand flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white">
               {getUserInitials(user)}

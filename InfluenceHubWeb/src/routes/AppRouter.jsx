@@ -15,6 +15,16 @@ const AdminReports = lazy(() => import("../Pages/admin/AdminReports"));
 const AdminMessages = lazy(() => import("../Pages/admin/AdminMessages"));
 const BrandDashboard = lazy(() => import("../Pages/brand/BrandDashboard"));
 const BrandStub = lazy(() => import("../Pages/brand/BrandStub"));
+const CreateCampaign = lazy(() => import("../Pages/brand/CreateCampaign"));
+const BrandCampaigns = lazy(() => import("../Pages/brand/BrandCampaigns"));
+const CampaignApplications = lazy(() => import("../Pages/brand/CampaignApplications"));
+
+const InfluencerDashboard = lazy(() => import("../Pages/influencer/InfluencerDashboard"));
+const SuggestedCampaigns = lazy(() => import("../Pages/influencer/SuggestedCampaigns"));
+const MyApplications = lazy(() => import("../Pages/influencer/MyApplications"));
+const ActiveCampaigns = lazy(() => import("../Pages/influencer/ActiveCampaigns"));
+const SubmitReport = lazy(() => import("../Pages/influencer/SubmitReport"));
+const InfluencerProfile = lazy(() => import("../Pages/influencer/InfluencerProfile"));
 
 const withSuspense = (element) => (
   <Suspense fallback={<RouteLoader />}>
@@ -85,33 +95,15 @@ export const router = createBrowserRouter([
       { index: true, element: withSuspense(<BrandDashboard />) },
       {
         path: "create-campaign",
-        element: withSuspense(
-          <BrandStub
-            kicker="Campaign launch"
-            title="Create a new campaign"
-            description="You will define budget, creative guardrails, and matching tags so the right influencers can apply with confidence."
-          />,
-        ),
+        element: withSuspense(<CreateCampaign />),
       },
       {
         path: "campaigns",
-        element: withSuspense(
-          <BrandStub
-            kicker="Portfolio"
-            title="My campaigns"
-            description="Full list views, editing, and archival controls will live here with the same precision as this dashboard snapshot."
-          />,
-        ),
+        element: withSuspense(<BrandCampaigns />),
       },
       {
         path: "applications",
-        element: withSuspense(
-          <BrandStub
-            kicker="Selection"
-            title="Applications inbox"
-            description="Accept or pass on creators per campaign with context from their pitch and historical performance."
-          />,
-        ),
+        element: withSuspense(<CampaignApplications />),
       },
       {
         path: "reports",
@@ -123,6 +115,24 @@ export const router = createBrowserRouter([
           />,
         ),
       },
+    ],
+  },
+  {
+    path: "/dashboard/influencer",
+    element: (
+      withSuspense(
+        <ProtectedRoute role="influencer">
+          <DashboardLayout />
+        </ProtectedRoute>,
+      )
+    ),
+    children: [
+      { index: true, element: withSuspense(<InfluencerDashboard />) },
+      { path: "suggested", element: withSuspense(<SuggestedCampaigns />) },
+      { path: "applications", element: withSuspense(<MyApplications />) },
+      { path: "active", element: withSuspense(<ActiveCampaigns />) },
+      { path: "report", element: withSuspense(<SubmitReport />) },
+      { path: "profile", element: withSuspense(<InfluencerProfile />) },
     ],
   },
   {

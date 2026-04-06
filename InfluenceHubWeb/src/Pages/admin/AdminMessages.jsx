@@ -116,27 +116,7 @@ const AdminMessages = () => {
 
   return (
     <AdminPage>
-      <AdminHero
-        kicker="Contact inbox"
-        title="Handle public inquiries without breaking admin focus."
-        description="Messages stay inside the same operations surface, so support follow-up and platform oversight happen together."
-        badges={[
-          { label: `${summary.total} visible messages`, className: "ih-pill-brand" },
-          { label: `${summary.pending} waiting`, className: "ih-pill-warm" },
-          { label: `${summary.replied} replied`, className: "ih-pill-emerald" },
-        ]}
-        aside={(
-          <div className="space-y-4">
-            <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
-              <p className="ih-text-muted text-sm">Selected thread</p>
-              <p className="mt-2 text-lg font-semibold text-white">{selectedMessage?.subject || "No message selected"}</p>
-            </div>
-            <p className="ih-text-muted text-sm leading-6">
-              Focus on unreplied messages first, then keep a clean audit trail by marking each conversation handled the moment follow-up is done.
-            </p>
-          </div>
-        )}
-      />
+
 
       {error ? <ErrorState message={error} onRetry={() => loadMessages()} /> : null}
 
