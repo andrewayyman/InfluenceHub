@@ -26,14 +26,12 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
     triggerRef,
   });
 
-  // Logout function: remove token and redirect to login
   const handleLogout = () => {
     logout();
     onClose();
     navigateWithOverdrive(navigate, "/auth/login");
   };
 
-  // Get links for current role
   const links = sidebarLinks[activeRole] || [];
 
   return (
@@ -44,10 +42,10 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
         aria-hidden={!isOpen}
         tabIndex={isOpen ? 0 : -1}
         onClick={onClose}
-        className={`fixed inset-0 z-30 backdrop-blur-sm transition-opacity duration-200 lg:hidden ${
+        className={`fixed inset-0 z-30 transition-opacity duration-300 lg:hidden ${
           isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
-        style={{ backgroundColor: "var(--ih-bg-overlay)" }}
+        style={{ backgroundColor: "var(--ih-bg-overlay)", backdropFilter: "blur(4px)" }}
       />
 
       <aside
@@ -57,65 +55,31 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
         role={isOpen ? "dialog" : undefined}
         aria-modal={isOpen ? "true" : undefined}
         tabIndex={isOpen ? -1 : undefined}
-        className={`ih-nav-panel fixed inset-y-0 left-0 z-40 flex w-[min(85vw,18rem)] flex-col border-r shadow-2xl shadow-black/40 transition-transform duration-300 ease-out lg:sticky lg:top-0 lg:min-h-screen lg:w-64 lg:translate-x-0 lg:shadow-none ${
+        className={`ih-nav-panel fixed inset-y-0 left-0 z-40 flex w-[min(85vw,17rem)] flex-col border-r shadow-2xl shadow-black/40 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] lg:sticky lg:top-0 lg:min-h-screen lg:w-64 lg:translate-x-0 lg:shadow-none ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-
-        {/* ===== Logo / Branding ===== */}
-        <div className="ih-divider-bottom flex items-center gap-3 px-5 py-5 sm:px-6 sm:py-6">
-          <span className="ih-brand-mark shrink-0">IH</span>
-          <div className="min-w-0">
-            <h1 className="ih-text-primary text-lg font-bold">
+        {/* Logo Section */}
+        <div className="ih-divider-bottom flex h-16 shrink-0 items-center justify-between px-5">
+          <div className="flex items-center gap-3">
+            <span className="ih-brand-mark shrink-0">IH</span>
+            <span className="ih-text-primary text-[15px] font-bold tracking-tight">
               InfluenceHub
-            </h1>
-            <p className="ih-text-subtle truncate text-xs">Growth command center</p>
+            </span>
           </div>
           <button
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Close navigation menu"
-            className="ih-dashboard-icon-button ih-focus-ring ih-text-secondary rounded-xl p-2 lg:hidden"
+            className="ih-dashboard-icon-button ih-focus-ring ih-text-secondary flex items-center justify-center rounded-[0.9rem] p-1.5 transition-colors hover:text-white lg:hidden"
           >
             <X size={18} aria-hidden="true" />
           </button>
         </div>
 
-        <div className="px-4 pt-4 sm:px-5">
-          <div className="ih-sidebar-status rounded-[1.35rem] p-4">
-            {activeRole === "brand" ? (
-              <>
-                <p className="ih-kicker ih-kicker-warm mb-2">Growth focus</p>
-                <p className="text-sm leading-6 text-white">
-                  Fund sharp briefs, watch applications land, and move influencers through selection without losing momentum on deadlines.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2.5">
-                  <span className="ih-pill-tint ih-pill-brand">Campaign velocity</span>
-                  <span className="ih-pill-tint ih-pill-emerald">Creator fit</span>
-                </div>
-              </>
-            ) : activeRole === "influencer" ? (
-              <>
-                <p className="ih-kicker ih-kicker-warm mb-2">Partnership focus</p>
-                <p className="text-sm leading-6 text-white">
-                  Discover briefs that match your voice, submit standout applications, and keep active collaborations accountable.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2.5">
-                  <span className="ih-pill-tint ih-pill-brand">Quality matches</span>
-                  <span className="ih-pill-tint ih-pill-emerald">On-time delivery</span>
-                </div>
-              </>
-            ) : null}</div>
-        </div>
-
-        {/* ===== Navigation Menu ===== */}
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 sm:px-4 sm:py-6">
-          <p className="ih-text-subtle mb-2 px-3 text-xs uppercase tracking-[0.22em]">
-            Main Menu
-          </p>
-
-          {/* Loop through links and render NavLink for each */}
+        {/* Navigation Menu */}
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 sm:py-6">
           {links.map((link) => {
             const Icon = link.icon;
             return (
@@ -124,19 +88,16 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
                 to={link.path}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `group flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${
-                    isActive
-                      ? "ih-nav-link-active"
-                      : "ih-nav-link-inactive"
+                  `group flex items-center gap-3 rounded-[0.8rem] px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                    isActive ? "ih-nav-link-active" : "ih-nav-link-inactive"
                   }`
                 }
               >
-                <div className="ih-surface-interactive rounded-md p-2">
-                  <Icon size={16} />
+                <div className="ih-surface-interactive flex items-center justify-center rounded-md p-1.5">
+                  <Icon size={18} strokeWidth={2} />
                 </div>
-
                 <span className="flex-1">{link.name}</span>
-
+                
                 {link.badge && (
                   <span className="ih-sidebar-badge rounded-full px-2 py-0.5 text-xs">
                     {link.badge}
@@ -147,31 +108,24 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
           })}
         </nav>
 
-        {/* ===== User Profile ===== */}
-        <div className="ih-divider-top p-4">
-          <div className="ih-sidebar-user flex items-center gap-3 rounded-[1.15rem] p-3">
-            <div className="ih-gradient-brand flex h-9 w-9 items-center justify-center rounded-full font-bold text-white">
+        {/* Footer / User Profile Area */}
+        <div className="ih-divider-top px-4 py-4">
+          <div className="ih-sidebar-user mb-3 flex items-center gap-3 rounded-[1.15rem] p-3 transition-colors">
+            <div className="ih-gradient-brand flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white shadow-inner">
               {profileInitials}
             </div>
-
             <div className="min-w-0 flex-1">
               <p className="ih-text-primary truncate text-sm font-medium">{profileName}</p>
-              {user?.email ? (
-                <p className="ih-text-subtle truncate text-xs">{user.email}</p>
-              ) : null}
-              <div className="mt-1">
-                <span className="ih-pill-tint ih-pill-brand text-xs capitalize">{getRoleLabel(activeRole)}</span>
-              </div>
+              <p className="ih-text-subtle truncate text-xs capitalize">{getRoleLabel(activeRole)} Account</p>
             </div>
           </div>
-
           <button
             type="button"
             onClick={handleLogout}
-            className="ih-danger-button-subtle ih-focus-ring mt-4 flex w-full items-center gap-3 rounded-lg px-3 py-2"
+            className="ih-danger-button-subtle ih-focus-ring flex w-full items-center gap-3 rounded-[0.8rem] px-3 py-2 text-sm font-medium"
           >
-            <div className="ih-surface-interactive rounded-md p-2">
-              <LogOut size={16} />
+            <div className="flex items-center justify-center rounded-md p-1.5">
+              <LogOut size={18} strokeWidth={2} />
             </div>
             Sign Out
           </button>
