@@ -5,6 +5,7 @@ import {
   ClipboardList,
   MessageSquareText,
   ShieldCheck,
+  Tags,
   Users,
 } from "lucide-react";
 import {
@@ -28,6 +29,7 @@ import {
   getUsers,
   markContactReplied,
 } from "../../services/api/adminService";
+import { createTag, getTags } from "../../services/api/tagService";
 import {
   getActivityLabel,
   getEngagementRate,
@@ -59,6 +61,10 @@ const AdminDashboard = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [replyingId, setReplyingId] = useState("");
+  const [tags, setTags] = useState([]);
+  const [tagName, setTagName] = useState("");
+  const [tagError, setTagError] = useState("");
+  const [isSavingTag, setIsSavingTag] = useState(false);
 
   const loadDashboard = useCallback(async (signal) => {
     if (!token) {
@@ -136,6 +142,32 @@ const AdminDashboard = () => {
     return () => controller.abort();
   }, [loadDashboard]);
 
+  useEffect(() => {
+    if (!token) {
+      return undefined;
+    }
+
+    const controller = new AbortController();
+
+    const loadTags = async () => {
+      try {
+        setTagError("");
+        const response = await getTags(token, controller.signal);
+        if (!controller.signal.aborted) {
+          setTags(response || []);
+        }
+      } catch (requestError) {
+        if (!isAbortError(requestError) && !controller.signal.aborted) {
+          setTagError(requestError.message || "Unable to load tags.");
+        }
+      }
+    };
+
+    loadTags();
+
+    return () => controller.abort();
+  }, [token]);
+
   const campaignPulse = useMemo(() => {
     const campaigns = dashboardData?.campaigns || [];
 
@@ -168,6 +200,32 @@ const AdminDashboard = () => {
       setError(requestError.message || "The message could not be updated.");
     } finally {
       setReplyingId("");
+    }
+  };
+
+  const handleCreateTag = async (event) => {
+    event.preventDefault();
+
+    const normalizedTagName = tagName.trim();
+    if (!normalizedTagName) {
+      setTagError("Tag name is required.");
+      return;
+    }
+
+    try {
+      setIsSavingTag(true);
+      setTagError("");
+      const createdTag = await createTag(token, { name: normalizedTagName });
+      setTags((current) => {
+        const next = [...current, createdTag];
+        next.sort((left, right) => left.name.localeCompare(right.name));
+        return next;
+      });
+      setTagName("");
+    } catch (requestError) {
+      setTagError(requestError.message || "The tag could not be created.");
+    } finally {
+      setIsSavingTag(false);
     }
   };
 
@@ -294,6 +352,68 @@ const AdminDashboard = () => {
           </div>
         </AdminPanel>
       </div>
+
+      <AdminPanel tone="emerald">
+        <AdminPanelHeader
+          kicker="Tag governance"
+          title="Seed and expand matching tags"
+          description="Create shared tags once so brands and influencers can assign the same taxonomy across campaign matching."
+        />
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
+          <form onSubmit={handleCreateTag} className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
+            <div className="mb-4 flex items-center gap-3">
+              <div className="ih-icon-chip ih-icon-chip-brand flex h-10 w-10 items-center justify-center rounded-2xl">
+                <Tags size={18} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">Create new tag</p>
+                <p className="ih-text-muted text-sm">Keep names short and reusable across brands and creators.</p>
+              </div>
+            </div>
+
+            <label className="mb-2 block text-sm font-medium text-white" htmlFor="tagName">Tag name</label>
+            <input
+              id="tagName"
+              type="text"
+              value={tagName}
+              onChange={(event) => setTagName(event.target.value)}
+              className="ih-input w-full"
+              placeholder="e.g. Streetwear"
+            />
+
+            {tagError ? <p className="mt-3 text-sm text-red-400">{tagError}</p> : null}
+
+            <button
+              type="submit"
+              disabled={isSavingTag}
+              className="ih-button-primary ih-focus-ring mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-50"
+            >
+              {isSavingTag ? "Saving..." : "Create tag"}
+            </button>
+          </form>
+
+          <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-white">Current tag library</p>
+                <p className="ih-text-muted text-sm">These tags are available to brands and influencers right now.</p>
+              </div>
+              <StatusBadge tone="brand">{tags.length} tags</StatusBadge>
+            </div>
+
+            <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto">
+              {tags.length > 0 ? tags.map((tag) => (
+                <span key={tag.id} className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-200">
+                  {tag.name}
+                </span>
+              )) : (
+                <p className="text-sm text-slate-400">No tags available yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </AdminPanel>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(300px,0.95fr)]">
         <AdminPanel>

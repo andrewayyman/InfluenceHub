@@ -3,6 +3,7 @@ using InfluenceHub.Application.Interfaces;
 using InfluenceHub.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace InfluenceHub.WebApi.Controllers;
 
@@ -28,9 +29,22 @@ public class ReportsController : BaseApiController
         var ext = Path.GetExtension(form.Screenshot.FileName);
         if (string.IsNullOrEmpty(ext)) ext = ".png";
 
+        List<PlatformReportInsightRequest>? platformInsights;
+        try
+        {
+            platformInsights = JsonSerializer.Deserialize<List<PlatformReportInsightRequest>>(form.PlatformInsightsJson);
+        }
+        catch (JsonException)
+        {
+            return BadRequest(new { message = "Platform insights payload is invalid." });
+        }
+
         var request = new SubmitReportRequest(
-            form.ApplicationId, form.PostUrl, form.PostingDate, form.StartDate, form.EndDate,
-            form.Views, form.Likes, form.Comments, form.Shares);
+            form.ApplicationId,
+            form.PostingDate,
+            form.StartDate,
+            form.EndDate,
+            platformInsights ?? []);
 
         try
         {

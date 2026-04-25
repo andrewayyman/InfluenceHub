@@ -10,5 +10,10 @@ public record ApplicationResponse(
     string InfluencerName,
     ApplicationStatus Status,
     string Message,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    string Bio,
+    string Proposal,
+    decimal ProposedBudget,
+    List<string> Links,
+    List<string> MediaFiles
 );

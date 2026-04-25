@@ -4,6 +4,7 @@ using InfluenceHub.Domain.Entities;
 using InfluenceHub.Domain.Enums;
 using InfluenceHub.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace InfluenceHub.Application.Services;
 
@@ -300,9 +301,39 @@ public class AdminService : IAdminService
                 r.ReviewedAt,
                 r.Application?.Influencer?.Name ?? string.Empty,
                 r.Application?.Influencer?.User?.Email ?? string.Empty,
-                r.Application?.Campaign?.Title ?? string.Empty
+                r.Application?.Campaign?.Title ?? string.Empty,
+                MapPlatformInsights(r)
             ))
             .ToList();
+    }
+
+    private static List<PlatformReportInsightResponse> MapPlatformInsights(CampaignReport report)
+    {
+        if (!string.IsNullOrWhiteSpace(report.Platform))
+        {
+            try
+            {
+                var parsed = JsonSerializer.Deserialize<List<PlatformReportInsightResponse>>(report.Platform);
+                if (parsed is { Count: > 0 })
+                {
+                    return parsed;
+                }
+            }
+            catch (JsonException)
+            {
+            }
+        }
+
+        return
+        [
+            new PlatformReportInsightResponse(
+                string.IsNullOrWhiteSpace(report.Platform) ? "Unknown" : report.Platform,
+                report.PostUrl,
+                report.Views,
+                report.Likes,
+                report.Comments,
+                report.Shares)
+        ];
     }
 
     private static string ToPublicScreenshotPath(string relativePath)

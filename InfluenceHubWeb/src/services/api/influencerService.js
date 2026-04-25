@@ -1,33 +1,35 @@
 import { apiRequest, buildQueryString } from "./client";
 
 export const influencerService = {
-  getProfile: (token) =>
-    apiRequest("/api/Influencers/GetProfile", { method: "GET", token }),
+  getProfile: (token, signal) =>
+    apiRequest("/api/Influencers/GetProfile", { method: "GET", token, signal }),
 
-  updateProfile: (profileData, token) =>
+  updateProfile: (profileData, token, signal) =>
     apiRequest("/api/Influencers/UpdateProfile", {
       method: "PUT",
       body: profileData,
       token,
+      signal,
     }),
 
-  getSuggestedCampaigns: (filters = {}, token) => {
+  getSuggestedCampaigns: (filters = {}, token, signal) => {
     const query = buildQueryString(filters);
-    return apiRequest(`/api/Campaigns/GetOpenCampaigns${query}`, { method: "GET", token });
+    return apiRequest(`/api/Matching/GetSuggestedCampaigns${query}`, { method: "GET", token, signal });
   },
 
-  getCampaignDetails: (campaignId, token) =>
-    apiRequest(`/api/Campaigns/GetById/${campaignId}`, { method: "GET", token }),
+  getCampaignDetails: (campaignId, token, signal) =>
+    apiRequest(`/api/Campaigns/GetById/${campaignId}`, { method: "GET", token, signal }),
 
-  applyForCampaign: (applicationData, token) =>
+  applyForCampaign: (applicationData, token, signal) =>
     apiRequest("/api/Applications/Apply", {
       method: "POST",
       body: applicationData,
       token,
+      signal,
     }),
 
-  getMyApplications: (token) =>
-    apiRequest("/api/Influencers/GetMyApplications", { method: "GET", token }),
+  getMyApplications: (token, signal) =>
+    apiRequest("/api/Influencers/GetMyApplications", { method: "GET", token, signal }),
 
   submitReport: async (formData, token) => {
     const response = await fetch("/api/Reports/SubmitReport", {
@@ -50,6 +52,6 @@ export const influencerService = {
     return response.json();
   },
 
-  getMyReports: (token) =>
-    apiRequest("/api/Reports/GetMyReports", { method: "GET", token }),
+  getMyReports: (token, signal) =>
+    apiRequest("/api/Reports/GetMyReports", { method: "GET", token, signal }),
 };

@@ -59,14 +59,24 @@ public class InfluencerService : IInfluencerService
         foreach (var it in existingTags)
             _influencerTagRepository.Delete(it);
 
-        foreach (var name in request.Tags.Distinct(StringComparer.OrdinalIgnoreCase))
+        var normalizedNames = request.Tags
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(name => name.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var tags = await _tagRepository.Query()
+            .Where(tag => normalizedNames.Contains(tag.Name))
+            .ToListAsync(ct);
+
+        var foundNames = tags.Select(tag => tag.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var missingNames = normalizedNames.Where(name => !foundNames.Contains(name)).ToList();
+
+        if (missingNames.Count > 0)
+            throw new InvalidOperationException($"Unknown tags: {string.Join(", ", missingNames)}.");
+
+        foreach (var tag in tags)
         {
-            var tag = await _tagRepository.Query().FirstOrDefaultAsync(t => t.Name == name, ct);
-            if (tag is null)
-            {
-                tag = new Tag { Id = Guid.NewGuid(), Name = name };
-                await _tagRepository.AddAsync(tag, ct);
-            }
             var influencerTag = new InfluencerTag
             {
                 Id = Guid.NewGuid(),
@@ -96,7 +106,8 @@ public class InfluencerService : IInfluencerService
             .ToListAsync(ct);
 
         return applications.Select(a => new ApplicationResponse(
-            a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, influencer.Name, a.Status, a.Message, a.CreatedAt)).ToList();
+            a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, influencer.Name, a.Status, a.Message, a.CreatedAt,
+            a.Bio, a.Proposal, a.ProposedBudget, SafeDeserializePlatforms(a.Links), SafeDeserializePlatforms(a.MediaFiles))).ToList();
     }
 
     private static InfluencerProfileResponse MapToResponse(Influencer i)

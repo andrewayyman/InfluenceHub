@@ -2,9 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BarChart3,
   CheckCircle2,
+  Eye,
   ExternalLink,
-  FileSpreadsheet,
   XCircle,
+  X,
 } from "lucide-react";
 import {
   AdminHero,
@@ -52,6 +53,7 @@ const AdminReports = () => {
   const [actingId, setActingId] = useState("");
   const [rejectingId, setRejectingId] = useState("");
   const [rejectionDrafts, setRejectionDrafts] = useState({});
+  const [selectedReport, setSelectedReport] = useState(null);
   const debouncedSearch = useDebouncedValue(search, 250);
 
   const loadReports = useCallback(async (signal) => {
@@ -227,6 +229,14 @@ const AdminReports = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-3 lg:justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedReport(report)}
+                        className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-4 py-3 text-sm"
+                      >
+                        <Eye size={16} aria-hidden="true" />
+                        View details
+                      </button>
                       <a href={report.postUrl} target="_blank" rel="noreferrer" className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-4 py-3 text-sm">
                         Open post
                         <ExternalLink size={16} aria-hidden="true" />
@@ -311,6 +321,80 @@ const AdminReports = () => {
           </div>
         ) : null}
       </AdminPanel>
+
+      {selectedReport ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Report profile</p>
+                <h3 className="mt-1 text-xl font-semibold text-white">{selectedReport.campaignTitle || "Untitled campaign"}</h3>
+                <p className="mt-1 text-sm text-slate-300">{selectedReport.influencerName || "Unknown influencer"} · {selectedReport.influencerEmail || "-"}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedReport(null)}
+                className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10"
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Views</p>
+                <p className="mt-1 text-sm text-white">{formatCompactNumber(selectedReport.views)}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Engagement</p>
+                <p className="mt-1 text-sm text-white">{formatCompactNumber(getEngagementTotal(selectedReport))}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Engagement rate</p>
+                <p className="mt-1 text-sm text-white">{formatPercent(getEngagementRate(selectedReport))}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Status</p>
+                <p className="mt-1 text-sm text-white">{humanizeEnum(selectedReport.status)}</p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4">
+              <p className="text-xs text-slate-400">Window</p>
+              <p className="mt-1 text-sm text-white">{formatDate(selectedReport.startDate)} to {formatDate(selectedReport.endDate)}</p>
+              <p className="mt-1 text-xs text-slate-400">Posted {formatDate(selectedReport.postingDate)}</p>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4">
+              <p className="text-xs text-slate-400">Per platform breakdown</p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {(selectedReport.platformInsights || []).map((insight, index) => (
+                  <div key={`${insight.platform}-${index}`} className="rounded-xl border border-white/10 bg-slate-950/20 p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-medium text-white">{insight.platform}</p>
+                      {insight.postUrl ? (
+                        <a href={insight.postUrl} target="_blank" rel="noreferrer" className="text-xs text-sky-300 hover:text-sky-200">Open post</a>
+                      ) : null}
+                    </div>
+                    <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-slate-300">
+                      <p>Views: <span className="text-white">{formatCompactNumber(insight.views)}</span></p>
+                      <p>Likes: <span className="text-white">{formatCompactNumber(insight.likes)}</span></p>
+                      <p>Comments: <span className="text-white">{formatCompactNumber(insight.comments)}</span></p>
+                      <p>Shares: <span className="text-white">{formatCompactNumber(insight.shares)}</span></p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {selectedReport.rejectionReason ? (
+              <div className="mt-4 rounded-xl border border-red-400/20 bg-red-500/8 px-4 py-3 text-sm text-red-50">
+                <span className="font-semibold">Rejection reason:</span> {selectedReport.rejectionReason}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </AdminPage>
   );
 };

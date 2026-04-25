@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { UploadCloud } from "lucide-react";
+import { Plus, Trash2, UploadCloud } from "lucide-react";
 import {
   AdminPage as DashboardPage,
   AdminPanel as Panel,
@@ -8,6 +8,7 @@ import {
 } from "../../Components/AdminShared";
 import { useAuth } from "../../hooks/useAuth";
 import { influencerService } from "../../services/api/influencerService";
+import { PLATFORM_OPTIONS } from "../../utils/catalog";
 
 const SubmitReport = () => {
   const { token } = useAuth();
@@ -16,15 +17,13 @@ const SubmitReport = () => {
   
   const [formData, setFormData] = useState({
     applicationId: "",
-    postUrl: "",
     postingDate: "",
     startDate: "",
     endDate: "",
-    views: 0,
-    likes: 0,
-    comments: 0,
-    shares: 0,
   });
+  const [platformInsights, setPlatformInsights] = useState([
+    { platform: "Instagram", postUrl: "", views: 0, likes: 0, comments: 0, shares: 0 },
+  ]);
   const [screenshot, setScreenshot] = useState(null);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,6 +67,25 @@ const SubmitReport = () => {
     }
   };
 
+  const updatePlatformInsight = (index, field, value) => {
+    setPlatformInsights((prev) => prev.map((row, i) => (
+      i === index
+        ? { ...row, [field]: ["views", "likes", "comments", "shares"].includes(field) ? Number(value) : value }
+        : row
+    )));
+  };
+
+  const addPlatformInsightRow = () => {
+    setPlatformInsights((prev) => ([
+      ...prev,
+      { platform: "Instagram", postUrl: "", views: 0, likes: 0, comments: 0, shares: 0 },
+    ]));
+  };
+
+  const removePlatformInsightRow = (index) => {
+    setPlatformInsights((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!screenshot) {
@@ -78,6 +96,10 @@ const SubmitReport = () => {
       setError("Please select an active campaign application.");
       return;
     }
+    if (platformInsights.length === 0) {
+      setError("Please add at least one platform insight row.");
+      return;
+    }
 
     setIsSubmitting(true);
     setError("");
@@ -85,9 +107,10 @@ const SubmitReport = () => {
 
     try {
       const data = new FormData();
-      Object.keys(formData).forEach(key => {
+      Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
       });
+      data.append("platformInsightsJson", JSON.stringify(platformInsights));
       data.append("screenshot", screenshot);
 
       await influencerService.submitReport(data, token);
@@ -95,15 +118,11 @@ const SubmitReport = () => {
       setSuccess("Your campaign report has been submitted successfully!");
       setFormData({
         ...formData,
-        postUrl: "",
         postingDate: "",
         startDate: "",
         endDate: "",
-        views: 0,
-        likes: 0,
-        comments: 0,
-        shares: 0,
       });
+      setPlatformInsights([{ platform: "Instagram", postUrl: "", views: 0, likes: 0, comments: 0, shares: 0 }]);
       setScreenshot(null);
     } catch (err) {
       setError(err.message || "Failed to submit report.");
@@ -149,19 +168,6 @@ const SubmitReport = () => {
               )}
             </div>
 
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-sm font-medium text-white">Post URL</label>
-              <input
-                type="url"
-                name="postUrl"
-                value={formData.postUrl}
-                onChange={handleInputChange}
-                placeholder="https://instagram.com/p/..."
-                className="ih-input bg-black/40 w-full"
-                required
-              />
-            </div>
-
             <div className="space-y-2">
               <label className="text-sm font-medium text-white">Posting Date</label>
               <input
@@ -199,56 +205,72 @@ const SubmitReport = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white">Views</label>
-              <input
-                type="number"
-                name="views"
-                min="0"
-                value={formData.views}
-                onChange={handleInputChange}
-                className="ih-input bg-black/40 w-full"
-                required
-              />
-            </div>
+            <div className="space-y-3 md:col-span-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-white">Per Platform Insights</label>
+                <button type="button" onClick={addPlatformInsightRow} className="ih-button-secondary inline-flex items-center gap-2 px-3 py-1.5 text-xs">
+                  <Plus size={14} /> Add platform
+                </button>
+              </div>
+              <div className="space-y-3">
+                {platformInsights.map((row, index) => (
+                  <div key={`${row.platform}-${index}`} className="rounded-xl border border-white/10 bg-white/5 p-3">
+                    <div className="mb-3 flex items-center justify-between gap-2">
+                      <select
+                        className="ih-input bg-black/40 w-full max-w-xs"
+                        value={row.platform}
+                        onChange={(e) => updatePlatformInsight(index, "platform", e.target.value)}
+                      >
+                        {PLATFORM_OPTIONS.map((platform) => (
+                          <option key={platform} value={platform}>{platform}</option>
+                        ))}
+                      </select>
+                      {platformInsights.length > 1 ? (
+                        <button
+                          type="button"
+                          onClick={() => removePlatformInsightRow(index)}
+                          className="inline-flex items-center gap-1 rounded-lg border border-red-500/30 px-2.5 py-1.5 text-xs text-red-300 hover:bg-red-500/10"
+                        >
+                          <Trash2 size={14} /> Remove
+                        </button>
+                      ) : null}
+                    </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white">Likes</label>
-              <input
-                type="number"
-                name="likes"
-                min="0"
-                value={formData.likes}
-                onChange={handleInputChange}
-                className="ih-input bg-black/40 w-full"
-                required
-              />
-            </div>
+                    <div className="space-y-2">
+                      <label className="text-xs text-slate-300">Post URL (optional)</label>
+                      <input
+                        type="url"
+                        value={row.postUrl}
+                        onChange={(e) => updatePlatformInsight(index, "postUrl", e.target.value)}
+                        placeholder="https://instagram.com/p/..."
+                        className="ih-input bg-black/40 w-full"
+                      />
+                    </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white">Comments</label>
-              <input
-                type="number"
-                name="comments"
-                min="0"
-                value={formData.comments}
-                onChange={handleInputChange}
-                className="ih-input bg-black/40 w-full"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-white">Shares</label>
-              <input
-                type="number"
-                name="shares"
-                min="0"
-                value={formData.shares}
-                onChange={handleInputChange}
-                className="ih-input bg-black/40 w-full"
-                required
-              />
+                    <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                      {[
+                        { key: "views", label: "Views" },
+                        { key: "likes", label: "Likes" },
+                        { key: "comments", label: "Comments" },
+                        { key: "shares", label: "Shares" },
+                      ].map((metric) => (
+                        <div key={metric.key} className="space-y-2">
+                          <label className="text-xs text-slate-300">{metric.label}</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={row[metric.key]}
+                            onChange={(e) => updatePlatformInsight(index, metric.key, e.target.value)}
+                            className="ih-input bg-black/40 w-full"
+                            required
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-400">Add one or more platform rows. You can skip post links if unavailable.</p>
             </div>
 
             <div className="space-y-2 md:col-span-2 mt-2">

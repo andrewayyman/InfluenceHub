@@ -85,6 +85,9 @@ public class BrandService : IBrandService
         var campaign = await _campaignRepo.GetByIdWithTagsAsync(campaignId, ct);
         if (campaign is null || campaign.BrandId != brand.Id) return null;
 
+        if (campaign.Status != CampaignStatus.Open)
+            throw new InvalidOperationException("Only open campaigns can be edited.");
+
         if (request.Title is not null) campaign.Title = request.Title;
         if (request.Description is not null) campaign.Description = request.Description;
         if (request.Budget.HasValue) campaign.Budget = request.Budget.Value;
@@ -115,6 +118,10 @@ public class BrandService : IBrandService
         if (brand is null) return false;
         var campaign = await _campaignRepository.GetByIdAsync(campaignId, ct);
         if (campaign is null || campaign.BrandId != brand.Id) return false;
+
+        if (campaign.Status != CampaignStatus.Open)
+            throw new InvalidOperationException("Only open campaigns can be deleted.");
+
         _campaignRepository.Delete(campaign);
         await _campaignRepository.SaveChangesAsync(ct);
         return true;
@@ -146,14 +153,24 @@ public class BrandService : IBrandService
 
     private async Task SetCampaignTagsAsync(Guid campaignId, List<string> tagNames, CancellationToken ct)
     {
-        foreach (var name in tagNames.Distinct(StringComparer.OrdinalIgnoreCase))
+        var normalizedNames = tagNames
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(name => name.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var tags = await _tagRepository.Query()
+            .Where(tag => normalizedNames.Contains(tag.Name))
+            .ToListAsync(ct);
+
+        var foundNames = tags.Select(tag => tag.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var missingNames = normalizedNames.Where(name => !foundNames.Contains(name)).ToList();
+
+        if (missingNames.Count > 0)
+            throw new InvalidOperationException($"Unknown tags: {string.Join(", ", missingNames)}.");
+
+        foreach (var tag in tags)
         {
-            var tag = await _tagRepository.Query().FirstOrDefaultAsync(t => t.Name == name, ct);
-            if (tag is null)
-            {
-                tag = new Tag { Id = Guid.NewGuid(), Name = name };
-                await _tagRepository.AddAsync(tag, ct);
-            }
             var campaignTag = new CampaignTag
             {
                 Id = Guid.NewGuid(),

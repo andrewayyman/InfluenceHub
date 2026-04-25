@@ -98,6 +98,10 @@ export const router = createBrowserRouter([
         element: withSuspense(<CreateCampaign />),
       },
       {
+        path: "edit-campaign/:campaignId",
+        element: withSuspense(<CreateCampaign />),
+      },
+      {
         path: "campaigns",
         element: withSuspense(<BrandCampaigns />),
       },

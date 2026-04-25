@@ -70,7 +70,7 @@ Directory.CreateDirectory(uploadsPath);
 
 app.UseMiddleware<InfluenceHub.WebApi.Middleware.GlobalExceptionHandler>();
 
-await SeedAdminAsync(app.Services);
+await SeedSystemDataAsync(app.Services);
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -88,13 +88,36 @@ app.MapControllers();
 
 app.Run();
 
-static async Task SeedAdminAsync(IServiceProvider services)
+static async Task SeedSystemDataAsync(IServiceProvider services)
 {
     using var scope = services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<InfluenceHubDbContext>();
     var userRepo = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
     await context.Database.MigrateAsync();
+
+    var predefinedTags = new[]
+    {
+        "Lifestyle", "Fashion", "Beauty", "Fitness", "Travel", "Food", "Tech", "Gaming",
+        "Finance", "Education", "Health", "Parenting", "Home Decor", "Comedy", "Music",
+        "Sports", "Sustainability", "Luxury"
+    };
+
+    var existingTags = await context.Tags
+        .Select(tag => tag.Name)
+        .ToListAsync();
+
+    var existingTagSet = existingTags.ToHashSet(StringComparer.OrdinalIgnoreCase);
+    var missingTags = predefinedTags
+        .Where(tag => !existingTagSet.Contains(tag))
+        .Select(tag => new Tag { Id = Guid.NewGuid(), Name = tag })
+        .ToList();
+
+    if (missingTags.Count > 0)
+    {
+        context.Tags.AddRange(missingTags);
+        await context.SaveChangesAsync();
+    }
 
     if (await userRepo.GetByEmailAsync("admin@influencehub.com") is not null)
         return;

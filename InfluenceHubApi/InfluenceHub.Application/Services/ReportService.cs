@@ -5,6 +5,7 @@ using InfluenceHub.Domain.Entities;
 using InfluenceHub.Domain.Enums;
 using InfluenceHub.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace InfluenceHub.Application.Services;
 
@@ -43,27 +44,43 @@ public class ReportService : IReportService
         if (application.Campaign.Status != CampaignStatus.InfluencerSelected)
             throw new InvalidOperationException("Campaign is not in the correct status for report submission");
 
-        var totalEngagement = request.Likes + request.Comments + request.Shares;
-        if (totalEngagement > request.Views)
-            throw new InvalidOperationException("Total engagement (likes + comments + shares) cannot exceed views");
+        if (request.PlatformInsights is null || request.PlatformInsights.Count == 0)
+            throw new InvalidOperationException("At least one platform insight row is required.");
+
+        foreach (var row in request.PlatformInsights)
+        {
+            if (string.IsNullOrWhiteSpace(row.Platform))
+                throw new InvalidOperationException("Platform is required for each insight row.");
+
+            var rowTotal = row.Likes + row.Comments + row.Shares;
+            if (rowTotal > row.Views)
+                throw new InvalidOperationException($"Total engagement cannot exceed views for platform '{row.Platform}'.");
+        }
 
         if (request.StartDate > request.EndDate)
             throw new InvalidOperationException("Start date must be before or equal to end date");
 
         var screenshotPath = await _fileStorage.SaveReportScreenshotAsync(request.ApplicationId, screenshotStream, screenshotExtension, ct);
 
+        var aggregateViews = request.PlatformInsights.Sum(x => x.Views);
+        var aggregateLikes = request.PlatformInsights.Sum(x => x.Likes);
+        var aggregateComments = request.PlatformInsights.Sum(x => x.Comments);
+        var aggregateShares = request.PlatformInsights.Sum(x => x.Shares);
+        var primaryLink = request.PlatformInsights.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.PostUrl))?.PostUrl ?? string.Empty;
+
         var report = new CampaignReport
         {
             Id = Guid.NewGuid(),
             ApplicationId = request.ApplicationId,
-            PostUrl = request.PostUrl,
+            PostUrl = primaryLink,
             PostingDate = request.PostingDate,
             StartDate = request.StartDate,
             EndDate = request.EndDate,
-            Views = request.Views,
-            Likes = request.Likes,
-            Comments = request.Comments,
-            Shares = request.Shares,
+            Views = aggregateViews,
+            Likes = aggregateLikes,
+            Comments = aggregateComments,
+            Shares = aggregateShares,
+            Platform = JsonSerializer.Serialize(request.PlatformInsights),
             ScreenshotPath = screenshotPath,
             Status = ReportStatus.Pending,
             CreatedAt = DateTime.UtcNow
@@ -79,7 +96,8 @@ public class ReportService : IReportService
         return new ReportResponse(
             report.Id, report.ApplicationId, report.PostUrl, report.PostingDate, report.StartDate, report.EndDate,
             report.Views, report.Likes, report.Comments, report.Shares, ToPublicScreenshotPath(report.ScreenshotPath), report.Status,
-            report.RejectionReason, report.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, application.Campaign.Title);
+            report.RejectionReason, report.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, application.Campaign.Title,
+            MapPlatformInsights(report));
     }
 
     public async Task<IReadOnlyList<ReportResponse>> GetMyReportsAsync(Guid influencerUserId, CancellationToken ct = default)
@@ -102,7 +120,8 @@ public class ReportService : IReportService
         return reports.Select(r => new ReportResponse(
             r.Id, r.ApplicationId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
             r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
-            r.RejectionReason, r.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title)).ToList();
+            r.RejectionReason, r.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
+            MapPlatformInsights(r))).ToList();
     }
 
     private static string ToPublicScreenshotPath(string relativePath)
@@ -111,6 +130,42 @@ public class ReportService : IReportService
             return string.Empty;
 
         return $"/uploads/reports/{relativePath.Replace("\\", "/")}";
+    }
+
+    private static List<PlatformReportInsightResponse> MapPlatformInsights(CampaignReport report)
+    {
+        if (!string.IsNullOrWhiteSpace(report.Platform))
+        {
+            try
+            {
+                var parsed = JsonSerializer.Deserialize<List<PlatformReportInsightRequest>>(report.Platform);
+                if (parsed is { Count: > 0 })
+                {
+                    return parsed.Select(x => new PlatformReportInsightResponse(
+                        x.Platform,
+                        x.PostUrl,
+                        x.Views,
+                        x.Likes,
+                        x.Comments,
+                        x.Shares)).ToList();
+                }
+            }
+            catch (JsonException)
+            {
+                // Fallback below for legacy data.
+            }
+        }
+
+        return
+        [
+            new PlatformReportInsightResponse(
+                string.IsNullOrWhiteSpace(report.Platform) ? "Unknown" : report.Platform,
+                report.PostUrl,
+                report.Views,
+                report.Likes,
+                report.Comments,
+                report.Shares)
+        ];
     }
 
     public async Task<RoiResponse?> GetReportRoiAsync(Guid reportId, CancellationToken ct = default)

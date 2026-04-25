@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ShieldCheck, UserCog, UserMinus, Users } from "lucide-react";
+import { Eye, ShieldCheck, UserMinus, X } from "lucide-react";
 import {
   AdminHero,
   AdminPage,
@@ -39,6 +39,7 @@ const AdminUsers = () => {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [actingId, setActingId] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
   const debouncedSearch = useDebouncedValue(search, 250);
 
   const loadUsers = useCallback(async (signal) => {
@@ -224,6 +225,14 @@ const AdminUsers = () => {
                       <div className="flex flex-wrap gap-2 py-3">
                         <button
                           type="button"
+                          onClick={() => setSelectedUser(user)}
+                          className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-3 py-2 text-sm"
+                        >
+                          <Eye size={16} aria-hidden="true" />
+                          View
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleEnableDisable(user)}
                           disabled={actingId === user.id}
                           className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-3 py-2 text-sm"
@@ -249,6 +258,45 @@ const AdminUsers = () => {
           </div>
         ) : null}
       </AdminPanel>
+
+      {selectedUser ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">User profile</p>
+                <h3 className="mt-1 text-xl font-semibold text-white">{selectedUser.displayName || "Unnamed user"}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedUser(null)}
+                className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10"
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Email</p>
+                <p className="mt-1 text-sm text-white break-all">{selectedUser.email || "-"}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Role</p>
+                <p className="mt-1 text-sm text-white">{selectedUser.roleName || "-"}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Account status</p>
+                <p className="mt-1 text-sm text-white">{getActivityLabel(selectedUser.isActive)}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Created</p>
+                <p className="mt-1 text-sm text-white">{formatDateTime(selectedUser.createdAt)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </AdminPage>
   );
 };
