@@ -1,34 +1,53 @@
 import React from "react";
-import { ArrowRight, Building2, CheckCircle2, Play, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  CheckCircle2,
+  ChevronDown,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
 import { TransitionLink } from "../../Components/Motion/TransitionLink";
 import { prefersReducedMotion } from "../../utils/overdrive";
 
+/* ─── Proof-point data ────────────────────────────────────────────────────── */
 const proofPoints = [
   {
     value: "500+",
-    label: "brand teams using campaign workflows",
+    label: "Brand teams",
+    sub: "running live campaigns",
     icon: Building2,
     iconClass: "ih-icon-chip-brand",
     valueClass: "ih-stat-value-brand",
   },
   {
     value: "10K+",
-    label: "influencer profiles organized by niche, platform, and location",
+    label: "Influencer profiles",
+    sub: "matched by niche & platform",
     icon: TrendingUp,
     iconClass: "ih-icon-chip-success",
     valueClass: "ih-stat-value-emerald",
   },
   {
     value: "$2.5M",
-    label: "campaign budget tracked with reporting and ROI metrics",
+    label: "Budget tracked",
+    sub: "with ROI reporting",
     icon: CheckCircle2,
     iconClass: "ih-icon-chip-warning",
     valueClass: "ih-stat-value-warm",
   },
 ];
 
+/* ─── Feature pills ───────────────────────────────────────────────────────── */
+const featurePills = [
+  { label: "Campaign creation", cls: "ih-pill-brand" },
+  { label: "Smart matching", cls: "ih-pill-emerald" },
+  { label: "ROI tracking", cls: "ih-pill-warm" },
+];
+
+/* ─── Hero ────────────────────────────────────────────────────────────────── */
 const Hero = () => {
-  const handleViewWorkflow = () => {
+  const handleScrollToServices = () => {
     document.getElementById("services")?.scrollIntoView({
       behavior: prefersReducedMotion() ? "auto" : "smooth",
       block: "start",
@@ -38,74 +57,174 @@ const Hero = () => {
   return (
     <section
       id="Hero"
-      className="ih-section-shell ih-section-tint-brand relative overflow-hidden px-6 pb-20 pt-32 sm:pt-36"
+      className="ih-section-shell ih-hero-section relative overflow-hidden px-6 pb-24 pt-36 sm:pt-44"
       aria-labelledby="hero-heading"
     >
-      <div className="ih-section-beam pointer-events-none absolute inset-x-0 top-0 h-px" />
-      <div className="pointer-events-none absolute left-[18%] top-20 h-72 w-72 rounded-full blur-3xl" style={{ background: "var(--ih-aurora-plum)" }} />
-      <div className="pointer-events-none absolute right-[12%] top-24 h-56 w-56 rounded-full blur-3xl" style={{ background: "var(--ih-aurora-emerald)" }} />
-      <div className="pointer-events-none absolute bottom-10 right-[24%] h-40 w-40 rounded-full blur-3xl" style={{ background: "var(--ih-aurora-warm)" }} />
+      {/* ── Decorative beam at top ── */}
+      <div
+        className="ih-section-beam pointer-events-none absolute inset-x-0 top-0 h-px"
+        aria-hidden="true"
+      />
 
-      <div className="relative mx-auto grid max-w-7xl gap-16 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:items-end">
-        <div className="ih-home-hero-copy max-w-3xl" data-ih-reveal style={{ "--ih-delay": "80ms" }}>
-          <p className="ih-kicker ih-kicker-warm mb-6">Campaign management for brands, influencers, and admins</p>
+      {/* ── Ambient aurora orbs ── */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[8%] top-28 h-[28rem] w-[28rem] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, rgb(147 51 234 / 0.18) 0%, transparent 70%)",
+          filter: "blur(60px)",
+          animation: prefersReducedMotion()
+            ? "none"
+            : "ih-home-orb-drift 20s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-[6%] top-32 h-[22rem] w-[22rem] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, rgb(16 185 129 / 0.15) 0%, transparent 70%)",
+          filter: "blur(60px)",
+          animation: prefersReducedMotion()
+            ? "none"
+            : "ih-home-orb-drift 16s 2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-16 left-[38%] h-[18rem] w-[18rem] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, rgb(245 158 11 / 0.12) 0%, transparent 70%)",
+          filter: "blur(50px)",
+          animation: prefersReducedMotion()
+            ? "none"
+            : "ih-home-orb-drift 14s 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite",
+        }}
+      />
 
-          <h1 id="hero-heading" className="max-w-4xl text-5xl font-semibold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
-            Create campaigns, match the right influencers, and track results in one place.
-          </h1>
-
-          <p className="ih-text-secondary mt-6 max-w-2xl text-lg leading-8 sm:text-xl">
-            InfluenceHub helps brands launch campaigns, helps influencers apply and report results, and gives admins clear oversight.
-          </p>
-
-          <div className="ih-home-cta-group mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <TransitionLink to="/auth/register" className="ih-button-primary ih-home-cta ih-focus-ring inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-base font-semibold">
-              Create account
-              <ArrowRight size={18} aria-hidden="true" className="ih-home-cta-icon" />
-            </TransitionLink>
-
-            <button type="button" onClick={handleViewWorkflow} className="ih-button-secondary ih-home-cta ih-home-cta-secondary ih-focus-ring inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-base font-medium">
-              <Play size={16} aria-hidden="true" className="ih-home-cta-icon" />
-              View workflow
-            </button>
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <span className="ih-pill-tint ih-pill-brand">Campaign creation</span>
-            <span className="ih-pill-tint ih-pill-emerald">Tag matching</span>
-            <span className="ih-pill-tint ih-pill-warm">ROI tracking</span>
-          </div>
+      {/* ── Main content ── */}
+      <div className="relative mx-auto max-w-5xl text-center">
+        {/* Kicker badge */}
+        <div
+          className="ih-hero-kicker-badge inline-flex items-center gap-2 mb-8"
+          data-ih-reveal
+          style={{ "--ih-delay": "60ms" }}
+        >
+          <Zap size={13} className="ih-hero-kicker-icon" aria-hidden="true" />
+          <span>Campaign management for brands, influencers &amp; admins</span>
         </div>
 
-        <aside className="ih-panel-outline ih-hero-panel ih-home-hero-panel rounded-[1.75rem] p-6 sm:p-8" aria-label="Marketplace proof points" data-ih-reveal style={{ "--ih-delay": "180ms" }}>
-          <div className="ih-divider-bottom mb-6 pb-5">
-            <p className="ih-kicker ih-kicker-warm mb-3">Operational signal</p>
-            <p className="text-xl font-semibold text-white sm:text-2xl">One workspace for campaign setup, matching, applications, reporting, and review.</p>
-          </div>
+        {/* Headline */}
+        <h1
+          id="hero-heading"
+          className="ih-hero-headline mb-7"
+          data-ih-reveal
+          style={{ "--ih-delay": "130ms" }}
+        >
+          Create campaigns.{" "}
+          <span className="ih-hero-headline-accent">Match influencers.</span>{" "}
+          Track results.
+        </h1>
 
-          <div className="space-y-5">
-            {proofPoints.map((point) => {
-              const Icon = point.icon;
+        {/* Supporting text */}
+        <p
+          className="ih-text-secondary mx-auto mb-10 max-w-2xl text-lg leading-8 sm:text-xl"
+          data-ih-reveal
+          style={{ "--ih-delay": "200ms" }}
+        >
+          InfluenceHub is the unified workspace where brands launch campaigns,
+          influencers apply and report results, and admins maintain full
+          oversight — all in one place.
+        </p>
 
-              return (
-                <div key={point.label} className="ih-home-proof-item flex items-start gap-4">
-                  <div className={`ih-icon-chip h-11 w-11 shrink-0 rounded-2xl ${point.iconClass}`}>
-                    <Icon size={20} aria-hidden="true" />
+        {/* CTA group */}
+        <div
+          className="ih-hero-cta-group mb-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+          data-ih-reveal
+          style={{ "--ih-delay": "280ms" }}
+        >
+          <TransitionLink
+            to="/auth/register"
+            id="hero-cta-register"
+            className="ih-button-primary ih-hero-cta ih-focus-ring inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 text-base font-semibold"
+          >
+            Get started free
+            <ArrowRight
+              size={17}
+              aria-hidden="true"
+              className="ih-home-cta-icon"
+            />
+          </TransitionLink>
+
+          <button
+            type="button"
+            id="hero-cta-workflow"
+            onClick={handleScrollToServices}
+            className="ih-button-secondary ih-hero-cta ih-hero-cta-secondary ih-focus-ring inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 text-base font-medium"
+          >
+            <ChevronDown size={16} aria-hidden="true" className="ih-home-cta-icon ih-hero-cta-secondary-icon" />
+            Explore workflows
+          </button>
+        </div>
+
+        {/* Feature pills */}
+        <div
+          className="mb-20 flex flex-wrap justify-center gap-2.5"
+          data-ih-reveal
+          style={{ "--ih-delay": "340ms" }}
+        >
+          {featurePills.map((pill) => (
+            <span
+              key={pill.label}
+              className={`ih-pill-tint ${pill.cls}`}
+            >
+              {pill.label}
+            </span>
+          ))}
+        </div>
+
+        {/* ── Proof points strip ── */}
+        <div
+          className="ih-hero-proof-strip"
+          data-ih-reveal
+          style={{ "--ih-delay": "420ms" }}
+          aria-label="Platform statistics"
+        >
+          {proofPoints.map((point, i) => {
+            const Icon = point.icon;
+            return (
+              <React.Fragment key={point.label}>
+                {/* Separator */}
+                {i > 0 && (
+                  <div
+                    className="ih-hero-proof-divider"
+                    aria-hidden="true"
+                  />
+                )}
+                <div className="ih-hero-proof-item">
+                  <div
+                    className={`ih-icon-chip h-10 w-10 shrink-0 rounded-xl ${point.iconClass}`}
+                  >
+                    <Icon size={18} aria-hidden="true" />
                   </div>
-
-                  <div>
-                    <p className={`text-2xl font-semibold ${point.valueClass}`}>{point.value}</p>
-                    <p className="ih-text-muted mt-1 text-sm leading-6">{point.label}</p>
+                  <div className="text-left">
+                    <p className={`text-2xl font-bold leading-none ${point.valueClass}`}>
+                      {point.value}
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-white/90">
+                      {point.label}
+                    </p>
+                    <p className="ih-text-muted text-xs leading-5">
+                      {point.sub}
+                    </p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-
-          <div className="ih-divider-top mt-6 pt-5">
-            <p className="ih-text-subtle text-sm leading-6">Built for teams that need clear handoffs between brand, influencer, and admin work.</p>
-          </div>
-        </aside>
+              </React.Fragment>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
