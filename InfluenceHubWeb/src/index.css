@@ -1436,6 +1436,212 @@
     border-top-color: color-mix(in srgb, var(--ih-brand-end) 64%, white 36%);
     border-right-color: color-mix(in srgb, var(--ih-brand-start) 48%, white 18%);
   }
+
+  /* ─── Hero redesign ─────────────────────────────────────────────────────── */
+
+  /* Section tint — stronger upward aurora wash */
+  .ih-hero-section {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgb(147 51 234 / 0.18), transparent 62%),
+      radial-gradient(ellipse 60% 40% at 82% 20%, rgb(16 185 129 / 0.13), transparent 52%),
+      linear-gradient(180deg, rgb(15 23 42 / 0.96), rgb(9 17 31 / 0.98));
+  }
+
+  /* Kicker badge above headline */
+  .ih-hero-kicker-badge {
+    border: 1px solid rgb(245 158 11 / 0.3);
+    background: rgb(120 53 15 / 0.22);
+    border-radius: 9999px;
+    padding: 0.45rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: color-mix(in srgb, var(--ih-brand-warm) 80%, white 20%);
+  }
+
+  .ih-hero-kicker-icon {
+    color: var(--ih-brand-warm);
+    flex-shrink: 0;
+  }
+
+  /* Headline — large, tight, with gradient accent span */
+  .ih-hero-headline {
+    font-family: var(--ih-font-display);
+    font-size: clamp(2.75rem, 2.2rem + 2.8vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.06;
+    color: var(--ih-text-primary);
+  }
+
+  /* The gradient-accented word(s) inside the headline */
+  .ih-hero-headline-accent {
+    background-image: linear-gradient(
+      115deg,
+      var(--ih-brand-start) 10%,
+      color-mix(in srgb, var(--ih-brand-start) 40%, var(--ih-brand-end)) 50%,
+      var(--ih-brand-end) 90%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* CTA group spacing tweak */
+  .ih-hero-cta {
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease;
+  }
+
+  .ih-hero-cta:hover {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  .ih-hero-cta-secondary-icon {
+    transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ih-hero-cta:hover .ih-hero-cta-secondary-icon {
+    transform: translateY(2px);
+  }
+
+  /* Proof point strip — horizontal band below CTAs */
+  .ih-hero-proof-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+    border: 1px solid var(--ih-border-subtle);
+    border-radius: 1.5rem;
+    background:
+      linear-gradient(135deg, rgb(255 255 255 / 0.04), rgb(255 255 255 / 0.02)),
+      color-mix(in srgb, var(--ih-bg-shell) 92%, black 8%);
+    backdrop-filter: blur(12px);
+    padding: 1.5rem 2rem;
+    box-shadow: 0 18px 38px rgb(2 8 23 / 0.18);
+  }
+
+  .ih-hero-proof-item {
+    flex: 1 1 0;
+    min-width: 8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.5rem 1.5rem;
+  }
+
+  .ih-hero-proof-divider {
+    width: 1px;
+    height: 3.5rem;
+    background: var(--ih-border-subtle);
+    flex-shrink: 0;
+  }
+
+  /* ─── Auth split-panel redesign ─────────────────────────────────────────── */
+
+  /* Left brand / marketing panel */
+  .ih-auth-brand-panel {
+    border-right: 1px solid var(--ih-border-subtle);
+    background:
+      radial-gradient(circle at 20% 30%, rgb(147 51 234 / 0.14), transparent 38%),
+      radial-gradient(circle at 80% 70%, rgb(16 185 129 / 0.1), transparent 34%),
+      linear-gradient(180deg, rgb(9 17 31 / 0.96), rgb(6 12 24 / 0.98));
+  }
+
+  /* Feature item inside brand panel */
+  .ih-auth-feature-item {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgb(255 255 255 / 0.06);
+    border-radius: 1rem;
+    background: rgb(255 255 255 / 0.025);
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+
+  .ih-auth-feature-item:hover {
+    border-color: rgb(255 255 255 / 0.1);
+    background: rgb(255 255 255 / 0.045);
+  }
+
+  /* Stat items in Register left panel */
+  .ih-auth-stat-item {
+    padding: 0.6rem 1rem;
+    border: 1px solid rgb(255 255 255 / 0.06);
+    border-radius: 0.875rem;
+    background: rgb(255 255 255 / 0.025);
+  }
+
+  .ih-auth-stat-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, var(--ih-brand-start), var(--ih-brand-end));
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgb(147 51 234 / 0.18);
+  }
+
+  /* Card heading subtle top border accent */
+  .ih-auth-card-heading {
+    position: relative;
+  }
+
+  /* Label icon — inline icon before label text */
+  .ih-auth-label-icon {
+    display: inline;
+    vertical-align: middle;
+    margin-right: 0.35rem;
+    margin-bottom: 0.1rem;
+    color: var(--ih-text-muted);
+  }
+
+  /* Field group — label + input + error */
+  .ih-auth-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Input with slightly enhanced focus shadow */
+  .ih-auth-input {
+    font-size: var(--ih-type-300);
+  }
+
+  .ih-auth-input:focus {
+    border-color: color-mix(in srgb, var(--ih-brand-start) 72%, white 8%);
+    box-shadow: 0 0 0 3px rgb(147 51 234 / 0.22), 0 4px 12px rgb(0 0 0 / 0.12);
+  }
+
+  /* Admin hint card */
+  .ih-auth-hint-card {
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(255 255 255 / 0.03);
+  }
+
+  /* Role chip — column layout override */
+  .ih-auth-role-chip {
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease,
+      box-shadow 200ms ease, transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ih-auth-role-chip:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Submit button — lift + glow on hover */
+  .ih-auth-submit-btn {
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 220ms ease,
+      opacity 200ms ease;
+  }
+
+  .ih-auth-submit-btn:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgb(109 40 217 / 0.32), 0 0 0 1px rgb(147 51 234 / 0.22);
+  }
+
+  .ih-auth-submit-btn:not(:disabled):active {
+    transform: translateY(0);
+    box-shadow: 0 8px 18px rgb(109 40 217 / 0.2);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1463,7 +1669,12 @@
   .ih-home-cta-icon,
   .ih-home-service-card,
   .ih-home-service-card::after,
-  .ih-home-briefing-panel {
+  .ih-home-briefing-panel,
+  .ih-hero-cta,
+  .ih-hero-cta-secondary-icon,
+  .ih-auth-submit-btn,
+  .ih-auth-role-chip,
+  .ih-auth-feature-item {
     transition: none !important;
   }
 
