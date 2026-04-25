@@ -10,3 +10,26 @@ export const getBrandProfile = (token, signal) =>
 
 export const getBrandCampaigns = (token, signal) =>
   apiRequest("/api/Brands/GetCampaigns", withToken(token, { signal }));
+
+export const getBrandCampaign = (token, campaignId, signal) =>
+  apiRequest(`/api/Brands/${campaignId}`, withToken(token, { signal }));
+
+export const createCampaign = (token, data, signal) =>
+  apiRequest("/api/Brands/CreateCampaign", withToken(token, {
+    method: "POST",
+    body: data,
+    signal,
+  }));
+
+export const updateCampaign = (token, campaignId, data, signal) =>
+  apiRequest(`/api/Brands/${campaignId}`, withToken(token, {
+    method: "PUT",
+    body: data,
+    signal,
+  }));
+
+export const deleteCampaign = (token, campaignId, signal) =>
+  apiRequest(`/api/Brands/${campaignId}`, withToken(token, {
+    method: "DELETE",
+    signal,
+  }));

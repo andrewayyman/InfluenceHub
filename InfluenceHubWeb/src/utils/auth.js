@@ -32,6 +32,8 @@ export const getRoleDashboardPath = (value) => {
       return "/dashboard/admin";
     case "brand":
       return "/dashboard/brand";
+    case "influencer":
+      return "/dashboard/influencer";
     default:
       return "/";
   }
@@ -49,6 +51,10 @@ export const canReturnToDashboardPath = (roleValue, path) => {
   }
 
   if (role === "brand" && path.startsWith("/dashboard/brand")) {
+    return true;
+  }
+
+  if (role === "influencer" && path.startsWith("/dashboard/influencer")) {
     return true;
   }
 

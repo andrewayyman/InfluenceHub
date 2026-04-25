@@ -140,27 +140,7 @@ const AdminReports = () => {
 
   return (
     <AdminPage>
-      <AdminHero
-        kicker="Report review"
-        title="Validate campaign performance with enough context to trust the numbers."
-        description="Review influencer submissions, check the evidence, and keep campaign completion grounded in verified delivery."
-        badges={[
-          { label: `${summary.total} visible reports`, className: "ih-pill-brand" },
-          { label: `${summary.pending} pending`, className: "ih-pill-warm" },
-          { label: `${summary.approved} approved`, className: "ih-pill-emerald" },
-        ]}
-        aside={(
-          <div className="space-y-4">
-            <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
-              <p className="ih-text-muted text-sm">Rejected reports</p>
-              <p className="mt-2 text-3xl font-semibold text-white">{summary.rejected}</p>
-            </div>
-            <p className="ih-text-muted text-sm leading-6">
-              Approving a report completes its campaign. Rejecting keeps the queue honest and gives teams a reason to fix the submission.
-            </p>
-          </div>
-        )}
-      />
+
 
       {error ? <ErrorState message={error} onRetry={() => loadReports()} /> : null}
 

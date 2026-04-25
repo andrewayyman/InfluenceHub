@@ -8,6 +8,18 @@ import {
   Target,
 } from "lucide-react";
 import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import {
   AdminHero,
   AdminMetricCard,
   AdminPage,
@@ -39,6 +51,20 @@ const summarizeCampaigns = (campaigns) => {
     (a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime(),
   );
 
+  const mockPerformanceData = [
+    { name: "Jan", campaigns: 1, applications: 4 },
+    { name: "Feb", campaigns: 2, applications: 9 },
+    { name: "Mar", campaigns: 1, applications: 15 },
+    { name: "Apr", campaigns: 3, applications: 28 },
+    { name: "May", campaigns: 4, applications: 45 },
+  ];
+
+  const mockEngagementData = [
+    { platform: "Instagram", reach: 12000, clicks: 4500 },
+    { platform: "TikTok", reach: 25000, clicks: 8000 },
+    { platform: "YouTube", reach: 18000, clicks: 3200 },
+  ];
+
   return {
     open,
     inDelivery,
@@ -46,6 +72,8 @@ const summarizeCampaigns = (campaigns) => {
     closed,
     applicationReach,
     upcoming: sorted.slice(0, 5),
+    performanceData: mockPerformanceData,
+    engagementData: mockEngagementData,
   };
 };
 
@@ -350,6 +378,57 @@ const BrandDashboard = () => {
             >
               Open reports workspace
             </TransitionLink>
+          </div>
+        </AdminPanel>
+      </div>
+
+      <div className="grid gap-6 mt-6 xl:grid-cols-2">
+        <AdminPanel tone="brand">
+          <AdminPanelHeader
+            kicker="Charts"
+            title="Campaign Performance"
+            description="Visualize the growth of campaigns and application volume over time."
+          />
+          <div className="h-72 w-full mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={pulse.performanceData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff15" />
+                <XAxis dataKey="name" stroke="#a1a1aa" />
+                <YAxis stroke="#a1a1aa" />
+                <RechartsTooltip
+                  contentStyle={{ backgroundColor: "#18181b", borderColor: "#27272a", borderRadius: "8px" }}
+                  itemStyle={{ color: "#fff" }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="campaigns" stroke="#6366f1" strokeWidth={3} />
+                <Line type="monotone" dataKey="applications" stroke="#f43f5e" strokeWidth={3} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </AdminPanel>
+
+        <AdminPanel tone="emerald">
+          <AdminPanelHeader
+            kicker="Analytics"
+            title="Engagement Breakdowns"
+            description="Platform specific reach and clicks from reported statistics."
+          />
+          <div className="h-72 w-full mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={pulse.engagementData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff15" />
+                <XAxis dataKey="platform" stroke="#a1a1aa" />
+                <YAxis stroke="#a1a1aa" />
+                <RechartsTooltip
+                  contentStyle={{ backgroundColor: "#18181b", borderColor: "#27272a", borderRadius: "8px" }}
+                  itemStyle={{ color: "#fff" }}
+                  cursor={{ fill: "transparent" }}
+                />
+                <Legend />
+                <Bar dataKey="reach" fill="#10b981" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="clicks" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </AdminPanel>
       </div>
