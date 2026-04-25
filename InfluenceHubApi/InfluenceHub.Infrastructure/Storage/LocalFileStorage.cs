@@ -18,16 +18,35 @@ public class LocalFileStorage
 
     public async Task<string> SaveReportScreenshotAsync(Guid applicationId, Stream fileStream, string extension, CancellationToken ct = default)
     {
-        var folderPath = Path.Combine(_basePath, applicationId.ToString());
-        Directory.CreateDirectory(folderPath);
+        if (fileStream is null)
+            throw new InvalidOperationException("Screenshot stream is required.");
 
-        var fileName = $"screenshot{extension}";
-        var fullPath = Path.Combine(folderPath, fileName);
+        if (string.IsNullOrWhiteSpace(extension))
+            extension = ".png";
 
-        await using var fs = File.Create(fullPath);
-        await fileStream.CopyToAsync(fs, ct);
+        try
+        {
+            var folderPath = Path.Combine(_basePath, applicationId.ToString());
+            Directory.CreateDirectory(folderPath);
 
-        return Path.Combine(applicationId.ToString(), fileName);
+            var safeExtension = extension.StartsWith('.') ? extension : $".{extension}";
+            var fileName = $"screenshot{safeExtension}";
+            var fullPath = Path.Combine(folderPath, fileName);
+
+            var normalizedBasePath = Path.GetFullPath(_basePath);
+            var normalizedFullPath = Path.GetFullPath(fullPath);
+            if (!normalizedFullPath.StartsWith(normalizedBasePath, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Invalid screenshot path.");
+
+            await using var fs = File.Create(normalizedFullPath);
+            await fileStream.CopyToAsync(fs, ct);
+
+            return Path.Combine(applicationId.ToString(), fileName);
+        }
+        catch (IOException ex)
+        {
+            throw new InvalidOperationException("Failed to save report screenshot.", ex);
+        }
     }
 
     public string GetFullPath(string relativePath)

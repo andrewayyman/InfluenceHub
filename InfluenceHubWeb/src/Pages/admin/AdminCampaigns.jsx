@@ -193,7 +193,7 @@ const AdminCampaigns = () => {
                 {campaigns.map((campaign) => {
                   const title = campaign.title?.trim() || "Untitled campaign";
                   const brandName = campaign.brandName?.trim() || "Unknown brand";
-                  const platform = campaign.platform?.trim() || "Platform pending";
+                  const platform = campaign.platforms?.join(", ") || "Platform pending";
                   const location = campaign.location?.trim() || "Location pending";
 
                   return (

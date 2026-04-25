@@ -125,8 +125,8 @@ const BrandCampaigns = () => {
                       <p className="ih-text-primary font-medium ih-truncate" title={campaign.title}>
                         {campaign.title}
                       </p>
-                      <p className="ih-text-muted mt-1 text-sm ih-truncate" title={`${campaign.platform} · ${campaign.location}`}>
-                        {campaign.platform} · {campaign.location}
+                      <p className="ih-text-muted mt-1 text-sm ih-truncate" title={`${campaign.platforms?.join(", ")} · ${campaign.location}`}>
+                        {campaign.platforms?.join(", ")} · {campaign.location}
                       </p>
                     </td>
                     <td className="px-4">

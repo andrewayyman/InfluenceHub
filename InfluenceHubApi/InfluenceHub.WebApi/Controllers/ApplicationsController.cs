@@ -2,7 +2,6 @@ using InfluenceHub.Application.DTOs.Request;
 using InfluenceHub.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
@@ -14,8 +13,6 @@ public class ApplicationsController : BaseApiController
     {
         _applicationService = applicationService;
     }
-
-    private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpPost]
     [Authorize(Roles = "Influencer")]

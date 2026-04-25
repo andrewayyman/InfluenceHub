@@ -5,7 +5,6 @@ using InfluenceHub.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
@@ -18,11 +17,6 @@ public class AdminController : BaseApiController
     {
         _adminService = adminService;
     }
-
-    private Guid UserId => Guid.Parse(
-        User.FindFirstValue(ClaimTypes.NameIdentifier)
-        ?? User.FindFirstValue("sub")
-        ?? throw new InvalidOperationException("Authenticated user id claim is missing."));
 
     [HttpGet]
     public async Task<IActionResult> GetDashboard(CancellationToken ct)

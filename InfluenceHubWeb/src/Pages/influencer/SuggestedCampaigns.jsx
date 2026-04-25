@@ -69,7 +69,7 @@ const SuggestedCampaigns = () => {
 
   const filteredCampaigns = campaigns.filter(c => 
     c.title?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-    c.platform?.toLowerCase().includes(debouncedSearch.toLowerCase())
+    c.platforms?.some(p => p.toLowerCase().includes(debouncedSearch.toLowerCase()))
   );
 
   return (
@@ -112,7 +112,7 @@ const SuggestedCampaigns = () => {
                       </div>
                       <div className="min-w-0">
                         <h3 className="ih-text-primary truncate font-medium">{campaign.title}</h3>
-                        <p className="ih-text-muted text-xs truncate">By Platform: {campaign.platform}</p>
+                        <p className="ih-text-muted text-xs truncate">Platforms: {campaign.platforms?.join(", ") || "—"}</p>
                       </div>
                     </div>
                     

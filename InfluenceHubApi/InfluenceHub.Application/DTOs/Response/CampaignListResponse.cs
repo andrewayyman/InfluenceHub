@@ -8,7 +8,7 @@ public record CampaignListResponse(
     string BrandName,
     decimal Budget,
     DateTime Deadline,
-    string Platform,
+    List<string> Platforms,
     string Location,
     CampaignStatus Status,
     int ApplicationCount,

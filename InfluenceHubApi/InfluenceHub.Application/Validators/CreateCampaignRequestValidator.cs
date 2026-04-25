@@ -11,7 +11,7 @@ public class CreateCampaignRequestValidator : AbstractValidator<CreateCampaignRe
         RuleFor(x => x.Description).MaximumLength(4000);
         RuleFor(x => x.Budget).GreaterThan(0);
         RuleFor(x => x.Deadline).GreaterThan(DateTime.UtcNow);
-        RuleFor(x => x.Platform).MaximumLength(100);
+        RuleFor(x => x.Platforms).NotNull();
         RuleFor(x => x.Location).MaximumLength(256);
     }
 }

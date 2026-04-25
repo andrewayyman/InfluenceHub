@@ -79,7 +79,8 @@ public class InfluencerService : IInfluencerService
         _influencerRepo.Update(influencer);
         await _influencerRepo.SaveChangesAsync(ct);
 
-        var updated = await _influencerRepository.GetByUserIdAsync(userId, ct)!;
+        var updated = await _influencerRepository.GetByUserIdAsync(userId, ct)
+            ?? throw new InvalidOperationException("Failed to load updated influencer profile.");
         return MapToResponse(updated);
     }
 
@@ -100,10 +101,25 @@ public class InfluencerService : IInfluencerService
 
     private static InfluencerProfileResponse MapToResponse(Influencer i)
     {
-        var platforms = string.IsNullOrEmpty(i.Platforms) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(i.Platforms) ?? [];
+        var platforms = SafeDeserializePlatforms(i.Platforms);
         var tags = i.InfluencerTags.Select(it => it.Tag.Name).ToList();
         return new InfluencerProfileResponse(
             i.Id, i.UserId, i.Name, i.Bio, platforms, i.FollowersCount, i.Location, tags,
             i.InstagramUrl, i.FacebookUrl, i.TwitterUrl, i.YouTubeUrl, i.TikTokUrl, i.LinkedInUrl);
+    }
+
+    private static List<string> SafeDeserializePlatforms(string? platformsJson)
+    {
+        if (string.IsNullOrWhiteSpace(platformsJson))
+            return [];
+
+        try
+        {
+            return JsonSerializer.Deserialize<List<string>>(platformsJson) ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
     }
 }

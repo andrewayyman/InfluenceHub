@@ -199,7 +199,7 @@ public class AdminService : IAdminService
             query = query.Where(c =>
                 EF.Functions.Like(c.Title, term) ||
                 EF.Functions.Like(c.Brand.Name, term) ||
-                EF.Functions.Like(c.Platform, term) ||
+                EF.Functions.Like(c.Platforms, term) ||
                 EF.Functions.Like(c.Location, term) ||
                 c.CampaignTags.Any(ct => EF.Functions.Like(ct.Tag.Name, term)));
         }
@@ -214,13 +214,20 @@ public class AdminService : IAdminService
                 c.Brand.Name,
                 c.Budget,
                 c.Deadline,
-                c.Platform,
+                SafeDeserializePlatforms(c.Platforms),
                 c.Location,
                 c.Status,
                 c.Applications.Count,
                 c.CampaignTags.Select(ct => ct.Tag.Name).ToList()
             ))
             .ToList();
+    }
+
+    private static List<string> SafeDeserializePlatforms(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return [];
+        try { return System.Text.Json.JsonSerializer.Deserialize<List<string>>(json) ?? []; }
+        catch { return []; }
     }
 
     public async Task<bool> CloseCampaignAsync(Guid campaignId, CancellationToken ct = default)
@@ -266,9 +273,9 @@ public class AdminService : IAdminService
         {
             var term = $"%{search.Trim()}%";
             query = query.Where(r =>
-                EF.Functions.Like(r.Application.Influencer.Name, term) ||
-                EF.Functions.Like(r.Application.Influencer.User.Email, term) ||
-                EF.Functions.Like(r.Application.Campaign.Title, term) ||
+                (r.Application != null && r.Application.Influencer != null && EF.Functions.Like(r.Application.Influencer.Name, term)) ||
+                (r.Application != null && r.Application.Influencer != null && r.Application.Influencer.User != null && EF.Functions.Like(r.Application.Influencer.User.Email, term)) ||
+                (r.Application != null && r.Application.Campaign != null && EF.Functions.Like(r.Application.Campaign.Title, term)) ||
                 EF.Functions.Like(r.PostUrl, term));
         }
 
@@ -291,9 +298,9 @@ public class AdminService : IAdminService
                 r.Status,
                 r.RejectionReason,
                 r.ReviewedAt,
-                r.Application.Influencer.Name,
-                r.Application.Influencer.User.Email,
-                r.Application.Campaign.Title
+                r.Application?.Influencer?.Name ?? string.Empty,
+                r.Application?.Influencer?.User?.Email ?? string.Empty,
+                r.Application?.Campaign?.Title ?? string.Empty
             ))
             .ToList();
     }

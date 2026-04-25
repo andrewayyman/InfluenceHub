@@ -24,5 +24,8 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<ApplicationEnti
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(a => a.Message).HasMaxLength(2000);
+        builder.Property(a => a.ProposedBudget)
+            .HasColumnType("decimal(18,2)")
+            .HasPrecision(18, 2);
     }
 }

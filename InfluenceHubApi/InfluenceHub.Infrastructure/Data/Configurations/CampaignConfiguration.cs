@@ -21,7 +21,8 @@ public class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
         builder.Property(c => c.Title).HasMaxLength(500).IsRequired();
         builder.Property(c => c.Description).HasMaxLength(4000);
         builder.Property(c => c.Budget).HasPrecision(18, 2);
-        builder.Property(c => c.Platform).HasMaxLength(100);
+        builder.Property(c => c.Platforms).HasColumnType("nvarchar(max)").HasDefaultValue("[]");
+        builder.Property(c => c.BudgetType).HasDefaultValue(0);
         builder.Property(c => c.Location).HasMaxLength(256);
     }
 }

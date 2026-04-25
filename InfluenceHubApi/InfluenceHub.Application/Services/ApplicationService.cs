@@ -56,7 +56,8 @@ public class ApplicationService : IApplicationService
 
         var app = await _applicationRepository.Query()
             .Include(a => a.Campaign)
-            .FirstAsync(a => a.Id == application.Id, ct);
+            .FirstOrDefaultAsync(a => a.Id == application.Id, ct)
+            ?? throw new InvalidOperationException("Failed to load the newly created application.");
         return new ApplicationResponse(app.Id, app.CampaignId, app.Campaign.Title, app.InfluencerId, influencer.Name, app.Status, app.Message, app.CreatedAt);
     }
 

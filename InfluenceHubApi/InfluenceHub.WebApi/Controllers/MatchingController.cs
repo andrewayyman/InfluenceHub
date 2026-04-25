@@ -1,7 +1,6 @@
 using InfluenceHub.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
@@ -14,8 +13,6 @@ public class MatchingController : BaseApiController
     {
         _matchingService = matchingService;
     }
-
-    private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet("{campaignId:guid}")]
     [Authorize(Roles = "Brand")]

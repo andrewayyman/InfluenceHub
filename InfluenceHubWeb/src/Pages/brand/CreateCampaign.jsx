@@ -23,7 +23,7 @@ const validationSchema = Yup.object({
   deadline: Yup.date()
     .min(new Date(), "Deadline cannot be in the past")
     .required("Deadline is required"),
-  platform: Yup.string().required("Platform is required"),
+  platforms: Yup.array().of(Yup.string()).min(1, "Select at least one platform").required("Platform is required"),
   location: Yup.string().required("Location is required"),
   tags: Yup.string().required("Tags are required (comma separated)"),
 });
@@ -40,7 +40,7 @@ const CreateCampaign = () => {
       description: "",
       budget: "",
       deadline: "",
-      platform: "",
+      platforms: [],
       location: "",
       tags: "",
     },
@@ -50,10 +50,14 @@ const CreateCampaign = () => {
       setGlobalError("");
       try {
         const payload = {
-          ...values,
+          title: values.title,
+          description: values.description,
           budget: Number(values.budget),
-          tags: values.tags.split(",").map((t) => t.trim()).filter(Boolean),
           deadline: new Date(values.deadline).toISOString(),
+          platforms: values.platforms,
+          location: values.location,
+          tags: values.tags.split(",").map((t) => t.trim()).filter(Boolean),
+          budgetType: 0,
         };
 
         await createCampaign(token, payload);
@@ -163,24 +167,30 @@ const CreateCampaign = () => {
 
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="space-y-1">
-              <label htmlFor="platform" className="block text-sm font-medium text-white">Platform</label>
-              <select
-                id="platform"
-                name="platform"
-                className="ih-input w-full"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.platform}
-              >
-                <option value="">Select Platform</option>
-                <option value="Instagram">Instagram</option>
-                <option value="TikTok">TikTok</option>
-                <option value="YouTube">YouTube</option>
-                <option value="Twitter">Twitter</option>
-                <option value="LinkedIn">LinkedIn</option>
-              </select>
-              {formik.touched.platform && formik.errors.platform ? (
-                <p className="text-sm text-red-500">{formik.errors.platform}</p>
+              <label className="block text-sm font-medium text-white">Platforms</label>
+              <div className="flex flex-wrap gap-3 pt-1">
+                {["Instagram", "TikTok", "YouTube", "Twitter", "LinkedIn"].map((p) => {
+                  const checked = formik.values.platforms.includes(p);
+                  return (
+                    <label key={p} className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        className="accent-indigo-500"
+                        checked={checked}
+                        onChange={() => {
+                          const next = checked
+                            ? formik.values.platforms.filter((v) => v !== p)
+                            : [...formik.values.platforms, p];
+                          formik.setFieldValue("platforms", next);
+                        }}
+                      />
+                      <span className="text-sm text-slate-300">{p}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              {formik.touched.platforms && formik.errors.platforms ? (
+                <p className="text-sm text-red-500">{formik.errors.platforms}</p>
               ) : null}
             </div>
 

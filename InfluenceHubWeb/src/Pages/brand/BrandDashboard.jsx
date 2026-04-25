@@ -308,8 +308,8 @@ const BrandDashboard = () => {
                     <tr key={campaign.id} className="ih-table-row border-b last:border-none">
                       <td className="py-4 min-w-[10rem]">
                         <p className="ih-text-primary font-medium ih-clamp-2" title={campaign.title}>{campaign.title}</p>
-                        <p className="ih-text-muted mt-1 text-sm ih-truncate" title={`${campaign.platform} · ${campaign.location}`}>
-                          {campaign.platform} · {campaign.location}
+                        <p className="ih-text-muted mt-1 text-sm ih-truncate" title={`${campaign.platforms?.join(", ")} · ${campaign.location}`}>
+                          {campaign.platforms?.join(", ")} · {campaign.location}
                         </p>
                       </td>
                       <td>
