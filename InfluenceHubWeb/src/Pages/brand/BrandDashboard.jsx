@@ -163,6 +163,9 @@ const BrandDashboard = () => {
 
   const brandLabel = profile?.name?.trim() || "Your brand";
   const totalCampaigns = campaigns?.length ?? 0;
+  const reviewApplicationsTarget = pulse.upcoming[0]?.id
+    ? `/dashboard/brand/applications?campaignId=${pulse.upcoming[0].id}`
+    : "/dashboard/brand/campaigns";
 
   return (
     <AdminPage>
@@ -233,7 +236,7 @@ const BrandDashboard = () => {
             View all campaigns
           </TransitionLink>
           <TransitionLink
-            to="/dashboard/brand/applications"
+            to={reviewApplicationsTarget}
             className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-4 py-3 text-sm"
           >
             Review applications

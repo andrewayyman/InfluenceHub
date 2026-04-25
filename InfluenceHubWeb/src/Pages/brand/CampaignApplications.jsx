@@ -9,6 +9,7 @@ import {
   ErrorState,
   LoadingState,
 } from "../../Components/AdminShared";
+import { TransitionLink } from "../../Components/Motion/TransitionLink";
 import { useAuth } from "../../hooks/useAuth";
 import { getCampaignApplications, acceptOrRejectApplication } from "../../services/api/applicationService";
 import { formatCompactNumber } from "../../utils/formatters";
@@ -17,6 +18,7 @@ const CampaignApplications = () => {
   const { token } = useAuth();
   const [searchParams] = useSearchParams();
   const campaignId = searchParams.get("campaignId");
+  const missingCampaignContext = !campaignId;
 
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +28,6 @@ const CampaignApplications = () => {
     if (!token) return;
     if (!campaignId) {
       setLoading(false);
-      setError("Please navigate here from a specific campaign.");
       return;
     }
 
@@ -80,7 +81,20 @@ const CampaignApplications = () => {
           description="Review pitches from influencers looking to collaborate on this brief. Accept the ones that fit your brand vision."
         />
         
-        {error && applications.length === 0 ? (
+        {missingCampaignContext ? (
+          <EmptyState
+            title="Choose a campaign first"
+            description="Applications belong to a specific campaign. Open your campaign list and select View Applications on the campaign you want to review."
+            action={(
+              <TransitionLink
+                to="/dashboard/brand/campaigns"
+                className="ih-button-primary ih-focus-ring inline-flex items-center gap-2 px-4 py-3 text-sm"
+              >
+                Go to campaigns
+              </TransitionLink>
+            )}
+          />
+        ) : error && applications.length === 0 ? (
           <ErrorState message={error} onRetry={() => loadApps()} />
         ) : applications.length === 0 ? (
           <EmptyState
