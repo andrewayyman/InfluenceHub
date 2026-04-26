@@ -65,7 +65,7 @@ public class MatchingService : IMatchingService
         foreach (var g in influencers.GroupBy(it => it.Influencer).OrderByDescending(g => scores.GetValueOrDefault(g.Key!.Id, 0)))
         {
             var i = g.Key!;
-            var platforms = string.IsNullOrEmpty(i.Platforms) ? new List<string>() : JsonSerializer.Deserialize<List<string>>(i.Platforms) ?? [];
+            var platforms = SafeDeserializePlatforms(i.Platforms);
             result.Add(new InfluencerMatchResponse(
                 i.Id, i.Name, i.Bio, platforms, i.FollowersCount, i.Location,
                 g.Select(it => it.Tag.Name).ToList(),
@@ -107,10 +107,25 @@ public class MatchingService : IMatchingService
         {
             var c = g.Key!;
             result2.Add(new CampaignMatchResponse(
-                c.Id, c.Title, c.Budget, c.Deadline, c.Platform, c.Location,
+                c.Id, c.Title, c.Budget, c.Deadline, SafeDeserializePlatforms(c.Platforms), c.Location,
                 g.Select(campaignTag => campaignTag.Tag.Name).ToList(),
                 scores.GetValueOrDefault(c.Id, 0)));
         }
         return result2;
+    }
+
+    private static List<string> SafeDeserializePlatforms(string? platformsJson)
+    {
+        if (string.IsNullOrWhiteSpace(platformsJson))
+            return [];
+
+        try
+        {
+            return JsonSerializer.Deserialize<List<string>>(platformsJson) ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
     }
 }

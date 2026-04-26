@@ -3,7 +3,7 @@ using InfluenceHub.Application.Interfaces;
 using InfluenceHub.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using System.Text.Json;
 
 namespace InfluenceHub.WebApi.Controllers;
 
@@ -17,20 +17,34 @@ public class ReportsController : BaseApiController
         _reportService = reportService;
     }
 
-    private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
     [HttpPost]
     public async Task<IActionResult> SubmitReport([FromForm] SubmitReportFormModel form, CancellationToken ct = default)
     {
         if (form.Screenshot is null || form.Screenshot.Length == 0)
             return BadRequest(new { message = "Screenshot is required" });
 
+        if (string.IsNullOrWhiteSpace(form.Screenshot.FileName))
+            return BadRequest(new { message = "Screenshot file name is required" });
+
         var ext = Path.GetExtension(form.Screenshot.FileName);
         if (string.IsNullOrEmpty(ext)) ext = ".png";
 
+        List<PlatformReportInsightRequest>? platformInsights;
+        try
+        {
+            platformInsights = JsonSerializer.Deserialize<List<PlatformReportInsightRequest>>(form.PlatformInsightsJson);
+        }
+        catch (JsonException)
+        {
+            return BadRequest(new { message = "Platform insights payload is invalid." });
+        }
+
         var request = new SubmitReportRequest(
-            form.ApplicationId, form.PostUrl, form.PostingDate, form.StartDate, form.EndDate,
-            form.Views, form.Likes, form.Comments, form.Shares);
+            form.ApplicationId,
+            form.PostingDate,
+            form.StartDate,
+            form.EndDate,
+            platformInsights ?? []);
 
         try
         {
@@ -41,6 +55,11 @@ public class ReportsController : BaseApiController
         catch (InvalidOperationException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+        catch (IOException)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                new { message = "Report file storage is temporarily unavailable." });
         }
     }
 

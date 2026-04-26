@@ -19,5 +19,15 @@ public record ReportResponse(
     DateTime? ReviewedAt,
     string InfluencerName,
     string InfluencerEmail,
-    string CampaignTitle
+    string CampaignTitle,
+    List<PlatformReportInsightResponse> PlatformInsights
+);
+
+public record PlatformReportInsightResponse(
+    string Platform,
+    string? PostUrl,
+    long Views,
+    long Likes,
+    long Comments,
+    long Shares
 );

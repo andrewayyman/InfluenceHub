@@ -5,7 +5,7 @@ public record CampaignMatchResponse(
     string Title,
     decimal Budget,
     DateTime Deadline,
-    string Platform,
+    List<string> Platforms,
     string Location,
     List<string> Tags,
     int MatchScore

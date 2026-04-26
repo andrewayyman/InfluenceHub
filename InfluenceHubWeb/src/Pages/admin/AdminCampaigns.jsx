@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FolderKanban, Megaphone, ShieldAlert } from "lucide-react";
+import { Eye, Megaphone, X } from "lucide-react";
 import {
   AdminHero,
   AdminPage,
@@ -29,6 +29,7 @@ import {
   formatDate,
 } from "../../utils/formatters";
 import { isAbortError } from "../../services/api/client";
+import { getBudgetTypeLabel } from "../../utils/catalog";
 
 const AdminCampaigns = () => {
   const { token } = useAuth();
@@ -39,6 +40,7 @@ const AdminCampaigns = () => {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [actingId, setActingId] = useState("");
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
   const debouncedSearch = useDebouncedValue(search, 250);
 
   const loadCampaigns = useCallback(async (signal) => {
@@ -193,7 +195,7 @@ const AdminCampaigns = () => {
                 {campaigns.map((campaign) => {
                   const title = campaign.title?.trim() || "Untitled campaign";
                   const brandName = campaign.brandName?.trim() || "Unknown brand";
-                  const platform = campaign.platform?.trim() || "Platform pending";
+                  const platform = campaign.platforms?.join(", ") || "Platform pending";
                   const location = campaign.location?.trim() || "Location pending";
 
                   return (
@@ -216,7 +218,10 @@ const AdminCampaigns = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="ih-text-primary py-4 font-medium">{formatCurrency(campaign.budget)}</td>
+                    <td className="ih-text-primary py-4 font-medium">
+                      {formatCurrency(campaign.budget)}
+                      <p className="mt-1 text-xs text-slate-400">{getBudgetTypeLabel(campaign.budgetType)}</p>
+                    </td>
                     <td className="ih-text-secondary py-4 text-sm">{formatDate(campaign.deadline)}</td>
                     <td className="py-4">
                       <StatusBadge tone={getStatusTone(campaign.status)}>{humanizeEnum(campaign.status)}</StatusBadge>
@@ -226,6 +231,14 @@ const AdminCampaigns = () => {
                     </td>
                     <td className="py-4">
                       <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCampaign(campaign)}
+                          className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-3 py-2 text-sm"
+                        >
+                          <Eye size={16} aria-hidden="true" />
+                          View
+                        </button>
                         {campaign.status !== "Closed" ? (
                           <button
                             type="button"
@@ -254,6 +267,65 @@ const AdminCampaigns = () => {
           </div>
         ) : null}
       </AdminPanel>
+
+      {selectedCampaign ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Campaign profile</p>
+                <h3 className="mt-1 text-xl font-semibold text-white">{selectedCampaign.title || "Untitled campaign"}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedCampaign(null)}
+                className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10"
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Brand</p>
+                <p className="mt-1 text-sm text-white">{selectedCampaign.brandName || "-"}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Status</p>
+                <p className="mt-1 text-sm text-white">{humanizeEnum(selectedCampaign.status)}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Budget</p>
+                <p className="mt-1 text-sm text-white">{formatCurrency(selectedCampaign.budget)}</p>
+                <p className="text-xs text-slate-400">{getBudgetTypeLabel(selectedCampaign.budgetType)}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Deadline</p>
+                <p className="mt-1 text-sm text-white">{formatDate(selectedCampaign.deadline)}</p>
+              </div>
+            </div>
+
+            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-4">
+              <p className="text-xs text-slate-400">Platforms</p>
+              <p className="mt-1 text-sm text-white">{selectedCampaign.platforms?.join(", ") || "-"}</p>
+            </div>
+
+            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-4">
+              <p className="text-xs text-slate-400">Location</p>
+              <p className="mt-1 text-sm text-white">{selectedCampaign.location || "-"}</p>
+            </div>
+
+            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-4">
+              <p className="text-xs text-slate-400">Tags</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(selectedCampaign.tags || []).length > 0 ? selectedCampaign.tags.map((tag) => (
+                  <span key={tag} className="rounded-full border border-white/10 px-2 py-1 text-xs text-slate-200">{tag}</span>
+                )) : <span className="text-sm text-slate-300">-</span>}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </AdminPage>
   );
 };

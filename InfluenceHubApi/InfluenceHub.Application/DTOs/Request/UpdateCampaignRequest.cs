@@ -7,8 +7,9 @@ public record UpdateCampaignRequest(
     string? Description,
     decimal? Budget,
     DateTime? Deadline,
-    string? Platform,
+    List<string>? Platforms,
     string? Location,
     CampaignStatus? Status,
-    List<string>? Tags
+    List<string>? Tags,
+    int? BudgetType = null
 );

@@ -1,7 +1,6 @@
 using InfluenceHub.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
@@ -14,8 +13,6 @@ public class InfluencersController : BaseApiController
     {
         _influencerService = influencerService;
     }
-
-    private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet]
     public async Task<IActionResult> GetProfile(CancellationToken ct)

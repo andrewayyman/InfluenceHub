@@ -9,6 +9,12 @@ public class Application
     public Guid InfluencerId { get; set; }
     public ApplicationStatus Status { get; set; } = ApplicationStatus.Pending;
     public string Message { get; set; } = string.Empty;
+    // Phase2 columns
+    public string Bio { get; set; } = string.Empty;
+    public string Proposal { get; set; } = string.Empty;
+    public decimal ProposedBudget { get; set; } = 0;
+    public string Links { get; set; } = "[]";
+    public string MediaFiles { get; set; } = "[]";
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public Campaign Campaign { get; set; } = null!;

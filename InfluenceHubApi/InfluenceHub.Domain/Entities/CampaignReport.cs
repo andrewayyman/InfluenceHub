@@ -15,6 +15,7 @@ public class CampaignReport
     public long Comments { get; set; }
     public long Shares { get; set; }
     public string ScreenshotPath { get; set; } = string.Empty;
+    public string Platform { get; set; } = string.Empty;
     public ReportStatus Status { get; set; } = ReportStatus.Pending;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ReviewedAt { get; set; }

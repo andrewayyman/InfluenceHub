@@ -2,7 +2,6 @@ using InfluenceHub.Application.DTOs.Request;
 using InfluenceHub.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace InfluenceHub.WebApi.Controllers;
 
@@ -15,8 +14,6 @@ public class BrandsController : BaseApiController
     {
         _brandService = brandService;
     }
-
-    private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet]
     public async Task<IActionResult> GetProfile(CancellationToken ct)
@@ -58,16 +55,30 @@ public class BrandsController : BaseApiController
     [HttpPut("{campaignId:guid}")]
     public async Task<IActionResult> UpdateCampaign(Guid campaignId, [FromBody] UpdateCampaignRequest request, CancellationToken ct)
     {
-        var campaign = await _brandService.UpdateCampaignAsync(UserId, campaignId, request, ct);
-        if (campaign is null) return NotFound();
-        return Ok(campaign);
+        try
+        {
+            var campaign = await _brandService.UpdateCampaignAsync(UserId, campaignId, request, ct);
+            if (campaign is null) return NotFound();
+            return Ok(campaign);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{campaignId:guid}")]
     public async Task<IActionResult> DeleteCampaign(Guid campaignId, CancellationToken ct)
     {
-        var deleted = await _brandService.DeleteCampaignAsync(UserId, campaignId, ct);
-        if (!deleted) return NotFound();
-        return NoContent();
+        try
+        {
+            var deleted = await _brandService.DeleteCampaignAsync(UserId, campaignId, ct);
+            if (!deleted) return NotFound();
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

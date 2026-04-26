@@ -5,7 +5,8 @@ public record CreateCampaignRequest(
     string Description,
     decimal Budget,
     DateTime Deadline,
-    string Platform,
+    List<string> Platforms,
     string Location,
-    List<string> Tags
+    List<string> Tags,
+    int BudgetType = 0
 );

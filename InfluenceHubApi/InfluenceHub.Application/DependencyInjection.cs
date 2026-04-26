@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IReportService, ReportService>();
         services.AddScoped<IContactService, ContactService>();
         services.AddScoped<IAdminService, AdminService>();
+        services.AddScoped<ITagService, TagService>();
         services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
         return services;
     }

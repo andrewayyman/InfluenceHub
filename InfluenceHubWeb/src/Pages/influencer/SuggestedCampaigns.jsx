@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Megaphone, CheckCircle } from "lucide-react";
+import { Megaphone, CheckCircle, Eye, X } from "lucide-react";
 import {
   AdminPage as DashboardPage,
   AdminPanel as Panel,
@@ -14,6 +14,7 @@ import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { influencerService } from "../../services/api/influencerService";
 import { formatCurrency, formatDate } from "../../utils/formatters";
 import { isAbortError } from "../../services/api/client";
+import { getBudgetTypeLabel } from "../../utils/catalog";
 
 const SuggestedCampaigns = () => {
   const { token } = useAuth();
@@ -23,6 +24,16 @@ const SuggestedCampaigns = () => {
   const [error, setError] = useState("");
   const [applyingId, setApplyingId] = useState("");
   const [appliedIds, setAppliedIds] = useState(new Set());
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [applyingCampaign, setApplyingCampaign] = useState(null);
+  const [applyForm, setApplyForm] = useState({
+    message: "",
+    bio: "",
+    proposal: "",
+    proposedBudget: "",
+    linksText: "",
+    mediaFilesText: "",
+  });
   const debouncedSearch = useDebouncedValue(search, 300);
 
   const loadCampaigns = useCallback(async (signal) => {
@@ -51,15 +62,54 @@ const SuggestedCampaigns = () => {
     return () => controller.abort();
   }, [loadCampaigns]);
 
-  const handleApply = async (campaignId) => {
+  const openApply = (campaign) => {
+    setApplyingCampaign(campaign);
+    setApplyForm({
+      message: "I am interested in this campaign!",
+      bio: "",
+      proposal: "",
+      proposedBudget: campaign?.budget ? String(campaign.budget) : "",
+      linksText: "",
+      mediaFilesText: "",
+    });
+  };
+
+  const closeApply = () => {
+    setApplyingCampaign(null);
+    setApplyingId("");
+  };
+
+  const submitApply = async (e) => {
+    e.preventDefault();
+    if (!applyingCampaign) return;
+
+    const links = applyForm.linksText
+      .split(/[\n,]/)
+      .map((x) => x.trim())
+      .filter(Boolean);
+
+    const mediaFiles = applyForm.mediaFilesText
+      .split(/[\n,]/)
+      .map((x) => x.trim())
+      .filter(Boolean);
+
     try {
-      setApplyingId(campaignId);
+      setApplyingId(applyingCampaign.id);
       setError("");
       await influencerService.applyForCampaign(
-        { campaignId, message: "I am interested in this campaign!" }, 
+        {
+          campaignId: applyingCampaign.id,
+          message: applyForm.message,
+          bio: applyForm.bio,
+          proposal: applyForm.proposal,
+          proposedBudget: Number(applyForm.proposedBudget || 0),
+          links,
+          mediaFiles,
+        },
         token
       );
-      setAppliedIds((prev) => new Set(prev).add(campaignId));
+      setAppliedIds((prev) => new Set(prev).add(applyingCampaign.id));
+      closeApply();
     } catch (err) {
       setError(err.message || "Failed to apply for campaign.");
     } finally {
@@ -69,7 +119,7 @@ const SuggestedCampaigns = () => {
 
   const filteredCampaigns = campaigns.filter(c => 
     c.title?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-    c.platform?.toLowerCase().includes(debouncedSearch.toLowerCase())
+    c.platforms?.some(p => p.toLowerCase().includes(debouncedSearch.toLowerCase()))
   );
 
   return (
@@ -112,7 +162,7 @@ const SuggestedCampaigns = () => {
                       </div>
                       <div className="min-w-0">
                         <h3 className="ih-text-primary truncate font-medium">{campaign.title}</h3>
-                        <p className="ih-text-muted text-xs truncate">By Platform: {campaign.platform}</p>
+                        <p className="ih-text-muted text-xs truncate">Platforms: {campaign.platforms?.join(", ") || "—"}</p>
                       </div>
                     </div>
                     
@@ -124,6 +174,7 @@ const SuggestedCampaigns = () => {
                       <div className="rounded-lg bg-white/5 p-2 text-center">
                         <p className="ih-text-subtle text-xs mb-1">Budget</p>
                         <p className="font-semibold text-white">{formatCurrency(campaign.budget)}</p>
+                        <p className="mt-1 text-[11px] text-slate-400">{getBudgetTypeLabel(campaign.budgetType)}</p>
                       </div>
                       <div className="rounded-lg bg-white/5 p-2 text-center">
                         <p className="ih-text-subtle text-xs mb-1">Deadline</p>
@@ -146,7 +197,7 @@ const SuggestedCampaigns = () => {
                   </div>
 
                   <button
-                    onClick={() => handleApply(campaign.id)}
+                    onClick={() => openApply(campaign)}
                     disabled={isApplied || isApplying}
                     className={`mt-auto w-full flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
                       isApplied 
@@ -164,12 +215,150 @@ const SuggestedCampaigns = () => {
                       "Apply for Campaign"
                     )}
                   </button>
+                  <button
+                    onClick={() => setSelectedCampaign(campaign)}
+                    className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-200 hover:bg-white/10"
+                  >
+                    <Eye size={16} /> View details
+                  </button>
                 </div>
               );
             })}
           </div>
         )}
       </Panel>
+
+      {selectedCampaign ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs tracking-[0.2em] text-slate-400 uppercase">Campaign profile</p>
+                <h3 className="mt-1 text-xl font-semibold text-white">{selectedCampaign.title}</h3>
+              </div>
+              <button onClick={() => setSelectedCampaign(null)} className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10">
+                <X size={16} />
+              </button>
+            </div>
+
+            <p className="mb-4 text-sm text-slate-300">{selectedCampaign.description || "No description provided."}</p>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                <p className="text-xs text-slate-400">Budget</p>
+                <p className="mt-1 font-semibold text-white">{formatCurrency(selectedCampaign.budget)}</p>
+                <p className="text-xs text-slate-400">{getBudgetTypeLabel(selectedCampaign.budgetType)}</p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                <p className="text-xs text-slate-400">Deadline</p>
+                <p className="mt-1 font-semibold text-white">{formatDate(selectedCampaign.deadline)}</p>
+                <p className="text-xs text-slate-400">Location: {selectedCampaign.location || "-"}</p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3">
+              <p className="text-xs text-slate-400">Platforms</p>
+              <p className="mt-1 text-sm text-white">{selectedCampaign.platforms?.join(", ") || "-"}</p>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3">
+              <p className="text-xs text-slate-400">Tags</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(selectedCampaign.tags || []).map((tag) => (
+                  <span key={tag} className="rounded-full border border-white/10 px-2 py-1 text-xs text-slate-200">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {applyingCampaign ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <form onSubmit={submitApply} className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs tracking-[0.2em] text-slate-400 uppercase">Apply now</p>
+                <h3 className="mt-1 text-xl font-semibold text-white">{applyingCampaign.title}</h3>
+              </div>
+              <button type="button" onClick={closeApply} className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10">
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-sm text-slate-200">Proposal</label>
+                <textarea
+                  rows={3}
+                  className="ih-input w-full"
+                  value={applyForm.proposal}
+                  onChange={(e) => setApplyForm((p) => ({ ...p, proposal: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-sm text-slate-200">Message to brand</label>
+                <textarea
+                  rows={2}
+                  className="ih-input w-full"
+                  value={applyForm.message}
+                  onChange={(e) => setApplyForm((p) => ({ ...p, message: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-slate-200">Your budget offer</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="ih-input w-full"
+                  value={applyForm.proposedBudget}
+                  onChange={(e) => setApplyForm((p) => ({ ...p, proposedBudget: e.target.value }))}
+                  required
+                />
+                <p className="mt-1 text-xs text-slate-400">Based on: {getBudgetTypeLabel(applyingCampaign.budgetType)}</p>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-slate-200">Short bio</label>
+                <textarea
+                  rows={2}
+                  className="ih-input w-full"
+                  value={applyForm.bio}
+                  onChange={(e) => setApplyForm((p) => ({ ...p, bio: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-slate-200">Attached links (comma/new line)</label>
+                <textarea
+                  rows={2}
+                  className="ih-input w-full"
+                  value={applyForm.linksText}
+                  onChange={(e) => setApplyForm((p) => ({ ...p, linksText: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-slate-200">Media files/portfolio links</label>
+                <textarea
+                  rows={2}
+                  className="ih-input w-full"
+                  value={applyForm.mediaFilesText}
+                  onChange={(e) => setApplyForm((p) => ({ ...p, mediaFilesText: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button type="button" onClick={closeApply} className="ih-button-secondary px-4 py-2">Cancel</button>
+              <button type="submit" disabled={applyingId === applyingCampaign.id} className="ih-button-primary px-4 py-2">
+                {applyingId === applyingCampaign.id ? "Submitting..." : "Submit Application"}
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
     </DashboardPage>
   );
 };

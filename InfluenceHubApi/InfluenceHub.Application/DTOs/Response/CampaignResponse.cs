@@ -9,9 +9,10 @@ public record CampaignResponse(
     string Description,
     decimal Budget,
     DateTime Deadline,
-    string Platform,
+    List<string> Platforms,
     string Location,
     CampaignStatus Status,
     DateTime CreatedAt,
-    List<string> Tags
+    List<string> Tags,
+    int BudgetType = 0
 );

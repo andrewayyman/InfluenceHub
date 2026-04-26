@@ -63,8 +63,9 @@ public class BrandService : IBrandService
             Title = request.Title,
             Description = request.Description,
             Budget = request.Budget,
+            BudgetType = request.BudgetType,
             Deadline = request.Deadline,
-            Platform = request.Platform,
+            Platforms = System.Text.Json.JsonSerializer.Serialize(request.Platforms ?? new List<string>()),
             Location = request.Location,
             Status = CampaignStatus.Open,
             CreatedAt = DateTime.UtcNow,
@@ -72,7 +73,8 @@ public class BrandService : IBrandService
         };
         await _campaignRepository.AddAsync(campaign, ct);
         await SetCampaignTagsAsync(campaign.Id, request.Tags, ct);
-        var created = await _campaignRepo.GetByIdWithTagsAsync(campaign.Id, ct)!;
+        var created = await _campaignRepo.GetByIdWithTagsAsync(campaign.Id, ct)
+            ?? throw new InvalidOperationException("Failed to load created campaign.");
         return MapToResponse(created);
     }
 
@@ -83,11 +85,15 @@ public class BrandService : IBrandService
         var campaign = await _campaignRepo.GetByIdWithTagsAsync(campaignId, ct);
         if (campaign is null || campaign.BrandId != brand.Id) return null;
 
+        if (campaign.Status != CampaignStatus.Open)
+            throw new InvalidOperationException("Only open campaigns can be edited.");
+
         if (request.Title is not null) campaign.Title = request.Title;
         if (request.Description is not null) campaign.Description = request.Description;
         if (request.Budget.HasValue) campaign.Budget = request.Budget.Value;
         if (request.Deadline.HasValue) campaign.Deadline = request.Deadline.Value;
-        if (request.Platform is not null) campaign.Platform = request.Platform;
+        if (request.Platforms is not null) campaign.Platforms = System.Text.Json.JsonSerializer.Serialize(request.Platforms);
+        if (request.BudgetType.HasValue) campaign.BudgetType = request.BudgetType.Value;
         if (request.Location is not null) campaign.Location = request.Location;
         if (request.Status.HasValue) campaign.Status = request.Status.Value;
         campaign.UpdatedAt = DateTime.UtcNow;
@@ -101,7 +107,8 @@ public class BrandService : IBrandService
             await SetCampaignTagsAsync(campaignId, request.Tags, ct);
         }
         await _campaignRepository.SaveChangesAsync(ct);
-        var updated = await _campaignRepo.GetByIdWithTagsAsync(campaignId, ct)!;
+        var updated = await _campaignRepo.GetByIdWithTagsAsync(campaignId, ct)
+            ?? throw new InvalidOperationException("Failed to load updated campaign.");
         return MapToResponse(updated);
     }
 
@@ -111,6 +118,10 @@ public class BrandService : IBrandService
         if (brand is null) return false;
         var campaign = await _campaignRepository.GetByIdAsync(campaignId, ct);
         if (campaign is null || campaign.BrandId != brand.Id) return false;
+
+        if (campaign.Status != CampaignStatus.Open)
+            throw new InvalidOperationException("Only open campaigns can be deleted.");
+
         _campaignRepository.Delete(campaign);
         await _campaignRepository.SaveChangesAsync(ct);
         return true;
@@ -136,20 +147,30 @@ public class BrandService : IBrandService
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync(ct);
         return campaigns.Select(c => new CampaignListResponse(
-            c.Id, c.Title, brand.Name, c.Budget, c.Deadline, c.Platform, c.Location, c.Status,
+            c.Id, c.Title, brand.Name, c.Budget, c.Deadline, SafeDeserializePlatforms(c.Platforms), c.Location, c.Status,
             c.Applications.Count, c.CampaignTags.Select(ct => ct.Tag.Name).ToList())).ToList();
     }
 
     private async Task SetCampaignTagsAsync(Guid campaignId, List<string> tagNames, CancellationToken ct)
     {
-        foreach (var name in tagNames.Distinct(StringComparer.OrdinalIgnoreCase))
+        var normalizedNames = tagNames
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(name => name.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var tags = await _tagRepository.Query()
+            .Where(tag => normalizedNames.Contains(tag.Name))
+            .ToListAsync(ct);
+
+        var foundNames = tags.Select(tag => tag.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var missingNames = normalizedNames.Where(name => !foundNames.Contains(name)).ToList();
+
+        if (missingNames.Count > 0)
+            throw new InvalidOperationException($"Unknown tags: {string.Join(", ", missingNames)}.");
+
+        foreach (var tag in tags)
         {
-            var tag = await _tagRepository.Query().FirstOrDefaultAsync(t => t.Name == name, ct);
-            if (tag is null)
-            {
-                tag = new Tag { Id = Guid.NewGuid(), Name = name };
-                await _tagRepository.AddAsync(tag, ct);
-            }
             var campaignTag = new CampaignTag
             {
                 Id = Guid.NewGuid(),
@@ -161,6 +182,13 @@ public class BrandService : IBrandService
     }
 
     private static CampaignResponse MapToResponse(Campaign c) => new(
-        c.Id, c.BrandId, c.Title, c.Description, c.Budget, c.Deadline, c.Platform, c.Location,
-        c.Status, c.CreatedAt, c.CampaignTags.Select(ct => ct.Tag.Name).ToList());
+        c.Id, c.BrandId, c.Title, c.Description, c.Budget, c.Deadline, SafeDeserializePlatforms(c.Platforms), c.Location,
+        c.Status, c.CreatedAt, c.CampaignTags.Select(ct => ct.Tag.Name).ToList(), c.BudgetType);
+
+    private static List<string> SafeDeserializePlatforms(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return [];
+        try { return System.Text.Json.JsonSerializer.Deserialize<List<string>>(json) ?? []; }
+        catch { return []; }
+    }
 }

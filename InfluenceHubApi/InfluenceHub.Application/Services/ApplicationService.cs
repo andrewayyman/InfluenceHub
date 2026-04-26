@@ -5,6 +5,7 @@ using InfluenceHub.Domain.Entities;
 using InfluenceHub.Domain.Enums;
 using InfluenceHub.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace InfluenceHub.Application.Services;
 
@@ -50,14 +51,33 @@ public class ApplicationService : IApplicationService
             InfluencerId = influencer.Id,
             Status = ApplicationStatus.Pending,
             Message = request.Message,
+            Bio = request.Bio,
+            Proposal = request.Proposal,
+            ProposedBudget = request.ProposedBudget,
+            Links = JsonSerializer.Serialize(request.Links ?? []),
+            MediaFiles = JsonSerializer.Serialize(request.MediaFiles ?? []),
             CreatedAt = DateTime.UtcNow
         };
         await _applicationRepository.AddAsync(application, ct);
 
         var app = await _applicationRepository.Query()
             .Include(a => a.Campaign)
-            .FirstAsync(a => a.Id == application.Id, ct);
-        return new ApplicationResponse(app.Id, app.CampaignId, app.Campaign.Title, app.InfluencerId, influencer.Name, app.Status, app.Message, app.CreatedAt);
+            .FirstOrDefaultAsync(a => a.Id == application.Id, ct)
+            ?? throw new InvalidOperationException("Failed to load the newly created application.");
+        return new ApplicationResponse(
+            app.Id,
+            app.CampaignId,
+            app.Campaign.Title,
+            app.InfluencerId,
+            influencer.Name,
+            app.Status,
+            app.Message,
+            app.CreatedAt,
+            app.Bio,
+            app.Proposal,
+            app.ProposedBudget,
+            SafeDeserializeList(app.Links),
+            SafeDeserializeList(app.MediaFiles));
     }
 
     public async Task<ApplicationResponse?> AcceptOrRejectAsync(Guid brandUserId, AcceptRejectRequest request, CancellationToken ct = default)
@@ -86,7 +106,10 @@ public class ApplicationService : IApplicationService
         return new ApplicationResponse(
             application.Id, application.CampaignId, application.Campaign.Title,
             application.InfluencerId, application.Influencer.Name, application.Status,
-            application.Message, application.CreatedAt);
+            application.Message, application.CreatedAt,
+            application.Bio, application.Proposal, application.ProposedBudget,
+            SafeDeserializeList(application.Links),
+            SafeDeserializeList(application.MediaFiles));
     }
 
     public async Task<IReadOnlyList<ApplicationResponse>> GetCampaignApplicationsAsync(Guid brandUserId, Guid campaignId, CancellationToken ct = default)
@@ -102,6 +125,22 @@ public class ApplicationService : IApplicationService
             .ToListAsync(ct);
 
         return applications.Select(a => new ApplicationResponse(
-            a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, a.Influencer.Name, a.Status, a.Message, a.CreatedAt)).ToList();
+            a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, a.Influencer.Name, a.Status, a.Message, a.CreatedAt,
+            a.Bio, a.Proposal, a.ProposedBudget, SafeDeserializeList(a.Links), SafeDeserializeList(a.MediaFiles))).ToList();
+    }
+
+    private static List<string> SafeDeserializeList(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return [];
+
+        try
+        {
+            return JsonSerializer.Deserialize<List<string>>(json) ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
     }
 }

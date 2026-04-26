@@ -1,17 +1,58 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Plus } from "lucide-react";
 import {
   AdminPage,
   AdminPanel,
   AdminPanelHeader,
   ErrorState,
+  LoadingState,
 } from "../../Components/AdminShared";
 import { TransitionLink } from "../../Components/Motion/TransitionLink";
 import { useAuth } from "../../hooks/useAuth";
-import { createCampaign } from "../../services/api/brandService";
+import {
+  createCampaign,
+  getBrandCampaign,
+  updateCampaign,
+} from "../../services/api/brandService";
+import { isAbortError } from "../../services/api/client";
+import { getTags } from "../../services/api/tagService";
+import {
+  SiInstagram,
+  SiTiktok,
+  SiYoutube,
+  SiFacebook,
+  SiSnapchat,
+  SiPinterest,
+  SiTwitch,
+} from "react-icons/si";
+import { FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import { BUDGET_TYPE_OPTIONS, EGYPT_CITIES, PLATFORM_OPTIONS } from "../../utils/catalog";
+
+const PLATFORM_ICONS = {
+  Instagram: SiInstagram,
+  TikTok: SiTiktok,
+  YouTube: SiYoutube,
+  Facebook: SiFacebook,
+  LinkedIn: FaLinkedinIn,
+  Twitter: FaTwitter,
+  Snapchat: SiSnapchat,
+  Pinterest: SiPinterest,
+  Twitch: SiTwitch,
+};
+
+const PLATFORM_COLORS = {
+  Instagram: "#E1306C",
+  TikTok: "#69C9D0",
+  YouTube: "#FF0000",
+  Facebook: "#1877F2",
+  LinkedIn: "#0A66C2",
+  Twitter: "#1DA1F2",
+  Snapchat: "#FFFC00",
+  Pinterest: "#E60023",
+  Twitch: "#9146FF",
+};
 
 const validationSchema = Yup.object({
   title: Yup.string().required("Campaign title is required"),
@@ -23,59 +64,155 @@ const validationSchema = Yup.object({
   deadline: Yup.date()
     .min(new Date(), "Deadline cannot be in the past")
     .required("Deadline is required"),
-  platform: Yup.string().required("Platform is required"),
+  budgetType: Yup.number().oneOf([0, 1, 2, 3]).required("Budget type is required"),
+  platforms: Yup.array().of(Yup.string()).min(1, "Select at least one platform").required("Platform is required"),
   location: Yup.string().required("Location is required"),
-  tags: Yup.string().required("Tags are required (comma separated)"),
+  tags: Yup.array().of(Yup.string()).min(1, "Select at least one tag").required("Tags are required"),
+});
+
+const EMPTY_VALUES = {
+  title: "",
+  description: "",
+  budget: "",
+  deadline: "",
+  budgetType: 0,
+  platforms: [],
+  location: "",
+  tags: [],
+};
+
+const formatCampaignForForm = (campaign) => ({
+  title: campaign?.title || "",
+  description: campaign?.description || "",
+  budget: campaign?.budget ?? "",
+  deadline: campaign?.deadline ? new Date(campaign.deadline).toISOString().slice(0, 10) : "",
+  budgetType: Number(campaign?.budgetType ?? 0),
+  platforms: campaign?.platforms || [],
+  location: campaign?.location || "",
+  tags: campaign?.tags || [],
 });
 
 const CreateCampaign = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
+  const { campaignId } = useParams();
+  const isEditMode = Boolean(campaignId);
   const [globalError, setGlobalError] = useState("");
+  const [tagsError, setTagsError] = useState("");
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(isEditMode);
+  const [availableTags, setAvailableTags] = useState([]);
+
+  const tagNames = useMemo(
+    () => availableTags.map((tag) => tag.name).filter(Boolean),
+    [availableTags],
+  );
 
   const formik = useFormik({
-    initialValues: {
-      title: "",
-      description: "",
-      budget: "",
-      deadline: "",
-      platform: "",
-      location: "",
-      tags: "",
-    },
+    initialValues: EMPTY_VALUES,
     validationSchema,
     onSubmit: async (values) => {
       setIsSubmittingForm(true);
       setGlobalError("");
+
       try {
         const payload = {
-          ...values,
+          title: values.title,
+          description: values.description,
           budget: Number(values.budget),
-          tags: values.tags.split(",").map((t) => t.trim()).filter(Boolean),
           deadline: new Date(values.deadline).toISOString(),
+          budgetType: Number(values.budgetType),
+          platforms: values.platforms,
+          location: values.location,
+          tags: values.tags,
         };
 
-        await createCampaign(token, payload);
+        if (isEditMode) {
+          await updateCampaign(token, campaignId, payload);
+        } else {
+          await createCampaign(token, payload);
+        }
+
         navigate("/dashboard/brand/campaigns");
       } catch (err) {
-        setGlobalError(err.message || "Failed to create campaign. Please try again.");
+        setGlobalError(err.message || `Failed to ${isEditMode ? "update" : "create"} campaign. Please try again.`);
       } finally {
         setIsSubmittingForm(false);
       }
     },
   });
 
+  useEffect(() => {
+    if (!token) {
+      return undefined;
+    }
+
+    const controller = new AbortController();
+
+    const loadData = async () => {
+      setIsLoading(isEditMode);
+      setGlobalError("");
+      setTagsError("");
+
+      try {
+        const [tags, campaign] = await Promise.all([
+          getTags(token, controller.signal),
+          isEditMode ? getBrandCampaign(token, campaignId, controller.signal) : Promise.resolve(null),
+        ]);
+
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        setAvailableTags(tags || []);
+
+        if (campaign) {
+          formik.setValues(formatCampaignForForm(campaign));
+        } else if (!isEditMode) {
+          formik.setValues(EMPTY_VALUES);
+        }
+      } catch (err) {
+        if (isAbortError(err) || controller.signal.aborted) {
+          return;
+        }
+
+        if (isEditMode) {
+          setGlobalError(err.message || "Failed to load campaign details.");
+        } else {
+          setTagsError(err.message || "Failed to load tags.");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadData();
+
+    return () => controller.abort();
+  }, [token, isEditMode, campaignId]);
+
+  if (isLoading) {
+    return (
+      <AdminPage>
+        <LoadingState label={isEditMode ? "Loading campaign details..." : "Loading campaign form..."} />
+      </AdminPage>
+    );
+  }
+
   return (
     <AdminPage>
       <AdminPanel>
         <AdminPanelHeader
-          kicker="Campaign launch"
-          title="Create a new campaign"
-          description="Define budget, creative guardrails, and matching tags so the right influencers can apply with confidence."
+          kicker={isEditMode ? "Campaign update" : "Campaign launch"}
+          title={isEditMode ? "Edit campaign" : "Create a new campaign"}
+          description={isEditMode
+            ? "Update an open campaign while keeping matching tags and targeting aligned with your current brief."
+            : "Define budget, creative guardrails, and matching tags so the right influencers can apply with confidence."}
           actions={(
             <TransitionLink
-              to="/dashboard/brand"
+              to="/dashboard/brand/campaigns"
               className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-4 py-2 text-sm"
             >
               Cancel
@@ -89,7 +226,13 @@ const CreateCampaign = () => {
           </div>
         )}
 
-        <form onSubmit={formik.handleSubmit} className="space-y-6 max-w-2xl">
+        {tagsError ? (
+          <div className="mb-6">
+            <ErrorState message={tagsError} />
+          </div>
+        ) : null}
+
+        <form onSubmit={formik.handleSubmit} className="max-w-2xl space-y-6">
           <div className="space-y-1">
             <label htmlFor="title" className="block text-sm font-medium text-white">Campaign Title</label>
             <input
@@ -161,72 +304,142 @@ const CreateCampaign = () => {
             </div>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div className="space-y-1">
-              <label htmlFor="platform" className="block text-sm font-medium text-white">Platform</label>
-              <select
-                id="platform"
-                name="platform"
-                className="ih-input w-full"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.platform}
-              >
-                <option value="">Select Platform</option>
-                <option value="Instagram">Instagram</option>
-                <option value="TikTok">TikTok</option>
-                <option value="YouTube">YouTube</option>
-                <option value="Twitter">Twitter</option>
-                <option value="LinkedIn">LinkedIn</option>
-              </select>
-              {formik.touched.platform && formik.errors.platform ? (
-                <p className="text-sm text-red-500">{formik.errors.platform}</p>
-              ) : null}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-white">Budget Type</label>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {BUDGET_TYPE_OPTIONS.map((option) => {
+                const active = Number(formik.values.budgetType) === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => formik.setFieldValue("budgetType", option.value)}
+                    className={[
+                      "flex flex-col gap-1 rounded-xl border px-4 py-3 text-left transition-all duration-150 focus:outline-none",
+                      active
+                        ? "border-indigo-500 bg-indigo-500/10 ring-1 ring-indigo-500/40"
+                        : "border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/10",
+                    ].join(" ")}
+                  >
+                    <span className={["text-sm font-semibold", active ? "text-indigo-300" : "text-white"].join(" ")}>
+                      {option.label}
+                    </span>
+                    <span className={["text-xs leading-tight", active ? "text-indigo-400/80" : "text-slate-500"].join(" ")}>
+                      {option.description}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
+            {formik.touched.budgetType && formik.errors.budgetType ? (
+              <p className="text-sm text-red-500">{formik.errors.budgetType}</p>
+            ) : null}
+          </div>
 
-            <div className="space-y-1">
-              <label htmlFor="location" className="block text-sm font-medium text-white">Location / Region</label>
-              <input
-                id="location"
-                name="location"
-                type="text"
-                className="ih-input w-full"
-                placeholder="e.g., Global, US, London"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.location}
-              />
-              {formik.touched.location && formik.errors.location ? (
-                <p className="text-sm text-red-500">{formik.errors.location}</p>
-              ) : null}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-white">Platforms</label>
+            <div className="flex flex-wrap gap-3">
+              {PLATFORM_OPTIONS.map((platform) => {
+                const selected = formik.values.platforms.includes(platform);
+                const Icon = PLATFORM_ICONS[platform];
+                const brandColor = PLATFORM_COLORS[platform];
+                return (
+                  <button
+                    key={platform}
+                    type="button"
+                    onClick={() => {
+                      const next = selected
+                        ? formik.values.platforms.filter((p) => p !== platform)
+                        : [...formik.values.platforms, platform];
+                      formik.setFieldValue("platforms", next);
+                    }}
+                    className={[
+                      "flex w-[86px] flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 transition-all duration-150 focus:outline-none",
+                      selected
+                        ? "border-indigo-500 bg-indigo-500/10 ring-1 ring-indigo-500/30"
+                        : "border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/10",
+                    ].join(" ")}
+                  >
+                    {Icon && (
+                      <Icon
+                        size={22}
+                        style={{ color: selected ? brandColor : undefined }}
+                        className={selected ? "" : "text-slate-400"}
+                      />
+                    )}
+                    <span className={["text-xs font-medium leading-tight text-center", selected ? "text-white" : "text-slate-400"].join(" ")}>
+                      {platform}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
+            {formik.touched.platforms && formik.errors.platforms ? (
+              <p className="text-sm text-red-500">{formik.errors.platforms}</p>
+            ) : null}
+          </div>
+
+          <div className="max-w-xs space-y-1">
+            <label htmlFor="location" className="block text-sm font-medium text-white">Location / Region</label>
+            <select
+              id="location"
+              name="location"
+              className="ih-input w-full bg-[#1E293B] text-white"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.location}
+            >
+              <option value="" disabled className="bg-[#1E293B]">Select a city…</option>
+              {EGYPT_CITIES.map((city) => (
+                <option key={city} value={city} className="bg-[#1E293B]">{city}</option>
+              ))}
+            </select>
+            {formik.touched.location && formik.errors.location ? (
+              <p className="text-sm text-red-500">{formik.errors.location}</p>
+            ) : null}
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="tags" className="block text-sm font-medium text-white">Tags (Comma Separated)</label>
-            <input
-              id="tags"
-              name="tags"
-              type="text"
-              className="ih-input w-full"
-              placeholder="e.g., Tech, Fashion, Lifestyle"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.tags}
-            />
+            <label className="block text-sm font-medium text-white">Tags</label>
+            <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3">
+              {tagNames.map((tag) => {
+                const checked = formik.values.tags.includes(tag);
+                return (
+                  <label key={tag} className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-300 hover:border-white/30">
+                    <input
+                      type="checkbox"
+                      className="accent-indigo-500"
+                      checked={checked}
+                      onChange={() => {
+                        const next = checked
+                          ? formik.values.tags.filter((value) => value !== tag)
+                          : [...formik.values.tags, tag];
+                        formik.setFieldValue("tags", next);
+                      }}
+                    />
+                    {tag}
+                  </label>
+                );
+              })}
+              {tagNames.length === 0 ? (
+                <p className="text-sm text-slate-400">No tags are available yet. Ask an admin to seed or create tags first.</p>
+              ) : null}
+            </div>
             {formik.touched.tags && formik.errors.tags ? (
               <p className="text-sm text-red-500">{formik.errors.tags}</p>
             ) : null}
-            <p className="text-xs text-slate-400 mt-1">Helps match campaigns with the right influencers.</p>
+            <p className="mt-1 text-xs text-slate-400">Choose the most relevant niche tags for matching.</p>
           </div>
 
-          <div className="pt-4 border-t border-white/10">
+          <div className="border-t border-white/10 pt-4">
             <button
               type="submit"
               disabled={isSubmittingForm}
-              className="ih-button-primary ih-focus-ring inline-flex items-center gap-2 px-6 py-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ih-button-primary ih-focus-ring inline-flex items-center gap-2 px-6 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isSubmittingForm ? "Publishing..." : "Create Campaign"}
+              {isSubmittingForm
+                ? isEditMode ? "Saving..." : "Publishing..."
+                : isEditMode ? "Save Changes" : "Create Campaign"}
             </button>
           </div>
         </form>

@@ -84,7 +84,6 @@ const MyApplications = () => {
                         </div>
                         <div>
                           <p className="ih-text-primary font-medium">{app.campaignTitle || "Unknown Campaign"}</p>
-                          <p className="ih-text-muted mt-1 text-xs">ID: {app.campaignId?.split("-")[0]}...</p>
                         </div>
                       </div>
                     </td>
