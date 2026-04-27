@@ -8,10 +8,13 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
+  FilterTabs,
+  StatusBadge,
 } from "../../Components/AdminShared";
 import { TransitionLink } from "../../Components/Motion/TransitionLink";
 import { useAuth } from "../../hooks/useAuth";
 import { getCampaignApplications, acceptOrRejectApplication } from "../../services/api/applicationService";
+import { getBrandCampaigns } from "../../services/api/brandService";
 import { formatDateTime } from "../../utils/formatters";
 
 const getStatusTone = (status) => {
@@ -38,21 +41,37 @@ const CampaignApplications = () => {
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState("");
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [filter, setFilter] = useState("All");
 
   const loadApps = useCallback(async (signal) => {
     if (!token) return;
-    if (!campaignId) {
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
     setError("");
 
     try {
-      const data = await getCampaignApplications(token, campaignId, signal);
-      if (!signal?.aborted) {
-        setApplications(data || []);
+      if (campaignId) {
+        const data = await getCampaignApplications(token, campaignId, signal);
+        if (!signal?.aborted) {
+          setApplications(data || []);
+        }
+      } else {
+        // Fetch all campaigns for the brand
+        const campaigns = await getBrandCampaigns(token, signal);
+        if (!campaigns || campaigns.length === 0) {
+          if (!signal?.aborted) setApplications([]);
+          return;
+        }
+        
+        // Fetch applications for all campaigns
+        const allAppsPromises = campaigns.map(c => 
+          getCampaignApplications(token, c.id, signal).catch(() => []) // swallow individual errors
+        );
+        const results = await Promise.all(allAppsPromises);
+        
+        if (!signal?.aborted) {
+          const flattened = results.flat().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          setApplications(flattened);
+        }
       }
     } catch (err) {
       if (!signal?.aborted) {
@@ -90,106 +109,118 @@ const CampaignApplications = () => {
     return <AdminPage><LoadingState label="Loading campaign applications..." /></AdminPage>;
   }
 
+  const filteredApplications = applications.filter(app => filter === "All" || app.status === filter);
+
   return (
     <AdminPage>
-      <AdminPanel tone="warm">
+      <AdminPanel tone="brand">
         <AdminPanelHeader
           kicker="Selection"
-          title="Applications inbox"
-          description="Review pitches from influencers looking to collaborate on this brief. Accept the ones that fit your brand vision."
+          title={campaignId ? "Campaign Applications" : "All Applications"}
+          description="Review pitches from influencers looking to collaborate. Evaluate and accept the ones that fit your brand vision."
         />
         
-        {missingCampaignContext ? (
-          <EmptyState
-            title="Choose a campaign first"
-            description="Applications belong to a specific campaign. Open your campaign list and select View Applications on the campaign you want to review."
-            action={(
-              <TransitionLink
-                to="/dashboard/brand/campaigns"
-                className="ih-button-primary ih-focus-ring inline-flex items-center gap-2 px-4 py-3 text-sm"
-              >
-                Go to campaigns
-              </TransitionLink>
-            )}
+        <div className="mb-6">
+          <FilterTabs
+            items={[
+              { label: "All", value: "All" },
+              { label: "Pending", value: "Pending" },
+              { label: "Accepted", value: "Accepted" },
+              { label: "Rejected", value: "Rejected" },
+            ]}
+            value={filter}
+            onSelect={setFilter}
           />
-        ) : error && applications.length === 0 ? (
+        </div>
+
+        {error && applications.length === 0 ? (
           <ErrorState message={error} onRetry={() => loadApps()} />
         ) : applications.length === 0 ? (
           <EmptyState
             title="No applications yet"
-            description="Influencers haven't applied to this campaign yet. Check back soon."
+            description="You don't have any incoming applications at the moment. Make sure your campaigns are active and well-described."
+            action={
+              <TransitionLink
+                to="/dashboard/brand/campaigns"
+                className="ih-button-primary px-5 py-2.5"
+              >
+                Manage Campaigns
+              </TransitionLink>
+            }
+          />
+        ) : filteredApplications.length === 0 ? (
+          <EmptyState
+            title="No matching applications"
+            description={`There are no applications with the status "${filter}".`}
+            action={
+              <button onClick={() => setFilter("All")} className="ih-button-secondary px-5 py-2.5">
+                Clear filter
+              </button>
+            }
           />
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {applications.map((app) => (
-              <div key={app.id} className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col justify-between">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {filteredApplications.map((app) => (
+              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-white/8 transition-all">
                 <div>
                   <div className="mb-4 flex items-start justify-between gap-3">
-                    <div className="flex min-w-0 items-center gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-sm font-semibold text-indigo-200">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/20 text-sm font-semibold text-indigo-300">
                         {getInitials(app.influencerName)}
                       </div>
                       <div className="min-w-0">
-                        <p className="max-w-[180px] truncate font-semibold text-white" title={app.influencerName}>
+                        <p className="truncate font-semibold text-white" title={app.influencerName}>
                           {app.influencerName || "Unknown Influencer"}
                         </p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-xs text-slate-400 mt-0.5 truncate">
                           Applied {formatDateTime(app.createdAt)}
                         </p>
                       </div>
                     </div>
-                    <div className={`rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusTone(app.status)}`}>
+                    <StatusBadge tone={app.status === "Accepted" ? "success" : app.status === "Rejected" ? "danger" : "warning"}>
                       {app.status}
-                    </div>
+                    </StatusBadge>
                   </div>
 
                   <p className="mb-4 line-clamp-3 text-sm italic text-slate-300 border-l-2 border-indigo-500/50 pl-3">
                     "{app.message || "No specific pitch provided."}"
                   </p>
 
-                  <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">
-                      Campaign: {app.campaignTitle || "-"}
+                  <div className="mb-6 flex items-center gap-2">
+                    <span className="text-xs text-slate-400">Campaign:</span>
+                    <span className="ih-pill-tint ih-pill-brand truncate max-w-[200px]">
+                      {app.campaignTitle || "-"}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-auto">
-                  {app.status === "Pending" ? (
+                <div className="flex items-center justify-between gap-2 mt-auto border-t border-white/10 pt-4">
+                  <button
+                    onClick={() => setSelectedApplication(app)}
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-white/15 px-3 py-2.5 text-sm font-medium text-slate-200 hover:bg-white/10 transition-colors"
+                  >
+                    <Eye size={16} /> View Details
+                  </button>
+                  
+                  {app.status === "Pending" && (
                     <>
-                      <button
-                        onClick={() => setSelectedApplication(app)}
-                        className="flex items-center justify-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-sm text-slate-200 hover:bg-white/10"
-                        title="View profile"
-                      >
-                        <Eye size={16} /> View
-                      </button>
                       <button
                         onClick={() => handleAction(app.id, "Rejected")}
                         disabled={updatingId === app.id}
-                        className="flex-1 flex items-center justify-center gap-2 py-2 px-3 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-500/10 transition-colors text-sm font-medium mr-2"
+                        className="flex items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 px-3 py-2.5 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                        title="Reject"
                       >
-                        <X size={16} /> {updatingId === app.id ? "Saving..." : "Reject"}
+                        <X size={18} />
                       </button>
                       <button
                         onClick={() => handleAction(app.id, "Accepted")}
                         disabled={updatingId === app.id}
-                        className="flex-1 flex items-center justify-center gap-2 py-2 px-3 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/10 transition-colors text-sm font-medium ml-2"
+                        className="flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-2.5 hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
+                        title="Accept"
                       >
-                        <Check size={16} /> {updatingId === app.id ? "Saving..." : "Accept"}
+                        <Check size={18} />
                       </button>
                     </>
-                  ) : (
-                    <div className="flex w-full items-center justify-between gap-2 py-2 text-sm font-medium">
-                      <button
-                        onClick={() => setSelectedApplication(app)}
-                        className="flex items-center justify-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-sm text-slate-200 hover:bg-white/10"
-                        title="View profile"
-                      >
-                        <Eye size={16} /> View
-                      </button>
-                      Status: <span className={app.status === "Accepted" ? "text-emerald-400" : "text-red-400"}>{app.status}</span>
-                    </div>
                   )}
                 </div>
               </div>
@@ -199,53 +230,134 @@ const CampaignApplications = () => {
       </AdminPanel>
 
       {selectedApplication ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
-            <div className="mb-4 flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs tracking-[0.2em] text-slate-400 uppercase">Influencer profile</p>
-                <h3 className="mt-1 text-xl font-semibold text-white">{selectedApplication.influencerName || "Unknown Influencer"}</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
+            
+            {/* Modal Header */}
+            <div className="flex items-start justify-between p-6 border-b border-white/10">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/20 text-lg font-bold text-indigo-300">
+                  {getInitials(selectedApplication.influencerName)}
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">{selectedApplication.influencerName || "Unknown Influencer"}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-sm text-slate-400">Campaign: {selectedApplication.campaignTitle || "-"}</span>
+                    <StatusBadge tone={selectedApplication.status === "Accepted" ? "success" : selectedApplication.status === "Rejected" ? "danger" : "warning"}>
+                      {selectedApplication.status}
+                    </StatusBadge>
+                  </div>
+                </div>
               </div>
-              <button onClick={() => setSelectedApplication(null)} className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10">
-                <X size={16} />
+              <button onClick={() => setSelectedApplication(null)} className="rounded-xl border border-white/10 p-2 text-slate-400 hover:bg-white/5 transition-colors">
+                <X size={20} />
               </button>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                <p className="text-xs text-slate-400">Applied on</p>
-                <p className="mt-1 text-sm text-white">{formatDateTime(selectedApplication.createdAt)}</p>
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-white/5 bg-white/5 p-4">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Applied On</p>
+                  <p className="text-sm font-semibold text-white">{formatDateTime(selectedApplication.createdAt)}</p>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/5 p-4">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Proposed Budget</p>
+                  <p className="text-sm font-semibold text-emerald-400">${Number(selectedApplication.proposedBudget || 0).toLocaleString()}</p>
+                </div>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                <p className="text-xs text-slate-400">Proposed budget</p>
-                <p className="mt-1 text-sm text-white">${Number(selectedApplication.proposedBudget || 0).toLocaleString()}</p>
+
+              <div>
+                <p className="text-sm font-semibold text-white mb-2">Message to Brand</p>
+                <div className="rounded-xl border border-white/5 bg-white/5 p-4 text-sm text-slate-300 leading-relaxed italic border-l-2 border-indigo-500/50">
+                  "{selectedApplication.message || "No specific message provided."}"
+                </div>
               </div>
+
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <p className="text-sm font-semibold text-white mb-2">Influencer Bio</p>
+                  <div className="rounded-xl border border-white/5 bg-white/5 p-4 text-sm text-slate-300 leading-relaxed min-h-[100px]">
+                    {selectedApplication.bio || "No bio provided."}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white mb-2">Proposal Details</p>
+                  <div className="rounded-xl border border-white/5 bg-white/5 p-4 text-sm text-slate-300 leading-relaxed min-h-[100px]">
+                    {selectedApplication.proposal || "No proposal provided."}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <p className="text-sm font-semibold text-white mb-2">Attached Links</p>
+                  <div className="rounded-xl border border-white/5 bg-white/5 p-4">
+                    <ul className="space-y-2 text-sm text-indigo-300">
+                      {(selectedApplication.links || []).length === 0 ? <li className="text-slate-500">-</li> : (selectedApplication.links || []).map((link, i) => (
+                        <li key={i} className="truncate hover:text-indigo-200 transition-colors">
+                          <a href={link} target="_blank" rel="noreferrer" className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500/50"></span>
+                            {link}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white mb-2">Media Files</p>
+                  <div className="rounded-xl border border-white/5 bg-white/5 p-4">
+                    <ul className="space-y-2 text-sm text-slate-300">
+                      {(selectedApplication.mediaFiles || []).length === 0 ? <li className="text-slate-500">-</li> : (selectedApplication.mediaFiles || []).map((item, i) => (
+                        <li key={i} className="truncate flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-3">
-              <p className="text-xs text-slate-400">Bio</p>
-              <p className="mt-1 text-sm text-white">{selectedApplication.bio || "-"}</p>
+            {/* Modal Footer (Actions) */}
+            <div className="p-6 border-t border-white/10 bg-[#0f172a] rounded-b-2xl flex items-center justify-end gap-3">
+              <button 
+                onClick={() => setSelectedApplication(null)} 
+                className="ih-button-secondary px-5 py-2.5 text-sm"
+              >
+                Close
+              </button>
+              
+              {selectedApplication.status === "Pending" && (
+                <>
+                  <button
+                    onClick={() => {
+                      handleAction(selectedApplication.id, "Rejected");
+                      setSelectedApplication(null);
+                    }}
+                    disabled={updatingId === selectedApplication.id}
+                    className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-red-500/20 transition-all"
+                  >
+                    <X size={16} /> Reject
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleAction(selectedApplication.id, "Accepted");
+                      setSelectedApplication(null);
+                    }}
+                    disabled={updatingId === selectedApplication.id}
+                    className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-500/20 transition-all"
+                  >
+                    <Check size={16} /> Accept
+                  </button>
+                </>
+              )}
             </div>
 
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-3">
-              <p className="text-xs text-slate-400">Proposal</p>
-              <p className="mt-1 text-sm text-white">{selectedApplication.proposal || "-"}</p>
-            </div>
-
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                <p className="text-xs text-slate-400">Attached links</p>
-                <ul className="mt-2 space-y-1 text-sm text-slate-200">
-                  {(selectedApplication.links || []).length === 0 ? <li>-</li> : (selectedApplication.links || []).map((link) => <li key={link} className="truncate">{link}</li>)}
-                </ul>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                <p className="text-xs text-slate-400">Media files</p>
-                <ul className="mt-2 space-y-1 text-sm text-slate-200">
-                  {(selectedApplication.mediaFiles || []).length === 0 ? <li>-</li> : (selectedApplication.mediaFiles || []).map((item) => <li key={item} className="truncate">{item}</li>)}
-                </ul>
-              </div>
-            </div>
           </div>
         </div>
       ) : null}

@@ -5,6 +5,7 @@ namespace InfluenceHub.Application.DTOs.Response;
 public record ReportResponse(
     Guid Id,
     Guid ApplicationId,
+    Guid CampaignId,
     string PostUrl,
     DateTime PostingDate,
     DateTime StartDate,

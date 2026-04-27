@@ -141,16 +141,16 @@ export const FilterTabs = ({ items, label = "Filter results", onSelect, value })
   </div>
 );
 
-export const EmptyState = ({ action, description, title }) => (
-  <div className="flex flex-col items-start gap-4 rounded-[1.5rem] border border-white/8 bg-white/4 px-5 py-6 text-left ih-min-0">
-    <div className="ih-icon-chip ih-icon-chip-brand h-11 w-11 rounded-2xl">
-      <Sparkles size={18} aria-hidden="true" />
+export const EmptyState = ({ action, description, title, icon: Icon = Sparkles }) => (
+  <div className="flex flex-col items-center justify-center gap-5 rounded-[2rem] border border-dashed border-white/10 bg-white/[0.02] px-6 py-12 text-center ih-min-0 transition-colors hover:bg-white/[0.03]">
+    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/5 text-white/50 ring-8 ring-white/5">
+      <Icon size={24} aria-hidden="true" />
     </div>
-    <div>
-      <h3 className="ih-text-primary text-lg font-semibold ih-clamp-2" title={title}>{title}</h3>
-      <p className="ih-text-muted mt-2 max-w-xl text-sm leading-6 ih-wrap ih-clamp-2" title={description}>{description}</p>
+    <div className="max-w-md">
+      <h3 className="ih-text-primary text-xl font-semibold ih-clamp-2" title={title}>{title}</h3>
+      <p className="ih-text-muted mt-3 text-sm leading-relaxed ih-wrap ih-clamp-3" title={description}>{description}</p>
     </div>
-    {action}
+    {action ? <div className="mt-2">{action}</div> : null}
   </div>
 );
 

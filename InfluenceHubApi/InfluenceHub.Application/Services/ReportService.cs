@@ -94,7 +94,7 @@ public class ReportService : IReportService
         await _applicationRepository.SaveChangesAsync(ct);
 
         return new ReportResponse(
-            report.Id, report.ApplicationId, report.PostUrl, report.PostingDate, report.StartDate, report.EndDate,
+            report.Id, report.ApplicationId, application.CampaignId, report.PostUrl, report.PostingDate, report.StartDate, report.EndDate,
             report.Views, report.Likes, report.Comments, report.Shares, ToPublicScreenshotPath(report.ScreenshotPath), report.Status,
             report.RejectionReason, report.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, application.Campaign.Title,
             MapPlatformInsights(report));
@@ -118,7 +118,7 @@ public class ReportService : IReportService
             .ToListAsync(ct);
 
         return reports.Select(r => new ReportResponse(
-            r.Id, r.ApplicationId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
+            r.Id, r.ApplicationId, r.Application.CampaignId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
             r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
             r.RejectionReason, r.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
             MapPlatformInsights(r))).ToList();

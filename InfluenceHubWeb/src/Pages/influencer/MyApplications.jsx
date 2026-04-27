@@ -8,7 +8,9 @@ import {
   ErrorState,
   LoadingState,
   StatusBadge,
+  FilterTabs,
 } from "../../Components/AdminShared";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { influencerService } from "../../services/api/influencerService";
 import { formatDate } from "../../utils/formatters";
@@ -20,6 +22,7 @@ const MyApplications = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filter, setFilter] = useState("All");
 
   const loadApplications = useCallback(async (signal) => {
     if (!token) return;
@@ -56,56 +59,82 @@ const MyApplications = () => {
           description="Track the status of all your pending, accepted, and rejected brand pitches."
         />
 
+        <div className="mb-6">
+          <FilterTabs
+            items={[
+              { label: "All", value: "All" },
+              { label: "Pending", value: "Pending" },
+              { label: "Accepted", value: "Accepted" },
+              { label: "Rejected", value: "Rejected" },
+            ]}
+            value={filter}
+            onSelect={setFilter}
+          />
+        </div>
+
         {loading ? (
           <LoadingState label="Loading your applications..." />
         ) : applications.length === 0 ? (
           <EmptyState
             title="No applications yet"
-            description="You haven't pitched to any campaigns yet. Visit Suggested Campaigns to find your first match."
+            description="You haven't pitched to any campaigns yet. Visit Campaigns to find your first match."
+            action={
+              <Link to="/dashboard/influencer/suggested" className="ih-button-primary px-5 py-2.5">
+                Browse Campaigns
+              </Link>
+            }
           />
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="ih-table min-w-[50rem]">
-              <thead className="ih-table-head">
-                <tr>
-                  <th scope="col" className="pb-3 pl-2">Campaign</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Brand Message/Context</th>
-                  <th scope="col">Date Applied</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applications.map((app) => (
-                  <tr key={app.id} className="ih-table-row border-b last:border-0 align-top">
-                    <td className="py-4 pl-2 min-w-[14rem]">
-                      <div className="flex gap-3">
-                        <div className="ih-icon-chip ih-icon-chip-emerald mt-1 h-10 w-10 shrink-0 rounded-2xl">
+        ) : (() => {
+          const filteredApps = applications.filter(app => filter === "All" || app.status === filter);
+          if (filteredApps.length === 0) {
+            return (
+              <EmptyState
+                title="No matching applications"
+                description={`You don't have any applications with the status "${filter}".`}
+                action={
+                  <button onClick={() => setFilter("All")} className="ih-button-secondary px-5 py-2.5">
+                    Clear filter
+                  </button>
+                }
+              />
+            );
+          }
+          return (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredApps.map((app) => (
+                <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.35rem] p-5 border border-white/8 transition-all">
+                  <div>
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="ih-icon-chip ih-icon-chip-emerald h-10 w-10 shrink-0 rounded-2xl flex items-center justify-center">
                           <ClipboardList size={18} />
                         </div>
-                        <div>
-                          <p className="ih-text-primary font-medium">{app.campaignTitle || "Unknown Campaign"}</p>
+                        <div className="min-w-0">
+                          <h3 className="ih-text-primary truncate font-medium">{app.campaignTitle || "Unknown Campaign"}</h3>
+                          <p className="ih-text-muted text-xs truncate mt-0.5">{formatDate(app.createdAt)}</p>
                         </div>
                       </div>
-                    </td>
-                    <td className="py-4">
-                      <StatusBadge tone={getStatusTone(app.status)}>
-                        {humanizeEnum(app.status)}
-                      </StatusBadge>
-                    </td>
-                    <td className="py-4 max-w-[20rem]">
-                      <p className="ih-text-secondary text-sm line-clamp-2">
+                    </div>
+                    
+                    <div className="mb-4">
+                      <p className="ih-text-subtle text-xs mb-1">Your Pitch</p>
+                      <p className="ih-text-secondary text-sm line-clamp-3">
                         {app.message || "No message included."}
                       </p>
-                    </td>
-                    <td className="py-4 ih-text-secondary text-sm">
-                      {formatDate(app.createdAt)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-4">
+                    <span className="text-xs text-slate-400">Status</span>
+                    <StatusBadge tone={getStatusTone(app.status)}>
+                      {humanizeEnum(app.status)}
+                    </StatusBadge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
       </Panel>
     </DashboardPage>
   );

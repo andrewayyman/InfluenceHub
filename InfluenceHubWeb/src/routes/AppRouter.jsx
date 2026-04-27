@@ -11,19 +11,20 @@ const Register = lazy(() => import("../Pages/auth/Register"));
 const AdminDashboard = lazy(() => import("../Pages/admin/AdminDashboard"));
 const AdminUsers = lazy(() => import("../Pages/admin/AdminUsers"));
 const AdminCampaigns = lazy(() => import("../Pages/admin/AdminCampaigns"));
-const AdminReports = lazy(() => import("../Pages/admin/AdminReports"));
 const AdminMessages = lazy(() => import("../Pages/admin/AdminMessages"));
 const BrandDashboard = lazy(() => import("../Pages/brand/BrandDashboard"));
 const BrandStub = lazy(() => import("../Pages/brand/BrandStub"));
 const CreateCampaign = lazy(() => import("../Pages/brand/CreateCampaign"));
 const BrandCampaigns = lazy(() => import("../Pages/brand/BrandCampaigns"));
 const CampaignApplications = lazy(() => import("../Pages/brand/CampaignApplications"));
+const BrandReports = lazy(() => import("../Pages/brand/BrandReports"));
 
 const InfluencerDashboard = lazy(() => import("../Pages/influencer/InfluencerDashboard"));
 const SuggestedCampaigns = lazy(() => import("../Pages/influencer/SuggestedCampaigns"));
 const MyApplications = lazy(() => import("../Pages/influencer/MyApplications"));
 const ActiveCampaigns = lazy(() => import("../Pages/influencer/ActiveCampaigns"));
 const SubmitReport = lazy(() => import("../Pages/influencer/SubmitReport"));
+const CampaignInsights = lazy(() => import("../Pages/influencer/CampaignInsights"));
 const InfluencerProfile = lazy(() => import("../Pages/influencer/InfluencerProfile"));
 
 const withSuspense = (element) => (
@@ -78,7 +79,6 @@ export const router = createBrowserRouter([
       { index: true, element: withSuspense(<AdminDashboard />) },
       { path: "users", element: withSuspense(<AdminUsers />) },
       { path: "campaigns", element: withSuspense(<AdminCampaigns />) },
-      { path: "reports", element: withSuspense(<AdminReports />) },
       { path: "messages", element: withSuspense(<AdminMessages />) },
     ],
   },
@@ -111,13 +111,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "reports",
-        element: withSuspense(
-          <BrandStub
-            kicker="Performance"
-            title="Campaign reports"
-            description="Consolidated influencer submissions and ROI signals will surface here once reporting endpoints are wired for brands."
-          />,
-        ),
+        element: withSuspense(<BrandReports />),
       },
     ],
   },
@@ -136,6 +130,7 @@ export const router = createBrowserRouter([
       { path: "applications", element: withSuspense(<MyApplications />) },
       { path: "active", element: withSuspense(<ActiveCampaigns />) },
       { path: "report", element: withSuspense(<SubmitReport />) },
+      { path: "insights", element: withSuspense(<CampaignInsights />) },
       { path: "profile", element: withSuspense(<InfluencerProfile />) },
     ],
   },

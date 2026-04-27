@@ -15,5 +15,8 @@ public record ApplicationResponse(
     string Proposal,
     decimal ProposedBudget,
     List<string> Links,
-    List<string> MediaFiles
+    List<string> MediaFiles,
+    CampaignStatus CampaignStatus = CampaignStatus.Open,
+    string BrandName = "",
+    DateTime? CampaignDeadline = null
 );
