@@ -2,6 +2,7 @@ using InfluenceHub.Application.DTOs.Request;
 using InfluenceHub.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using InfluenceHub.Domain.Enums;
 
 namespace InfluenceHub.WebApi.Controllers;
 
@@ -80,5 +81,36 @@ public class BrandsController : BaseApiController
         {
             return BadRequest(new { message = ex.Message });
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetReports(CancellationToken ct)
+    {
+        var reports = await _brandService.GetReportsAsync(UserId, ct);
+        return Ok(reports);
+    }
+
+    [HttpGet("{reportId:guid}")]
+    public async Task<IActionResult> GetReport(Guid reportId, CancellationToken ct)
+    {
+        var report = await _brandService.GetReportAsync(UserId, reportId, ct);
+        if (report is null) return NotFound();
+        return Ok(report);
+    }
+
+    [HttpPatch("{reportId:guid}")]
+    public async Task<IActionResult> UpdateReportStatus(Guid reportId, [FromBody] UpdateReportStatusRequest request, CancellationToken ct)
+    {
+        var success = await _brandService.UpdateReportStatusAsync(UserId, reportId, request.Status, ct);
+        if (!success) return NotFound();
+        return NoContent();
+    }
+
+    [HttpPost("{reportId:guid}")]
+    public async Task<IActionResult> AddReportFeedback(Guid reportId, [FromBody] AddReportFeedbackRequest request, CancellationToken ct)
+    {
+        var success = await _brandService.AddReportFeedbackAsync(UserId, reportId, request.Feedback, ct);
+        if (!success) return NotFound();
+        return NoContent();
     }
 }

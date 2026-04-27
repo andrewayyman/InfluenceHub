@@ -1,4 +1,4 @@
-import { apiRequest, buildQueryString } from "./client";
+import { apiRequest, buildQueryString, resolveApiUrl } from "./client";
 
 export const influencerService = {
   getProfile: (token, signal) =>
@@ -11,6 +11,11 @@ export const influencerService = {
       token,
       signal,
     }),
+
+  getOpenCampaigns: (filters = {}, token, signal) => {
+    const query = buildQueryString(filters);
+    return apiRequest(`/api/Campaigns/GetOpenCampaigns${query}`, { method: "GET", token, signal });
+  },
 
   getSuggestedCampaigns: (filters = {}, token, signal) => {
     const query = buildQueryString(filters);
@@ -32,7 +37,7 @@ export const influencerService = {
     apiRequest("/api/Influencers/GetMyApplications", { method: "GET", token, signal }),
 
   submitReport: async (formData, token) => {
-    const response = await fetch("/api/Reports/SubmitReport", {
+    const response = await fetch(resolveApiUrl("/api/Reports/SubmitReport"), {
       method: "POST",
       body: formData,
       headers: {
@@ -45,7 +50,15 @@ export const influencerService = {
        let errorMsg = "Failed to submit report.";
        try {
            const err = await response.json();
-           if (err && err.message) errorMsg = err.message;
+           if (err && err.message) {
+               errorMsg = err.message;
+           } else if (err && err.errors) {
+               // Handle ASP.NET Core validation errors
+               const firstError = Object.values(err.errors).flat()[0];
+               if (firstError) errorMsg = firstError;
+           } else if (err && err.title) {
+               errorMsg = err.title;
+           }
        } catch {}
        throw new Error(errorMsg);
     }

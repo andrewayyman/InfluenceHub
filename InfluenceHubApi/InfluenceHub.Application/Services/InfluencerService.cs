@@ -101,13 +101,15 @@ public class InfluencerService : IInfluencerService
 
         var applications = await _applicationRepository.Query()
             .Include(a => a.Campaign)
+                .ThenInclude(c => c.Brand)
             .Where(a => a.InfluencerId == influencer.Id)
             .OrderByDescending(a => a.CreatedAt)
             .ToListAsync(ct);
 
         return applications.Select(a => new ApplicationResponse(
             a.Id, a.CampaignId, a.Campaign.Title, a.InfluencerId, influencer.Name, a.Status, a.Message, a.CreatedAt,
-            a.Bio, a.Proposal, a.ProposedBudget, SafeDeserializePlatforms(a.Links), SafeDeserializePlatforms(a.MediaFiles))).ToList();
+            a.Bio, a.Proposal, a.ProposedBudget, SafeDeserializePlatforms(a.Links), SafeDeserializePlatforms(a.MediaFiles),
+            a.Campaign.Status, a.Campaign.Brand?.Name ?? string.Empty, a.Campaign.Deadline)).ToList();
     }
 
     private static InfluencerProfileResponse MapToResponse(Influencer i)

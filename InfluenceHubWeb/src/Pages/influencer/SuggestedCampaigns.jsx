@@ -24,6 +24,8 @@ const SuggestedCampaigns = () => {
   const [error, setError] = useState("");
   const [applyingId, setApplyingId] = useState("");
   const [appliedIds, setAppliedIds] = useState(new Set());
+  const [suggestedIds, setSuggestedIds] = useState(new Set());
+  const [showOnlySuggested, setShowOnlySuggested] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [applyingCampaign, setApplyingCampaign] = useState(null);
   const [applyForm, setApplyForm] = useState({
@@ -42,11 +44,14 @@ const SuggestedCampaigns = () => {
     setError("");
 
     try {
-      // The API takes platform and location, we can pass search as a param if backend supports it,
-      // but for now we'll fetch and filter client side if needed, or pass it as search.
-      // `getOpenCampaigns` in backend accepts platform & location.
-      const response = await influencerService.getSuggestedCampaigns({}, token, signal);
-      setCampaigns(response);
+      const [allCampaigns, suggested, apps] = await Promise.all([
+        influencerService.getOpenCampaigns({}, token, signal),
+        influencerService.getSuggestedCampaigns({}, token, signal),
+        influencerService.getMyApplications(token, signal)
+      ]);
+      setCampaigns(allCampaigns || []);
+      setSuggestedIds(new Set((suggested || []).map(c => c.id)));
+      setAppliedIds(new Set((apps || []).map(a => a.campaignId)));
     } catch (err) {
       if (!isAbortError(err) && !signal?.aborted) {
         setError(err.message || "Unable to load campaigns.");
@@ -117,10 +122,16 @@ const SuggestedCampaigns = () => {
     }
   };
 
-  const filteredCampaigns = campaigns.filter(c => 
-    c.title?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-    c.platforms?.some(p => p.toLowerCase().includes(debouncedSearch.toLowerCase()))
-  );
+  const filteredCampaigns = campaigns.filter(c => {
+    const matchesSearch = c.title?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      c.platforms?.some(p => p.toLowerCase().includes(debouncedSearch.toLowerCase()));
+      
+    if (showOnlySuggested && !suggestedIds.has(c.id)) {
+      return false;
+    }
+    
+    return matchesSearch;
+  });
 
   return (
     <DashboardPage>
@@ -128,16 +139,37 @@ const SuggestedCampaigns = () => {
       <Panel tone="brand">
         <PanelHeader
           kicker="Discover"
-          title="Suggested Campaigns"
+          title="Campaigns"
           description="Find brands that match your aesthetic and audience. Apply to deals and start creating."
         />
 
-        <div className="mb-6">
-          <SearchField
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search campaigns by title or platform..."
-          />
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex-1 max-w-md">
+            <SearchField
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search campaigns by title or platform..."
+            />
+          </div>
+          
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <span className="text-sm font-medium text-slate-300">Show only suggested</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={showOnlySuggested}
+              onClick={() => setShowOnlySuggested(!showOnlySuggested)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-[#0f172a] ${
+                showOnlySuggested ? "bg-emerald-500" : "bg-white/10"
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  showOnlySuggested ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+          </label>
         </div>
 
         {loading ? (
@@ -146,6 +178,16 @@ const SuggestedCampaigns = () => {
           <EmptyState
             title="No campaigns found"
             description="We couldn't find any open campaigns matching your criteria right now. Check back later!"
+            action={
+              (search || showOnlySuggested) ? (
+                <button 
+                  onClick={() => { setSearch(""); setShowOnlySuggested(false); }} 
+                  className="ih-button-secondary px-5 py-2.5"
+                >
+                  Clear filters
+                </button>
+              ) : null
+            }
           />
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -156,13 +198,20 @@ const SuggestedCampaigns = () => {
               return (
                 <div key={campaign.id} className="ih-surface flex flex-col justify-between rounded-[1.35rem] p-5 border border-white/8">
                   <div>
-                    <div className="mb-3 flex items-center gap-3">
+                    <div className="mb-3 flex items-start gap-3">
                       <div className="ih-icon-chip ih-icon-chip-brand flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl">
                         <Megaphone size={18} />
                       </div>
-                      <div className="min-w-0">
-                        <h3 className="ih-text-primary truncate font-medium">{campaign.title}</h3>
-                        <p className="ih-text-muted text-xs truncate">Platforms: {campaign.platforms?.join(", ") || "—"}</p>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="ih-text-primary truncate font-medium">{campaign.title}</h3>
+                          {suggestedIds.has(campaign.id) && (
+                            <span className="shrink-0 rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400 border border-emerald-500/20">
+                              Suggested for you
+                            </span>
+                          )}
+                        </div>
+                        <p className="ih-text-muted text-xs truncate mt-0.5">Platforms: {campaign.platforms?.join(", ") || "—"}</p>
                       </div>
                     </div>
                     

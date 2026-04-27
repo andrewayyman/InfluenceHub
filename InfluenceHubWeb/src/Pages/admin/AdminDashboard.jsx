@@ -25,7 +25,6 @@ import {
   getCampaigns,
   getContactMessages,
   getDashboard,
-  getReports,
   getUsers,
   markContactReplied,
 } from "../../services/api/adminService";
@@ -49,7 +48,6 @@ import { isAbortError } from "../../services/api/client";
 
 const EMPTY_DASHBOARD_DATA = {
   stats: null,
-  pendingReports: [],
   unreadMessages: [],
   recentUsers: [],
   campaigns: [],
@@ -78,7 +76,6 @@ const AdminDashboard = () => {
     try {
       const sections = [
         { key: "stats", label: "overview", request: getDashboard(token, signal) },
-        { key: "pendingReports", label: "reports", request: getReports(token, { status: "Pending" }, signal) },
         { key: "unreadMessages", label: "messages", request: getContactMessages(token, { isReplied: false }, signal) },
         { key: "recentUsers", label: "users", request: getUsers(token, {}, signal), select: (users) => users.slice(0, 5) },
         { key: "campaigns", label: "campaigns", request: getCampaigns(token, {}, signal) },
@@ -253,71 +250,14 @@ const AdminDashboard = () => {
 
       {error ? <ErrorState message={error} onRetry={() => loadDashboard()} /> : null}
 
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
         <AdminMetricCard index={0} accentClass="ih-metric-card-brand" icon={Users} label="Total users" value={stats?.totalUsers || 0} note="All registered accounts across the marketplace." />
         <AdminMetricCard index={1} accentClass="ih-metric-card-warm" icon={ClipboardList} label="Campaigns" value={stats?.totalCampaigns || 0} note="Campaigns created and tracked by the platform." />
         <AdminMetricCard index={2} accentClass="ih-metric-card-success" icon={MessageSquareText} label="Applications" value={stats?.totalApplications || 0} note="Applications moving brands toward influencer selection." />
-        <AdminMetricCard index={3} accentClass="ih-metric-card-danger" icon={AlertCircle} label="Pending reports" value={stats?.pendingReports || 0} note="Reports waiting for admin validation and final approval." />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-        <AdminPanel tone="brand">
-          <AdminPanelHeader
-            kicker="Priority queue"
-            title="Pending report review"
-            description="Start with the reports most likely to unblock campaign completion today."
-            actions={(
-              <TransitionLink to="/dashboard/admin/reports" className="ih-link ih-focus-ring rounded-sm text-sm font-medium">
-                View full queue
-              </TransitionLink>
-            )}
-          />
+      <div className="grid gap-6 xl:grid-cols-1">
 
-          {dashboardData?.pendingReports.length ? (
-            <div className="space-y-4">
-              {dashboardData.pendingReports.slice(0, 3).map((report) => (
-                <article key={report.id} className="rounded-[1.4rem] border border-white/8 bg-white/4 p-4 ih-grid-min">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="ih-min-0">
-                      <p className="text-sm font-semibold text-white ih-clamp-2" title={report.campaignTitle}>{report.campaignTitle}</p>
-                      <p className="ih-text-muted mt-1 text-sm ih-wrap ih-clamp-2" title={`${report.influencerName} · ${report.influencerEmail}`}>
-                        {report.influencerName} · {report.influencerEmail}
-                      </p>
-                    </div>
-                    <StatusBadge tone={getStatusTone(report.status)}>{humanizeEnum(report.status)}</StatusBadge>
-                  </div>
-
-                  <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                    <div className="rounded-2xl border border-white/8 bg-slate-950/20 px-3 py-3 ih-grid-min">
-                      <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Views</p>
-                      <p className="mt-2 text-lg font-semibold text-white ih-truncate" title={formatCompactNumber(report.views)}>{formatCompactNumber(report.views)}</p>
-                    </div>
-                    <div className="rounded-2xl border border-white/8 bg-slate-950/20 px-3 py-3 ih-grid-min">
-                      <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Engagement</p>
-                      <p className="mt-2 text-lg font-semibold text-white ih-truncate" title={formatCompactNumber(getEngagementTotal(report))}>{formatCompactNumber(getEngagementTotal(report))}</p>
-                    </div>
-                    <div className="rounded-2xl border border-white/8 bg-slate-950/20 px-3 py-3 ih-grid-min">
-                      <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Rate</p>
-                      <p className="mt-2 text-lg font-semibold text-white ih-truncate" title={formatPercent(getEngagementRate(report))}>{formatPercent(getEngagementRate(report))}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm">
-                    <p className="ih-text-muted ih-wrap ih-clamp-2" title={`Submitted for ${formatDate(report.startDate)} to ${formatDate(report.endDate)}`}>
-                      Submitted for {formatDate(report.startDate)} to {formatDate(report.endDate)}
-                    </p>
-                    <a href={report.postUrl} target="_blank" rel="noreferrer" className="ih-link ih-focus-ring rounded-sm inline-flex items-center gap-1 font-medium ih-truncate" title={report.postUrl}>
-                      Open post
-                      <ArrowUpRight size={14} aria-hidden="true" />
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <EmptyState title="No pending reports right now" description="The review queue is clear. New submitted reports will show up here first." />
-          )}
-        </AdminPanel>
 
         <AdminPanel tone="emerald">
           <AdminPanelHeader

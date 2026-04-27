@@ -287,6 +287,7 @@ public class AdminService : IAdminService
         return reports.Select(r => new ReportResponse(
                 r.Id,
                 r.ApplicationId,
+                r.Application?.CampaignId ?? Guid.Empty,
                 r.PostUrl,
                 r.PostingDate,
                 r.StartDate,

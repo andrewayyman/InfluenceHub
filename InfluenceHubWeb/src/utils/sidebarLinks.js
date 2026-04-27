@@ -80,7 +80,7 @@ export const sidebarLinks = {
       icon: User,
     },
     {
-      name: "Suggested Campaigns",
+      name: "Campaigns",
       path: "/dashboard/influencer/suggested",
       icon: Megaphone,
     },
@@ -98,6 +98,11 @@ export const sidebarLinks = {
       name: "Submit Report",
       path: "/dashboard/influencer/report",
       icon: FileText,
+    },
+    {
+      name: "Campaign Insights",
+      path: "/dashboard/influencer/insights",
+      icon: BarChart3,
     },
   ],
 
@@ -122,11 +127,6 @@ export const sidebarLinks = {
       name: "Campaigns",
       path: "/dashboard/admin/campaigns",
       icon: Megaphone,
-    },
-    {
-      name: "Reports",
-      path: "/dashboard/admin/reports",
-      icon: BarChart3,
     },
     {
       name: "Contact Messages",

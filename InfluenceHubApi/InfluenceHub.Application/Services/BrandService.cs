@@ -16,6 +16,7 @@ public class BrandService : IBrandService
     private readonly IRepository<Tag> _tagRepository;
     private readonly IRepository<CampaignTag> _campaignTagRepository;
     private readonly ICampaignRepository _campaignRepo;
+    private readonly IRepository<CampaignReport> _reportRepository;
 
     public BrandService(
         IBrandRepository brandRepository,
@@ -23,7 +24,8 @@ public class BrandService : IBrandService
         IRepository<Campaign> campaignRepository,
         IRepository<Tag> tagRepository,
         IRepository<CampaignTag> campaignTagRepository,
-        ICampaignRepository campaignRepo)
+        ICampaignRepository campaignRepo,
+        IRepository<CampaignReport> reportRepository)
     {
         _brandRepository = brandRepository;
         _brandRepo = brandRepo;
@@ -31,6 +33,7 @@ public class BrandService : IBrandService
         _tagRepository = tagRepository;
         _campaignTagRepository = campaignTagRepository;
         _campaignRepo = campaignRepo;
+        _reportRepository = reportRepository;
     }
 
     public async Task<BrandProfileResponse?> GetProfileAsync(Guid userId, CancellationToken ct = default)
@@ -151,6 +154,98 @@ public class BrandService : IBrandService
             c.Applications.Count, c.CampaignTags.Select(ct => ct.Tag.Name).ToList())).ToList();
     }
 
+    public async Task<IReadOnlyList<ReportResponse>> GetReportsAsync(Guid userId, CancellationToken ct = default)
+    {
+        var brand = await _brandRepository.GetByUserIdAsync(userId, ct);
+        if (brand is null) return [];
+
+        var reports = await _reportRepository.Query()
+            .Include(r => r.Application)
+            .ThenInclude(a => a.Campaign)
+            .Include(r => r.Application)
+            .ThenInclude(a => a.Influencer)
+            .ThenInclude(i => i.User)
+            .Where(r => r.Application.Campaign.BrandId == brand.Id)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToListAsync(ct);
+
+        return reports.Select(r => new ReportResponse(
+            r.Id, r.ApplicationId, r.Application.CampaignId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
+            r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
+            r.RejectionReason, r.ReviewedAt, r.Application.Influencer.Name, r.Application.Influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
+            MapPlatformInsights(r))).ToList();
+    }
+
+    public async Task<ReportResponse?> GetReportAsync(Guid userId, Guid reportId, CancellationToken ct = default)
+    {
+        var brand = await _brandRepository.GetByUserIdAsync(userId, ct);
+        if (brand is null) return null;
+
+        var r = await _reportRepository.Query()
+            .Include(r => r.Application)
+            .ThenInclude(a => a.Campaign)
+            .Include(r => r.Application)
+            .ThenInclude(a => a.Influencer)
+            .ThenInclude(i => i.User)
+            .FirstOrDefaultAsync(r => r.Id == reportId && r.Application.Campaign.BrandId == brand.Id, ct);
+
+        if (r is null) return null;
+
+        return new ReportResponse(
+            r.Id, r.ApplicationId, r.Application.CampaignId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
+            r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
+            r.RejectionReason, r.ReviewedAt, r.Application.Influencer.Name, r.Application.Influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
+            MapPlatformInsights(r));
+    }
+
+    public async Task<bool> UpdateReportStatusAsync(Guid userId, Guid reportId, ReportStatus status, CancellationToken ct = default)
+    {
+        var brand = await _brandRepository.GetByUserIdAsync(userId, ct);
+        if (brand is null) return false;
+
+        var report = await _reportRepository.Query()
+            .Include(r => r.Application)
+            .ThenInclude(a => a.Campaign)
+            .FirstOrDefaultAsync(r => r.Id == reportId && r.Application.Campaign.BrandId == brand.Id, ct);
+
+        if (report is null) return false;
+
+        report.Status = status;
+        if (status == ReportStatus.Approved || status == ReportStatus.Rejected)
+        {
+            report.ReviewedAt = DateTime.UtcNow;
+            if (status == ReportStatus.Approved)
+            {
+                report.Application.Campaign.Status = CampaignStatus.Completed;
+            }
+        }
+
+        _reportRepository.Update(report);
+        await _reportRepository.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<bool> AddReportFeedbackAsync(Guid userId, Guid reportId, string feedback, CancellationToken ct = default)
+    {
+        var brand = await _brandRepository.GetByUserIdAsync(userId, ct);
+        if (brand is null) return false;
+
+        var report = await _reportRepository.Query()
+            .Include(r => r.Application)
+            .ThenInclude(a => a.Campaign)
+            .FirstOrDefaultAsync(r => r.Id == reportId && r.Application.Campaign.BrandId == brand.Id, ct);
+
+        if (report is null) return false;
+
+        report.RejectionReason = feedback;
+        report.Status = ReportStatus.RevisionRequested;
+        report.ReviewedAt = DateTime.UtcNow;
+
+        _reportRepository.Update(report);
+        await _reportRepository.SaveChangesAsync(ct);
+        return true;
+    }
+
     private async Task SetCampaignTagsAsync(Guid campaignId, List<string> tagNames, CancellationToken ct)
     {
         var normalizedNames = tagNames
@@ -190,5 +285,42 @@ public class BrandService : IBrandService
         if (string.IsNullOrWhiteSpace(json)) return [];
         try { return System.Text.Json.JsonSerializer.Deserialize<List<string>>(json) ?? []; }
         catch { return []; }
+    }
+
+    private static string ToPublicScreenshotPath(string relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return string.Empty;
+
+        return $"/uploads/reports/{relativePath.Replace("\\", "/")}";
+    }
+
+    private static List<PlatformReportInsightResponse> MapPlatformInsights(CampaignReport report)
+    {
+        if (!string.IsNullOrWhiteSpace(report.Platform))
+        {
+            try
+            {
+                var parsed = System.Text.Json.JsonSerializer.Deserialize<List<PlatformReportInsightResponse>>(report.Platform);
+                if (parsed is { Count: > 0 })
+                {
+                    return parsed;
+                }
+            }
+            catch (System.Text.Json.JsonException)
+            {
+            }
+        }
+
+        return
+        [
+            new PlatformReportInsightResponse(
+                string.IsNullOrWhiteSpace(report.Platform) ? "Unknown" : report.Platform,
+                report.PostUrl,
+                report.Views,
+                report.Likes,
+                report.Comments,
+                report.Shares)
+        ];
     }
 }
