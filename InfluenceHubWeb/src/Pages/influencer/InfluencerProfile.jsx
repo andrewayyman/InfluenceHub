@@ -195,31 +195,31 @@ const InfluencerProfile = () => {
           />
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <p className="text-xs text-slate-400">Name</p>
-              <p className="mt-1 text-sm text-white">{formData.name || "-"}</p>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs ih-text-muted">Name</p>
+              <p className="mt-1 text-sm ih-text-primary">{formData.name || "-"}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <p className="text-xs text-slate-400">Followers</p>
-              <p className="mt-1 text-sm text-white">{Number(formData.followersCount || 0).toLocaleString()}</p>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs ih-text-muted">Followers</p>
+              <p className="mt-1 text-sm ih-text-primary">{Number(formData.followersCount || 0).toLocaleString()}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/5 p-4 md:col-span-2">
-              <p className="text-xs text-slate-400">Bio</p>
-              <p className="mt-1 text-sm text-white">{formData.bio || "-"}</p>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 md:col-span-2">
+              <p className="text-xs ih-text-muted">Bio</p>
+              <p className="mt-1 text-sm ih-text-primary">{formData.bio || "-"}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <p className="text-xs text-slate-400">Location</p>
-              <p className="mt-1 text-sm text-white">{formData.location || "-"}</p>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs ih-text-muted">Location</p>
+              <p className="mt-1 text-sm ih-text-primary">{formData.location || "-"}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-              <p className="text-xs text-slate-400">Platforms</p>
-              <p className="mt-1 text-sm text-white">{formData.platforms.join(", ") || "-"}</p>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs ih-text-muted">Platforms</p>
+              <p className="mt-1 text-sm ih-text-primary">{formData.platforms.join(", ") || "-"}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/5 p-4 md:col-span-2">
-              <p className="text-xs text-slate-400">Tags</p>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 md:col-span-2">
+              <p className="text-xs ih-text-muted">Tags</p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {formData.tags.length === 0 ? <span className="text-sm text-slate-300">-</span> : formData.tags.map((tag) => (
-                  <span key={tag} className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-200">{tag}</span>
+                {formData.tags.length === 0 ? <span className="text-sm ih-text-secondary">-</span> : formData.tags.map((tag) => (
+                  <span key={tag} className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-800">{tag}</span>
                 ))}
               </div>
             </div>
@@ -248,12 +248,12 @@ const InfluencerProfile = () => {
           <div className="grid gap-6 md:grid-cols-2">
             {/* Core Info */}
             <div className="space-y-6">
-              <h3 className="text-lg font-medium text-white border-b border-white/10 pb-2">Core Identity</h3>
+              <h3 className="text-lg font-medium ih-text-primary border-b border-slate-200 pb-2">Core Identity</h3>
               
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Display Name</label>
+                <label className="text-sm font-medium ih-text-primary">Display Name</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 ih-text-primary/40" size={16} />
                   <input
                     type="text"
                     name="name"
@@ -267,7 +267,7 @@ const InfluencerProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Bio</label>
+                <label className="text-sm font-medium ih-text-primary">Bio</label>
                 <textarea
                   name="bio"
                   rows={4}
@@ -280,7 +280,7 @@ const InfluencerProfile = () => {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Total Followers / Subs</label>
+                  <label className="text-sm font-medium ih-text-primary">Total Followers / Subs</label>
                   <input
                     type="number"
                     name="followersCount"
@@ -291,7 +291,7 @@ const InfluencerProfile = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Location</label>
+                  <label className="text-sm font-medium ih-text-primary">Location</label>
                   <input
                     type="text"
                     name="location"
@@ -304,7 +304,7 @@ const InfluencerProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Platforms</label>
+                <label className="text-sm font-medium ih-text-primary">Platforms</label>
                 <div className="flex flex-wrap gap-3">
                   {PLATFORM_OPTIONS.map((platform) => {
                     const selected = formData.platforms.includes(platform);
@@ -319,17 +319,17 @@ const InfluencerProfile = () => {
                           "flex w-[86px] flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 transition-all duration-150 focus:outline-none",
                           selected
                             ? "border-indigo-500 bg-indigo-500/10 ring-1 ring-indigo-500/30"
-                            : "border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/10",
+                            : "border-slate-200 bg-slate-50 hover:border-slate-900/25 hover:bg-slate-100",
                         ].join(" ")}
                       >
                         {Icon && (
                           <Icon
                             size={22}
                             style={{ color: selected ? brandColor : undefined }}
-                            className={selected ? "" : "text-slate-400"}
+                            className={selected ? "" : "ih-text-muted"}
                           />
                         )}
-                        <span className={["text-xs font-medium leading-tight text-center", selected ? "text-white" : "text-slate-400"].join(" ")}>
+                        <span className={["text-xs font-medium leading-tight text-center", selected ? "ih-text-primary" : "ih-text-muted"].join(" ")}>
                           {platform}
                         </span>
                       </button>
@@ -339,10 +339,10 @@ const InfluencerProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Niche Tags</label>
-                <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3">
+                <label className="text-sm font-medium ih-text-primary">Niche Tags</label>
+                <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-slate-200 bg-black/20 p-3">
                   {tagNames.map((tag) => (
-                    <label key={tag} className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-300 hover:border-white/30">
+                    <label key={tag} className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5 text-xs ih-text-secondary hover:border-slate-900/30">
                       <input
                         type="checkbox"
                         className="accent-indigo-500"
@@ -353,7 +353,7 @@ const InfluencerProfile = () => {
                     </label>
                   ))}
                   {tagNames.length === 0 ? (
-                    <p className="text-sm text-slate-400">No tags are available yet. Ask an admin to create one first.</p>
+                    <p className="text-sm ih-text-muted">No tags are available yet. Ask an admin to create one first.</p>
                   ) : null}
                 </div>
               </div>
@@ -361,12 +361,12 @@ const InfluencerProfile = () => {
 
             {/* Social Links */}
             <div className="space-y-6">
-              <h3 className="text-lg font-medium text-white border-b border-white/10 pb-2">Social Links & Portfolios</h3>
+              <h3 className="text-lg font-medium ih-text-primary border-b border-slate-200 pb-2">Social Links & Portfolios</h3>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Instagram</label>
+                <label className="text-sm font-medium ih-text-primary">Instagram</label>
                 <div className="relative">
-                  <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+                  <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 ih-text-primary/40" size={16} />
                   <input
                     type="url"
                     name="instagramUrl"
@@ -379,9 +379,9 @@ const InfluencerProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">TikTok</label>
+                <label className="text-sm font-medium ih-text-primary">TikTok</label>
                 <div className="relative">
-                  <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+                  <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 ih-text-primary/40" size={16} />
                   <input
                     type="url"
                     name="tikTokUrl"
@@ -394,9 +394,9 @@ const InfluencerProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">YouTube</label>
+                <label className="text-sm font-medium ih-text-primary">YouTube</label>
                 <div className="relative">
-                  <Youtube className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+                  <Youtube className="absolute left-3 top-1/2 -translate-y-1/2 ih-text-primary/40" size={16} />
                   <input
                     type="url"
                     name="youTubeUrl"
@@ -409,9 +409,9 @@ const InfluencerProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Twitter / X</label>
+                <label className="text-sm font-medium ih-text-primary">Twitter / X</label>
                 <div className="relative">
-                  <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+                  <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 ih-text-primary/40" size={16} />
                   <input
                     type="url"
                     name="twitterUrl"
@@ -424,9 +424,9 @@ const InfluencerProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">Facebook</label>
+                <label className="text-sm font-medium ih-text-primary">Facebook</label>
                 <div className="relative">
-                  <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+                  <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 ih-text-primary/40" size={16} />
                   <input
                     type="url"
                     name="facebookUrl"
@@ -439,9 +439,9 @@ const InfluencerProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white">LinkedIn</label>
+                <label className="text-sm font-medium ih-text-primary">LinkedIn</label>
                 <div className="relative">
-                  <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
+                  <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 ih-text-primary/40" size={16} />
                   <input
                     type="url"
                     name="linkedInUrl"
@@ -455,7 +455,7 @@ const InfluencerProfile = () => {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-white/10">
+          <div className="pt-6 border-t border-slate-200">
             <div className="flex justify-end gap-3">
               <button
                 type="button"

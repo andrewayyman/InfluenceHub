@@ -40,9 +40,9 @@ const Navbar = ({ showSectionLinks = true }) => {
     <nav className="ih-nav-shell fixed top-0 z-50 w-full border-b backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
         <div className="min-w-0">
-          <TransitionLink to="/" className="ih-focus-ring inline-flex items-center gap-3 rounded-sm text-xl font-semibold tracking-[-0.03em] text-white sm:text-2xl">
+          <TransitionLink to="/" className="ih-focus-ring inline-flex items-center gap-3 rounded-sm text-xl font-semibold tracking-[-0.03em] ih-text-primary sm:text-2xl">
             <span className="ih-brand-mark">IH</span>
-            <span>InfluenceHub</span>
+            <span>Influix</span>
           </TransitionLink>
           <p className="ih-text-subtle mt-1 hidden text-xs tracking-[0.22em] uppercase sm:block">Campaign matching and reporting for MENA teams</p>
         </div>

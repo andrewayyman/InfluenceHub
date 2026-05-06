@@ -14,7 +14,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
   const closeButtonRef = useRef(null);
   const { logout, user } = useAuth();
   const activeRole = user?.role ?? role ?? "admin";
-  const profileName = user?.displayName || user?.email || "InfluenceHub";
+  const profileName = user?.displayName || user?.email || "Influix";
   const profileInitials = getUserInitials(user);
 
   useOverlayAccessibility({
@@ -55,8 +55,8 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
         role={isOpen ? "dialog" : undefined}
         aria-modal={isOpen ? "true" : undefined}
         tabIndex={isOpen ? -1 : undefined}
-        className={`ih-nav-panel fixed inset-y-0 left-0 z-40 flex w-[min(85vw,17rem)] flex-col border-r shadow-2xl shadow-black/40 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] lg:sticky lg:top-0 lg:min-h-screen lg:w-64 lg:translate-x-0 lg:shadow-none ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
+        className={`ih-nav-panel fixed inset-y-0 left-0 z-40 flex w-[min(85vw,17rem)] flex-col border-r transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] lg:sticky lg:top-0 lg:min-h-screen lg:w-64 lg:translate-x-0 lg:shadow-none ${
+          isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
         }`}
       >
         {/* Logo Section */}
@@ -64,7 +64,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
           <div className="flex items-center gap-3">
             <span className="ih-brand-mark shrink-0">IH</span>
             <span className="ih-text-primary text-[15px] font-bold tracking-tight">
-              InfluenceHub
+              Influix
             </span>
           </div>
           <button
@@ -72,7 +72,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
             type="button"
             onClick={onClose}
             aria-label="Close navigation menu"
-            className="ih-dashboard-icon-button ih-focus-ring ih-text-secondary flex items-center justify-center rounded-[0.9rem] p-1.5 transition-colors hover:text-white lg:hidden"
+            className="ih-dashboard-icon-button ih-focus-ring ih-text-secondary flex items-center justify-center rounded-[0.9rem] p-1.5 transition-colors hover:ih-text-primary lg:hidden"
           >
             <X size={18} aria-hidden="true" />
           </button>
@@ -111,7 +111,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
         {/* Footer / User Profile Area */}
         <div className="ih-divider-top px-4 py-4">
           <div className="ih-sidebar-user mb-3 flex items-center gap-3 rounded-[1.15rem] p-3 transition-colors">
-            <div className="ih-gradient-brand flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white shadow-inner">
+            <div className="ih-gradient-brand flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ih-text-primary shadow-inner">
               {profileInitials}
             </div>
             <div className="min-w-0 flex-1">

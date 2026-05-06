@@ -165,7 +165,7 @@ const BrandDashboard = () => {
                 <Target size={18} aria-hidden="true" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Campaign Pipeline</p>
+                <p className="text-sm font-semibold ih-text-primary">Campaign Pipeline</p>
                 <p className="ih-text-muted mt-1 text-sm leading-6">
                   {pulse.activeCampaigns > 0 
                     ? `You have ${pulse.activeCampaigns} active campaigns driving influencer applications and content delivery.`
@@ -178,7 +178,7 @@ const BrandDashboard = () => {
                 <ClipboardList size={18} aria-hidden="true" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Action Items</p>
+                <p className="text-sm font-semibold ih-text-primary">Action Items</p>
                 <p className="ih-text-muted mt-1 text-sm leading-6">
                   {pulse.pendingReviews > 0
                     ? `You have ${pulse.pendingReviews} report${pulse.pendingReviews === 1 ? "" : "s"} waiting for your approval.`
@@ -191,7 +191,7 @@ const BrandDashboard = () => {
                 <Users size={18} aria-hidden="true" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Creator Applications</p>
+                <p className="text-sm font-semibold ih-text-primary">Creator Applications</p>
                 <p className="ih-text-muted mt-1 text-sm leading-6">
                   {pulse.openForApplications > 0
                     ? `You are currently accepting applications for ${pulse.openForApplications} campaigns.`
@@ -271,14 +271,14 @@ const BrandDashboard = () => {
             />
             <div className="space-y-4 mt-2">
               {pulse.pendingReviews > 0 ? (
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-rose-500/20 bg-rose-50 p-5">
                    <div className="flex gap-4">
-                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/20 text-rose-400">
+                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600">
                        <AlertCircle size={20} />
                      </div>
                      <div>
-                       <p className="font-semibold text-white">Pending Report Reviews</p>
-                       <p className="mt-1 text-sm text-zinc-400">You have {pulse.pendingReviews} report(s) waiting for review.</p>
+                       <p className="font-semibold ih-text-primary">Pending Report Reviews</p>
+                       <p className="mt-1 text-sm ih-text-muted">You have {pulse.pendingReviews} report(s) waiting for review.</p>
                      </div>
                    </div>
                    <TransitionLink to="/dashboard/brand/reports" className="ih-button-primary shrink-0 px-4 py-2 text-sm sm:w-auto w-full text-center">
@@ -286,31 +286,31 @@ const BrandDashboard = () => {
                    </TransitionLink>
                 </div>
               ) : (
-                <div className="flex items-start gap-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5">
-                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
+                <div className="flex items-start gap-4 rounded-2xl border border-emerald-500/20 bg-emerald-50 p-5">
+                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
                      <CheckCircle size={20} />
                    </div>
                    <div>
-                     <p className="font-semibold text-white">All Caught Up</p>
-                     <p className="mt-1 text-sm text-zinc-400">No pending reports require your review at this time.</p>
+                     <p className="font-semibold ih-text-primary">All Caught Up</p>
+                     <p className="mt-1 text-sm ih-text-muted">No pending reports require your review at this time.</p>
                    </div>
                 </div>
               )}
 
               {pulse.endingSoon.length > 0 && (
                 <div>
-                  <h4 className="mb-3 mt-6 text-xs font-semibold uppercase tracking-wider text-zinc-500">Campaigns Ending Soon</h4>
+                  <h4 className="mb-3 mt-6 text-xs font-semibold uppercase tracking-wider ih-text-subtle">Campaigns Ending Soon</h4>
                   <div className="space-y-3">
                     {pulse.endingSoon.map(c => (
-                      <div key={c.id} className="flex items-center justify-between rounded-xl border border-white/5 bg-white-[0.02] p-4 transition-colors hover:bg-white-[0.04]">
+                      <div key={c.id} className="flex items-center justify-between rounded-xl border border-slate-900/5 bg-white-[0.02] p-4 transition-colors hover:bg-white-[0.04]">
                         <div className="flex items-center gap-3">
-                          <Clock size={16} className="text-amber-400" />
+                          <Clock size={16} className="text-amber-600" />
                           <div>
-                            <p className="text-sm font-medium text-white">{c.title}</p>
-                            <p className="text-xs text-zinc-500">Ends {formatDate(c.deadline)}</p>
+                            <p className="text-sm font-medium ih-text-primary">{c.title}</p>
+                            <p className="text-xs ih-text-subtle">Ends {formatDate(c.deadline)}</p>
                           </div>
                         </div>
-                        <TransitionLink to="/dashboard/brand/campaigns" className="text-xs font-medium text-indigo-400 hover:text-indigo-300">
+                        <TransitionLink to="/dashboard/brand/campaigns" className="text-xs font-medium text-indigo-600 hover:text-indigo-300">
                           Manage
                         </TransitionLink>
                       </div>
@@ -320,7 +320,7 @@ const BrandDashboard = () => {
               )}
               
               {pulse.endingSoon.length === 0 && pulse.pendingReviews === 0 && (
-                 <div className="flex flex-col items-center justify-center py-8 text-center text-zinc-500">
+                 <div className="flex flex-col items-center justify-center py-8 text-center ih-text-subtle">
                    <Target size={32} className="mb-3 opacity-20" />
                    <p className="text-sm">No urgent tasks right now.</p>
                  </div>
@@ -339,18 +339,18 @@ const BrandDashboard = () => {
                 {pulse.recentReports.map((r, idx) => (
                   <div key={r.id} className="flex gap-4">
                     <div className="relative mt-1 flex flex-col items-center">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-400 z-10">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 z-10">
                         <Activity size={14} />
                       </div>
                       {idx !== pulse.recentReports.length - 1 && (
-                        <div className="w-[1px] h-full bg-white/10 -mt-2 pb-6" />
+                        <div className="w-[1px] h-full bg-slate-100 -mt-2 pb-6" />
                       )}
                     </div>
                     <div className="pb-6 pt-1.5 w-full">
-                      <p className="text-sm text-zinc-300">
-                        <span className="font-medium text-white">{r.influencerName}</span> submitted a report for <span className="font-medium text-white">{r.campaignTitle}</span>
+                      <p className="text-sm ih-text-muted">
+                        <span className="font-medium ih-text-primary">{r.influencerName}</span> submitted a report for <span className="font-medium ih-text-primary">{r.campaignTitle}</span>
                       </p>
-                      <div className="mt-2 flex items-center gap-3 text-xs text-zinc-500">
+                      <div className="mt-2 flex items-center gap-3 text-xs ih-text-subtle">
                         <span>{formatDateTime(r.postingDate || r.reviewedAt || new Date())}</span>
                         <span className="h-1 w-1 rounded-full bg-zinc-700"></span>
                         <StatusBadge tone={getStatusTone(r.status)}>{humanizeEnum(r.status)}</StatusBadge>
@@ -378,7 +378,7 @@ const BrandDashboard = () => {
             {pulse.topInfluencers.length > 0 ? (
               <div className="overflow-x-auto mt-2">
                 <table className="w-full text-left">
-                  <thead className="border-b border-white/10 text-xs text-zinc-500">
+                  <thead className="border-b border-slate-200 text-xs ih-text-subtle">
                     <tr>
                       <th className="pb-3 font-medium" scope="col">Creator</th>
                       <th className="pb-3 font-medium text-right" scope="col">Total Reach</th>
@@ -390,12 +390,12 @@ const BrandDashboard = () => {
                     {pulse.topInfluencers.map((inf, idx) => (
                       <tr key={idx} className="transition-colors hover:bg-white-[0.02]">
                         <td className="py-4">
-                          <p className="font-medium text-white">{inf.name}</p>
-                          <p className="text-xs text-zinc-500">{inf.reports} report{inf.reports > 1 ? "s" : ""}</p>
+                          <p className="font-medium ih-text-primary">{inf.name}</p>
+                          <p className="text-xs ih-text-subtle">{inf.reports} report{inf.reports > 1 ? "s" : ""}</p>
                         </td>
-                        <td className="py-4 text-right text-sm text-zinc-300">{formatCompactNumber(inf.reach)}</td>
-                        <td className="py-4 text-right text-sm text-zinc-300">{formatCompactNumber(inf.engagements)}</td>
-                        <td className="py-4 text-right text-sm font-medium text-emerald-400">{inf.engagementRate}%</td>
+                        <td className="py-4 text-right text-sm ih-text-muted">{formatCompactNumber(inf.reach)}</td>
+                        <td className="py-4 text-right text-sm ih-text-muted">{formatCompactNumber(inf.engagements)}</td>
+                        <td className="py-4 text-right text-sm font-medium text-emerald-600">{inf.engagementRate}%</td>
                       </tr>
                     ))}
                   </tbody>

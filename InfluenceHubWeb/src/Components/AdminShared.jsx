@@ -29,7 +29,7 @@ export const AdminPage = ({ children }) => (
 );
 
 export const AdminHero = ({ badges = [], children, description, kicker, title, aside }) => (
-  <section className="ih-dashboard-hero ih-auto-content grid gap-8 rounded-[2rem] p-6 sm:p-8 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] ih-grid-min" data-ih-reveal>
+  <section className="ih-dashboard-hero ih-auto-content grid gap-8 rounded-[2rem] p-6 sm:p-8 xl:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] ih-grid-min bg-white border border-slate-200 shadow-xl shadow-slate-200/50" data-ih-reveal>
     <div className="ih-min-0">
       <p className="ih-kicker ih-kicker-warm mb-4 ih-truncate" title={kicker}>{kicker}</p>
       <h1 className="ih-text-primary max-w-3xl text-3xl font-semibold tracking-[-0.04em] sm:text-4xl lg:text-[2.75rem] ih-clamp-3">
@@ -131,7 +131,7 @@ export const FilterTabs = ({ items, label = "Filter results", onSelect, value })
             "ih-focus-ring rounded-full px-3 py-2 text-sm transition",
             isActive
               ? "ih-nav-link-active"
-              : "ih-nav-link-inactive border border-white/8 bg-white/4",
+              : "ih-nav-link-inactive border border-slate-200 bg-white",
           )}
         >
           {item.label}
@@ -142,8 +142,8 @@ export const FilterTabs = ({ items, label = "Filter results", onSelect, value })
 );
 
 export const EmptyState = ({ action, description, title, icon: Icon = Sparkles }) => (
-  <div className="flex flex-col items-center justify-center gap-5 rounded-[2rem] border border-dashed border-white/10 bg-white/[0.02] px-6 py-12 text-center ih-min-0 transition-colors hover:bg-white/[0.03]">
-    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/5 text-white/50 ring-8 ring-white/5">
+  <div className="flex flex-col items-center justify-center gap-5 rounded-[2rem] border border-dashed border-slate-300 bg-slate-50/50 px-6 py-12 text-center ih-min-0 transition-colors hover:bg-slate-50">
+    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white ih-text-primary/50 shadow-sm border border-slate-100">
       <Icon size={24} aria-hidden="true" />
     </div>
     <div className="max-w-md">
@@ -155,20 +155,20 @@ export const EmptyState = ({ action, description, title, icon: Icon = Sparkles }
 );
 
 export const LoadingState = ({ label = "Loading workspace data..." }) => (
-  <div className="flex items-center gap-3 rounded-[1.25rem] border border-white/8 bg-white/4 px-4 py-4 ih-min-0" role="status" aria-live="polite">
+  <div className="flex items-center gap-3 rounded-[1.25rem] border border-slate-200 bg-white px-4 py-4 ih-min-0 shadow-sm" role="status" aria-live="polite">
     <LoaderCircle size={18} className="ih-text-secondary motion-safe:animate-spin" aria-hidden="true" />
     <p className="ih-text-muted text-sm">{label}</p>
   </div>
 );
 
 export const ErrorState = ({ message, onRetry }) => (
-  <div className="flex flex-col gap-4 rounded-[1.5rem] border border-red-400/20 bg-red-500/8 px-5 py-5" role="alert">
+  <div className="flex flex-col gap-4 rounded-[1.5rem] border border-red-200 bg-red-50 px-5 py-5" role="alert">
     <div className="flex items-start gap-3">
       <div className="ih-icon-chip ih-icon-chip-danger h-10 w-10 rounded-2xl">
         <AlertCircle size={18} aria-hidden="true" />
       </div>
       <div>
-        <h3 className="text-sm font-semibold text-white">This section could not load.</h3>
+        <h3 className="text-sm font-semibold ih-text-primary">This section could not load.</h3>
         <p className="ih-text-muted mt-1 text-sm leading-6">{message}</p>
       </div>
     </div>

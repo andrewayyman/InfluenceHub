@@ -62,7 +62,7 @@ const Navbar = ({ isSidebarOpen, onOpenSidebar, triggerRef }) => {
 
       <div className="flex items-center gap-3 sm:gap-4">
         {/* Notifications Icon */}
-        <button className="ih-dashboard-icon-button ih-focus-ring ih-text-secondary relative flex items-center justify-center rounded-xl p-2 transition-colors hover:text-white">
+        <button className="ih-dashboard-icon-button ih-focus-ring ih-text-secondary relative flex items-center justify-center rounded-xl p-2 transition-colors hover:ih-text-primary">
           <Bell size={18} />
           <span className="ih-notification-badge absolute right-[6px] top-[6px] block h-2 w-2 rounded-full ring-2 ring-[#0d1324] mix-blend-normal"></span>
         </button>
@@ -79,11 +79,11 @@ const Navbar = ({ isSidebarOpen, onOpenSidebar, triggerRef }) => {
         )}
 
         {/* Separator */}
-        <div className="hidden h-6 w-px bg-white/10 sm:block"></div>
+        <div className="hidden h-6 w-px bg-slate-100 sm:block"></div>
 
         {/* Profile Menu Block */}
         <button className="ih-dashboard-profile ih-focus-ring flex items-center gap-3 rounded-xl px-3 py-2 transition-transform hover:scale-[1.02]">
-          <div className="ih-gradient-brand flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white shadow-[0_0_0_1px_rgba(255,255,255,0.1)]">
+          <div className="ih-gradient-brand flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ih-text-primary shadow-[0_0_0_1px_rgba(255,255,255,0.1)]">
             {getUserInitials(user)}
           </div>
           <div className="hidden text-left sm:block min-w-0">

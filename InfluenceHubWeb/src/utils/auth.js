@@ -1,4 +1,4 @@
-export const AUTH_STORAGE_KEY = "influencehub.auth";
+export const AUTH_STORAGE_KEY = "influix.auth";
 
 const ROLE_MAP = {
   0: "brand",

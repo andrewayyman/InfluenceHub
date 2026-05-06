@@ -140,7 +140,7 @@ const BrandCampaigns = () => {
                       </td>
                       <td className="px-4 ih-text-secondary text-sm">
                         {formatCurrency(campaign.budget)}
-                        <p className="text-xs text-slate-400">{getBudgetTypeLabel(campaign.budgetType)}</p>
+                        <p className="text-xs ih-text-muted">{getBudgetTypeLabel(campaign.budgetType)}</p>
                       </td>
                       <td className="px-4 ih-text-secondary text-sm">
                         {formatDate(campaign.deadline)}
@@ -148,14 +148,14 @@ const BrandCampaigns = () => {
                       <td className="px-4 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button
-                            className="ih-button-secondary-icon ih-focus-ring rounded-lg p-2 transition-colors hover:bg-white/10"
+                            className="ih-button-secondary-icon ih-focus-ring rounded-lg p-2 transition-colors hover:bg-slate-100"
                             title="View Applications"
                             onClick={() => window.location.href = `/dashboard/brand/applications?campaignId=${campaign.id}`}
                           >
                             <ExternalLink size={16} />
                           </button>
                           <button
-                            className="ih-button-secondary-icon ih-focus-ring rounded-lg p-2 transition-colors hover:bg-white/10"
+                            className="ih-button-secondary-icon ih-focus-ring rounded-lg p-2 transition-colors hover:bg-slate-100"
                             title="View campaign profile"
                             onClick={() => setSelectedCampaign(campaign)}
                           >
@@ -165,7 +165,7 @@ const BrandCampaigns = () => {
                             <>
                               <TransitionLink
                                 to={`/dashboard/brand/edit-campaign/${campaign.id}`}
-                                className="ih-button-secondary-icon ih-focus-ring inline-flex rounded-lg p-2 transition-colors hover:bg-white/10"
+                                className="ih-button-secondary-icon ih-focus-ring inline-flex rounded-lg p-2 transition-colors hover:bg-slate-100"
                                 title="Edit Campaign"
                               >
                                 <Pencil size={16} />
@@ -192,42 +192,42 @@ const BrandCampaigns = () => {
 
       {selectedCampaign ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] p-6 shadow-2xl">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs tracking-[0.2em] text-slate-400 uppercase">Campaign profile</p>
-                <h3 className="mt-1 text-xl font-semibold text-white">{selectedCampaign.title}</h3>
+                <p className="text-xs tracking-[0.2em] ih-text-muted uppercase">Campaign profile</p>
+                <h3 className="mt-1 text-xl font-semibold ih-text-primary">{selectedCampaign.title}</h3>
               </div>
-              <button onClick={() => setSelectedCampaign(null)} className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10">
+              <button onClick={() => setSelectedCampaign(null)} className="rounded-lg border border-slate-900/20 p-2 ih-text-secondary hover:bg-slate-100">
                 <X size={16} />
               </button>
             </div>
 
-            <p className="mb-4 text-sm text-slate-300">{selectedCampaign.description || "-"}</p>
+            <p className="mb-4 text-sm ih-text-secondary">{selectedCampaign.description || "-"}</p>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                <p className="text-xs text-slate-400">Budget</p>
-                <p className="mt-1 font-semibold text-white">{formatCurrency(selectedCampaign.budget)}</p>
-                <p className="text-xs text-slate-400">{getBudgetTypeLabel(selectedCampaign.budgetType)}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs ih-text-muted">Budget</p>
+                <p className="mt-1 font-semibold ih-text-primary">{formatCurrency(selectedCampaign.budget)}</p>
+                <p className="text-xs ih-text-muted">{getBudgetTypeLabel(selectedCampaign.budgetType)}</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                <p className="text-xs text-slate-400">Deadline</p>
-                <p className="mt-1 font-semibold text-white">{formatDate(selectedCampaign.deadline)}</p>
-                <p className="text-xs text-slate-400">Location: {selectedCampaign.location || "-"}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs ih-text-muted">Deadline</p>
+                <p className="mt-1 font-semibold ih-text-primary">{formatDate(selectedCampaign.deadline)}</p>
+                <p className="text-xs ih-text-muted">Location: {selectedCampaign.location || "-"}</p>
               </div>
             </div>
 
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-3">
-              <p className="text-xs text-slate-400">Platforms</p>
-              <p className="mt-1 text-sm text-white">{selectedCampaign.platforms?.join(", ") || "-"}</p>
+            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <p className="text-xs ih-text-muted">Platforms</p>
+              <p className="mt-1 text-sm ih-text-primary">{selectedCampaign.platforms?.join(", ") || "-"}</p>
             </div>
 
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-3">
-              <p className="text-xs text-slate-400">Tags</p>
+            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <p className="text-xs ih-text-muted">Tags</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {(selectedCampaign.tags || []).map((tag) => (
-                  <span key={tag} className="rounded-full border border-white/10 px-2 py-1 text-xs text-slate-200">{tag}</span>
+                  <span key={tag} className="rounded-full border border-slate-200 px-2 py-1 text-xs text-slate-800">{tag}</span>
                 ))}
               </div>
             </div>

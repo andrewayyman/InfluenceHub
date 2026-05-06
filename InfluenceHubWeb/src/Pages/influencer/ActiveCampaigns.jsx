@@ -102,8 +102,8 @@ const ActiveCampaigns = () => {
     <DashboardPage>
       <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight mb-2">Active Campaigns</h1>
-          <p className="text-slate-400 text-sm max-w-xl">
+          <h1 className="text-2xl font-bold ih-text-primary tracking-tight mb-2">Active Campaigns</h1>
+          <p className="ih-text-muted text-sm max-w-xl">
             Track your ongoing collaborations. Only campaigns awaiting your content delivery are shown here.
           </p>
         </div>
@@ -160,18 +160,18 @@ const ActiveCampaigns = () => {
             const hasReport = reports.length > 0;
 
             return (
-              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-white/8 transition-all">
+              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-slate-200 transition-all">
                 <div>
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4 min-w-0">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-500/20 text-brand-400">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
                         <FolderKanban size={20} />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="text-lg font-bold text-white truncate" title={app.campaignTitle}>
+                        <h3 className="text-lg font-bold ih-text-primary truncate" title={app.campaignTitle}>
                           {app.campaignTitle}
                         </h3>
-                        <p className="text-sm text-slate-400 truncate">
+                        <p className="text-sm ih-text-muted truncate">
                           {app.brandName || "Brand Partner"}
                         </p>
                       </div>
@@ -184,35 +184,35 @@ const ActiveCampaigns = () => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="rounded-xl bg-white/5 p-3 border border-white/5">
-                      <div className="flex items-center gap-1.5 text-slate-400 text-xs font-medium mb-1 uppercase tracking-wider">
+                    <div className="rounded-xl bg-slate-50 p-3 border border-slate-900/5">
+                      <div className="flex items-center gap-1.5 ih-text-muted text-xs font-medium mb-1 uppercase tracking-wider">
                         <Clock size={14} /> Deadline
                       </div>
-                      <p className={`text-sm font-semibold truncate ${isUrgent ? 'text-amber-400' : 'text-white'}`}>
+                      <p className={`text-sm font-semibold truncate ${isUrgent ? 'text-amber-600' : 'ih-text-primary'}`}>
                         {app.campaignDeadline ? new Date(app.campaignDeadline).toLocaleDateString() : "No deadline"}
                         {daysRemaining !== null && (
-                          <span className={`ml-2 text-xs font-normal opacity-80 ${isUrgent ? 'text-amber-400' : 'text-slate-400'}`}>
+                          <span className={`ml-2 text-xs font-normal opacity-80 ${isUrgent ? 'text-amber-600' : 'ih-text-muted'}`}>
                             ({daysRemaining === 0 ? "Today!" : `${daysRemaining}d left`})
                           </span>
                         )}
                       </p>
                     </div>
-                    <div className="rounded-xl bg-white/5 p-3 border border-white/5">
-                      <div className="flex items-center gap-1.5 text-slate-400 text-xs font-medium mb-1 uppercase tracking-wider">
+                    <div className="rounded-xl bg-slate-50 p-3 border border-slate-900/5">
+                      <div className="flex items-center gap-1.5 ih-text-muted text-xs font-medium mb-1 uppercase tracking-wider">
                         <DollarSign size={14} /> Reward
                       </div>
-                      <p className="text-sm font-semibold text-emerald-400 truncate">
+                      <p className="text-sm font-semibold text-emerald-600 truncate">
                         {formatCurrency(app.proposedBudget)}
                       </p>
                     </div>
                   </div>
 
                   <div className="mb-5">
-                    <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+                    <div className="flex items-center justify-between text-xs ih-text-muted mb-2">
                       <span>Delivery Progress</span>
                       <span>{hasReport ? `${reports.length} report${reports.length > 1 ? 's' : ''} submitted` : "Awaiting first report"}</span>
                     </div>
-                    <div className="h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
+                    <div className="h-1.5 w-full rounded-full bg-slate-50 overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${hasReport ? 'bg-emerald-500' : 'bg-brand-500 w-[15%]'}`}
                         style={{ width: hasReport ? '100%' : '15%' }}
@@ -221,10 +221,10 @@ const ActiveCampaigns = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-white/10 mt-auto gap-3">
+                <div className="flex items-center justify-between pt-4 border-t border-slate-200 mt-auto gap-3">
                   <button
                     onClick={() => setSelectedCampaign({ app, reports })}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/10 transition-colors"
+                    className="flex items-center justify-center gap-2 rounded-xl border border-slate-900/15 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100 transition-colors"
                   >
                     <Eye size={16} /> View Brief
                   </button>
@@ -245,41 +245,41 @@ const ActiveCampaigns = () => {
       {/* Campaign Details Modal */}
       {selectedCampaign && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
 
-            <div className="flex items-start justify-between p-6 border-b border-white/10">
+            <div className="flex items-start justify-between p-6 border-b border-slate-200">
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-500/20 text-brand-400">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
                   <FolderKanban size={24} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">{selectedCampaign.app.campaignTitle}</h3>
-                  <p className="text-sm text-slate-400 mt-0.5">{selectedCampaign.app.brandName}</p>
+                  <h3 className="text-xl font-bold ih-text-primary">{selectedCampaign.app.campaignTitle}</h3>
+                  <p className="text-sm ih-text-muted mt-0.5">{selectedCampaign.app.brandName}</p>
                 </div>
               </div>
-              <button onClick={() => setSelectedCampaign(null)} className="rounded-xl border border-white/10 p-2 text-slate-400 hover:bg-white/5 transition-colors">
+              <button onClick={() => setSelectedCampaign(null)} className="rounded-xl border border-slate-200 p-2 ih-text-muted hover:bg-slate-50 transition-colors">
                 <X size={20} />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               <section>
-                <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                  <FileText size={16} className="text-slate-400" /> Your Original Proposal
+                <h4 className="text-sm font-semibold ih-text-primary mb-3 flex items-center gap-2">
+                  <FileText size={16} className="ih-text-muted" /> Your Original Proposal
                 </h4>
-                <div className="rounded-xl border border-white/5 bg-white/5 p-4 text-sm text-slate-300 leading-relaxed italic border-l-2 border-indigo-500/50">
+                <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4 text-sm ih-text-secondary leading-relaxed italic border-l-2 border-indigo-500/50">
                   "{selectedCampaign.app.message || "No pitch message provided."}"
                 </div>
               </section>
 
               <section>
-                <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                  <CheckCircle size={16} className="text-slate-400" /> Submitted Reports
+                <h4 className="text-sm font-semibold ih-text-primary mb-4 flex items-center gap-2">
+                  <CheckCircle size={16} className="ih-text-muted" /> Submitted Reports
                 </h4>
 
                 {selectedCampaign.reports.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-8 text-center">
-                    <p className="text-sm text-slate-400 mb-4">No reports submitted yet. Ready to deliver?</p>
+                  <div className="rounded-xl border border-dashed border-slate-200 bg-white/[0.02] p-8 text-center">
+                    <p className="text-sm ih-text-muted mb-4">No reports submitted yet. Ready to deliver?</p>
                     <Link
                       to={`/dashboard/influencer/report?appId=${selectedCampaign.app.id}`}
                       className="ih-button-primary inline-flex px-4 py-2 gap-2"
@@ -290,21 +290,21 @@ const ActiveCampaigns = () => {
                 ) : (
                   <div className="space-y-3">
                     {selectedCampaign.reports.map(report => (
-                      <div key={report.id} className="rounded-xl border border-white/10 bg-[#162032] p-4">
+                      <div key={report.id} className="rounded-xl border border-slate-200 bg-[#162032] p-4">
                         <div className="flex items-center justify-between mb-3">
-                          <span className="text-sm font-semibold text-white">Report #{report.id.substring(0, 6)}</span>
-                          <span className="text-xs text-slate-400">{new Date(report.createdAt).toLocaleDateString()}</span>
+                          <span className="text-sm font-semibold ih-text-primary">Report #{report.id.substring(0, 6)}</span>
+                          <span className="text-xs ih-text-muted">{new Date(report.createdAt).toLocaleDateString()}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-3 mb-3">
                           {[["Views", report.views], ["Likes", report.likes], ["Comments", report.comments]].map(([label, val]) => (
-                            <div key={label} className="bg-white/5 rounded-lg p-2 text-center">
-                              <p className="text-xs text-slate-400">{label}</p>
-                              <p className="text-sm font-semibold text-white">{val?.toLocaleString() || 0}</p>
+                            <div key={label} className="bg-slate-50 rounded-lg p-2 text-center">
+                              <p className="text-xs ih-text-muted">{label}</p>
+                              <p className="text-sm font-semibold ih-text-primary">{val?.toLocaleString() || 0}</p>
                             </div>
                           ))}
                         </div>
                         {report.postUrl && (
-                          <a href={report.postUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-400 hover:underline flex items-center gap-1">
+                          <a href={report.postUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-600 hover:underline flex items-center gap-1">
                             <ExternalLink size={12} /> View post
                           </a>
                         )}
@@ -315,7 +315,7 @@ const ActiveCampaigns = () => {
               </section>
             </div>
 
-            <div className="p-6 border-t border-white/10 bg-[#0f172a] rounded-b-2xl flex items-center justify-end gap-3">
+            <div className="p-6 border-t border-slate-200 bg-[#0f172a] rounded-b-2xl flex items-center justify-end gap-3">
               <button onClick={() => setSelectedCampaign(null)} className="ih-button-secondary px-5 py-2.5 text-sm">
                 Close
               </button>

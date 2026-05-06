@@ -102,7 +102,7 @@ const MyApplications = () => {
           return (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filteredApps.map((app) => (
-                <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.35rem] p-5 border border-white/8 transition-all">
+                <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.35rem] p-5 border border-slate-200 transition-all">
                   <div>
                     <div className="mb-4 flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
@@ -124,8 +124,8 @@ const MyApplications = () => {
                     </div>
                   </div>
                   
-                  <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-4">
-                    <span className="text-xs text-slate-400">Status</span>
+                  <div className="mt-2 flex items-center justify-between border-t border-slate-200 pt-4">
+                    <span className="text-xs ih-text-muted">Status</span>
                     <StatusBadge tone={getStatusTone(app.status)}>
                       {humanizeEnum(app.status)}
                     </StatusBadge>

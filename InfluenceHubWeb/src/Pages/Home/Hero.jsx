@@ -72,7 +72,7 @@ const Hero = () => {
         className="pointer-events-none absolute left-[8%] top-28 h-[28rem] w-[28rem] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgb(147 51 234 / 0.18) 0%, transparent 70%)",
+            "radial-gradient(circle, var(--ih-aurora-plum) 0%, transparent 70%)",
           filter: "blur(60px)",
           animation: prefersReducedMotion()
             ? "none"
@@ -84,7 +84,7 @@ const Hero = () => {
         className="pointer-events-none absolute right-[6%] top-32 h-[22rem] w-[22rem] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgb(16 185 129 / 0.15) 0%, transparent 70%)",
+            "radial-gradient(circle, var(--ih-aurora-emerald) 0%, transparent 70%)",
           filter: "blur(60px)",
           animation: prefersReducedMotion()
             ? "none"
@@ -96,7 +96,7 @@ const Hero = () => {
         className="pointer-events-none absolute bottom-16 left-[38%] h-[18rem] w-[18rem] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgb(245 158 11 / 0.12) 0%, transparent 70%)",
+            "radial-gradient(circle, var(--ih-aurora-warm) 0%, transparent 70%)",
           filter: "blur(50px)",
           animation: prefersReducedMotion()
             ? "none"
@@ -108,23 +108,23 @@ const Hero = () => {
       <div className="relative mx-auto max-w-5xl text-center">
         {/* Kicker badge */}
         <div
-          className="ih-hero-kicker-badge inline-flex items-center gap-2 mb-8"
+          className="ih-hero-kicker-badge inline-flex items-center gap-2 mb-8 bg-slate-100/80 px-4 py-1.5 rounded-full ih-text-muted border border-slate-200"
           data-ih-reveal
           style={{ "--ih-delay": "60ms" }}
         >
-          <Zap size={13} className="ih-hero-kicker-icon" aria-hidden="true" />
-          <span>Campaign management for brands, influencers &amp; admins</span>
+          <Zap size={13} className="text-amber-500" aria-hidden="true" />
+          <span className="text-xs font-semibold uppercase tracking-wider">Platform Overview</span>
         </div>
 
         {/* Headline */}
         <h1
           id="hero-heading"
-          className="ih-hero-headline mb-7"
+          className="ih-hero-headline mb-7 text-5xl font-extrabold tracking-tight sm:text-7xl"
           data-ih-reveal
           style={{ "--ih-delay": "130ms" }}
         >
           Create campaigns.{" "}
-          <span className="ih-hero-headline-accent">Match influencers.</span>{" "}
+          <span className="bg-gradient-to-r from-purple-600 to-emerald-500 bg-clip-text text-transparent">Match influencers.</span>{" "}
           Track results.
         </h1>
 
@@ -134,7 +134,7 @@ const Hero = () => {
           data-ih-reveal
           style={{ "--ih-delay": "200ms" }}
         >
-          InfluenceHub is the unified workspace where brands launch campaigns,
+          Influix is the unified workspace where brands launch campaigns,
           influencers apply and report results, and admins maintain full
           oversight — all in one place.
         </p>
@@ -213,7 +213,7 @@ const Hero = () => {
                     <p className={`text-2xl font-bold leading-none ${point.valueClass}`}>
                       {point.value}
                     </p>
-                    <p className="mt-1 text-sm font-semibold text-white/90">
+                    <p className="mt-1 text-sm font-semibold ih-text-primary/90">
                       {point.label}
                     </p>
                     <p className="ih-text-muted text-xs leading-5">

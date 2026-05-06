@@ -57,8 +57,8 @@ const Login = () => {
           </div>
         </div>
 
-        <h2 className="mb-2 mt-6 text-3xl font-semibold text-white">
-          Log in to InfluenceHub
+        <h2 className="mb-2 mt-6 text-3xl font-semibold ih-text-primary">
+          Log in to Influix
         </h2>
         <p className="ih-text-muted mb-8 leading-7">
           Access campaigns, applications, reports, and admin tools from one account.
@@ -75,8 +75,8 @@ const Login = () => {
             <ShieldCheck size={16} aria-hidden="true" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-white">Admin access seeded locally</p>
-            <p className="ih-text-muted mt-1">Use <span className="font-medium text-white">admin@influencehub.com</span> with <span className="font-medium text-white">Admin@123</span>.</p>
+            <p className="text-sm font-semibold ih-text-primary">Admin access seeded locally</p>
+            <p className="ih-text-muted mt-1">Use <span className="font-medium ih-text-primary">admin@influix.com</span> with <span className="font-medium ih-text-primary">Admin@123</span>.</p>
           </div>
         </div>
 

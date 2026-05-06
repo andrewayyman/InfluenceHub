@@ -43,7 +43,7 @@ const Services = () => {
       <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[minmax(260px,0.78fr)_minmax(0,1.22fr)] lg:gap-20">
         <div className="lg:sticky lg:top-28 lg:self-start" data-ih-reveal style={{ "--ih-delay": "80ms" }}>
           <p className="ih-kicker mb-5">What each role can do</p>
-          <h2 id="services-heading" className="max-w-sm text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
+          <h2 id="services-heading" className="max-w-sm text-4xl font-semibold tracking-[-0.04em] ih-text-primary sm:text-5xl">
             One platform. <span className="ih-text-accent">Clear role-based workflows.</span>
           </h2>
           <p className="ih-text-muted mt-6 max-w-md text-base leading-7 sm:text-lg">
@@ -71,7 +71,7 @@ const Services = () => {
 
                 <div>
                   <div className="ih-divider-bottom pb-5">
-                    <h3 className="text-2xl font-semibold text-white sm:text-[1.75rem]">{service.title}</h3>
+                    <h3 className="text-2xl font-semibold ih-text-primary sm:text-[1.75rem]">{service.title}</h3>
                     <p className="ih-text-secondary mt-3 max-w-2xl text-base leading-7">{service.description}</p>
                   </div>
 

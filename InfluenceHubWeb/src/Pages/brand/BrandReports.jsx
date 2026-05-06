@@ -86,30 +86,30 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
 
   return (
     <div className="fixed  inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 sm:p-6 backdrop-blur-md transition-all">
-      <div className="ih-panel flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b1221] shadow-[0_0_50px_rgba(0,0,0,0.5)] motion-safe:animate-in motion-safe:zoom-in-95 motion-safe:fade-in duration-300">
+      <div className="ih-panel flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-[#0b1221] shadow-[0_0_50px_rgba(0,0,0,0.5)] motion-safe:animate-in motion-safe:zoom-in-95 motion-safe:fade-in duration-300">
         {/* Modal Header */}
-        <div className="flex shrink-0 items-center justify-between border-b border-white/5 bg-white/[0.02] px-6 py-5 md:px-8 md:py-6">
+        <div className="flex shrink-0 items-center justify-between border-b border-slate-900/5 bg-white/[0.02] px-6 py-5 md:px-8 md:py-6">
           <div className="flex items-center gap-5">
-            <div className="ih-gradient-brand flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-xl font-bold text-white shadow-lg ring-4 ring-white/5">
+            <div className="ih-gradient-brand flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-xl font-bold ih-text-primary shadow-lg ring-4 ring-white/5">
               {report.influencerName.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-3">
-                <h2 className="text-xl font-bold text-white tracking-tight">{report.influencerName}</h2>
+                <h2 className="text-xl font-bold ih-text-primary tracking-tight">{report.influencerName}</h2>
                 <StatusBadge tone={getStatusTone(report.status)}>
                   {humanizeEnum(report.status)}
                 </StatusBadge>
               </div>
-              <p className="text-sm text-slate-400 mt-0.5 flex items-center gap-2">
-                <span className="text-brand-400 font-medium">{report.campaignTitle}</span>
-                <span className="text-slate-600">•</span>
+              <p className="text-sm ih-text-muted mt-0.5 flex items-center gap-2">
+                <span className="text-brand-600 font-medium">{report.campaignTitle}</span>
+                <span className="ih-text-muted">•</span>
                 <span>Submitted on {formatDate(report.createdAt || report.postingDate)}</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="group flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-slate-400 transition-all hover:bg-red-500/20 hover:text-red-400"
+            className="group flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 ih-text-muted transition-all hover:bg-red-500/20 hover:text-red-400"
           >
             <X size={20} />
           </button>
@@ -128,27 +128,27 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                 </div>
                 
                 <div className="grid gap-5">
-                  <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-5">
+                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2 text-slate-300">
-                        <LayoutGrid size={16} className="text-brand-400" />
+                      <div className="flex items-center gap-2 ih-text-secondary">
+                        <LayoutGrid size={16} className="text-brand-600" />
                         <span className="text-sm font-medium">Platform</span>
                       </div>
-                      <span className="px-3 py-1 rounded-lg bg-white/5 text-xs font-bold text-white uppercase tracking-wider">
+                      <span className="px-3 py-1 rounded-lg bg-slate-50 text-xs font-bold ih-text-primary uppercase tracking-wider">
                         {report.platform || "Instagram"}
                       </span>
                     </div>
                     
                     <div className="mb-4">
-                      <div className="flex items-center gap-2 text-slate-300 mb-2">
-                        <ExternalLink size={16} className="text-brand-400" />
+                      <div className="flex items-center gap-2 ih-text-secondary mb-2">
+                        <ExternalLink size={16} className="text-brand-600" />
                         <span className="text-sm font-medium">Content Link</span>
                       </div>
                       <a
                         href={report.postUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center justify-between rounded-xl bg-black/40 px-4 py-3 text-sm text-brand-300 transition-all hover:bg-brand-500/10 hover:text-brand-200 border border-white/5"
+                        className="flex items-center justify-between rounded-xl bg-black/40 px-4 py-3 text-sm text-brand-300 transition-all hover:bg-brand-500/10 hover:text-brand-200 border border-slate-900/5"
                       >
                         <span className="truncate">{report.postUrl}</span>
                         <ArrowUpRight size={16} className="shrink-0" />
@@ -156,12 +156,12 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                     </div>
 
                     <div>
-                      <div className="flex items-center gap-2 text-slate-300 mb-2">
-                        <MessageSquare size={16} className="text-brand-400" />
+                      <div className="flex items-center gap-2 ih-text-secondary mb-2">
+                        <MessageSquare size={16} className="text-brand-600" />
                         <span className="text-sm font-medium">Caption / Notes</span>
                       </div>
-                      <div className="rounded-xl bg-black/40 px-4 py-3 text-sm text-slate-400 italic border border-white/5 leading-relaxed">
-                        "Great working on this campaign! The products are amazing and my audience loved the aesthetics. #ad #influencehub"
+                      <div className="rounded-xl bg-black/40 px-4 py-3 text-sm ih-text-muted italic border border-slate-900/5 leading-relaxed">
+                        "Great working on this campaign! The products are amazing and my audience loved the aesthetics. #ad #influix"
                       </div>
                     </div>
                   </div>
@@ -176,27 +176,27 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
+                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Views</p>
-                    <p className="text-2xl font-bold text-white tracking-tight">
+                    <p className="text-2xl font-bold ih-text-primary tracking-tight">
                       {formatCompactNumber(report.views)}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
+                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Reach</p>
-                    <p className="text-2xl font-bold text-white tracking-tight">
+                    <p className="text-2xl font-bold ih-text-primary tracking-tight">
                       {formatCompactNumber(reach)}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
+                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Clicks</p>
-                    <p className="text-2xl font-bold text-white tracking-tight">
+                    <p className="text-2xl font-bold ih-text-primary tracking-tight">
                       {formatCompactNumber(clicks)}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
+                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Engagement</p>
-                    <p className="text-2xl font-bold text-brand-400 tracking-tight">
+                    <p className="text-2xl font-bold text-brand-600 tracking-tight">
                       {formatPercent(engagementRate)}
                     </p>
                   </div>
@@ -212,7 +212,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
               </div>
               
               {report.screenshotUrl ? (
-                <div className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-black/40 shadow-2xl">
+                <div className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-black/40 shadow-2xl">
                   <img
                     src={resolveApiUrl(report.screenshotUrl)}
                     alt="Analytics screenshot"
@@ -221,14 +221,14 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100 flex items-end justify-center p-6">
                     <button 
                       onClick={() => window.open(resolveApiUrl(report.screenshotUrl), '_blank')}
-                      className="rounded-full bg-white/10 px-6 py-2 text-xs font-bold text-white backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all"
+                      className="rounded-full bg-slate-100 px-6 py-2 text-xs font-bold ih-text-primary backdrop-blur-md border border-slate-900/20 hover:bg-slate-50/20 transition-all"
                     >
                       View Full Size
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="flex h-[250px] md:h-[300px] flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-white/5 bg-white/[0.02] text-slate-600">
+                <div className="flex h-[250px] md:h-[300px] flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-slate-900/5 bg-white/[0.02] ih-text-muted">
                   <FileText size={60} className="mb-4 opacity-10" />
                   <p className="text-sm font-medium">No analytics proof provided</p>
                 </div>
@@ -239,15 +239,15 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
           {/* Feedback & Actions Section */}
           <div className="mt-12 rounded-[2rem] border border-brand-500/10 bg-brand-500/[0.02] p-8">
              <div className="flex items-center gap-2 mb-6">
-                <MessageSquare size={18} className="text-brand-400" />
-                <h3 className="text-sm font-bold uppercase tracking-[0.1em] text-slate-300">Feedback & Decision</h3>
+                <MessageSquare size={18} className="text-brand-600" />
+                <h3 className="text-sm font-bold uppercase tracking-[0.1em] ih-text-secondary">Feedback & Decision</h3>
               </div>
 
               {report.status !== "Approved" ? (
                 <div className="space-y-6">
                   <div>
                     <textarea
-                      className="ih-input w-full min-h-[120px] rounded-2xl bg-black/40 border-white/5 text-sm p-5 focus:border-brand-500/50 transition-all placeholder:text-slate-600"
+                      className="ih-input w-full min-h-[120px] rounded-2xl bg-black/40 border-slate-900/5 text-sm p-5 focus:border-brand-500/50 transition-all placeholder:ih-text-muted"
                       placeholder="Add notes for the influencer. Required for revisions or rejections..."
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
@@ -271,7 +271,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                       <button
                         onClick={() => handleAction("Revision")}
                         disabled={isSubmitting}
-                        className="ih-button-secondary flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold border-white/10 hover:bg-white/5"
+                        className="ih-button-secondary flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold border-slate-200 hover:bg-slate-50"
                       >
                         <RotateCcw size={18} /> Request Revision
                       </button>
@@ -301,10 +301,10 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
         </div>
 
         {/* Modal Footer */}
-        <div className="flex shrink-0 items-center justify-between border-t border-white/5 bg-white/[0.01] px-6 py-5 md:px-8 md:py-6">
+        <div className="flex shrink-0 items-center justify-between border-t border-slate-900/5 bg-white/[0.01] px-6 py-5 md:px-8 md:py-6">
           <button
             onClick={onClose}
-            className="rounded-xl px-6 py-3 text-sm font-bold text-slate-400 hover:text-white transition-colors"
+            className="rounded-xl px-6 py-3 text-sm font-bold ih-text-muted hover:ih-text-primary transition-colors"
           >
             Close Window
           </button>
@@ -316,7 +316,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                  else handleAction("Approve");
                }}
                disabled={isSubmitting}
-               className="rounded-xl bg-brand-500 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-brand-500/20 hover:bg-brand-400 transition-all disabled:opacity-50"
+               className="rounded-xl bg-brand-500 px-8 py-3 text-sm font-bold ih-text-primary shadow-lg shadow-brand-500/20 hover:bg-brand-400 transition-all disabled:opacity-50"
             >
               Save Decision
             </button>
@@ -442,8 +442,8 @@ const BrandReports = () => {
       {/* Page Header */}
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-2">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Brand Reports</h1>
-          <p className="mt-2 text-slate-400">
+          <h1 className="text-3xl font-bold ih-text-primary tracking-tight">Brand Reports</h1>
+          <p className="mt-2 ih-text-muted">
             Track influencer submissions and review campaign performance.
           </p>
         </div>
@@ -452,7 +452,7 @@ const BrandReports = () => {
       {error && <ErrorState message={error} onRetry={() => loadData()} />}
 
       {/* Sticky Filter Bar */}
-      <div className="sticky top-0   px-4 py-4 mb-6 backdrop-blur-xl bg-[#0b1221]/60 border-y border-white/5 shadow-2xl">
+      <div className="sticky top-0   px-4 py-4 mb-6 backdrop-blur-xl bg-[#0b1221]/60 border-y border-slate-900/5 shadow-2xl">
         <div className="flex flex-wrap items-center gap-4">
           {/* Search */}
           <div className="relative flex-1 min-w-[280px]">
@@ -462,16 +462,16 @@ const BrandReports = () => {
               placeholder="Search influencer or campaign..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="ih-input w-full pl-12 py-3 rounded-xl bg-white/[0.03] border-white/10 focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/50 shadow-inner text-sm text-white placeholder:text-slate-500 transition-all hover:bg-white/[0.05]"
+              className="ih-input w-full pl-12 py-3 rounded-xl bg-white/[0.03] border-slate-200 focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/50 shadow-inner text-sm ih-text-primary placeholder:text-slate-500 transition-all hover:bg-white/[0.05]"
             />
           </div>
           
           {/* Status Dropdown */}
           <div className="flex flex-col gap-1">
-             <div className="group flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 shadow-inner min-w-[160px] focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all hover:bg-white/[0.05]">
-                <Filter size={16} className="text-slate-500 group-focus-within:text-brand-400 transition-colors" />
+             <div className="group flex items-center gap-2 rounded-xl border border-slate-200 bg-white/[0.03] px-4 py-3 shadow-inner min-w-[160px] focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all hover:bg-white/[0.05]">
+                <Filter size={16} className="text-slate-500 group-focus-within:text-brand-600 transition-colors" />
                 <select
-                  className="bg-transparent text-sm text-slate-200 focus:text-white outline-none w-full cursor-pointer [&>option]:bg-[#0b1221] [&>option]:text-white"
+                  className="bg-transparent text-sm text-slate-800 focus:ih-text-primary outline-none w-full cursor-pointer [&>option]:bg-[#0b1221] [&>option]:ih-text-primary"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -486,10 +486,10 @@ const BrandReports = () => {
 
           {/* Campaign Dropdown */}
           <div className="flex flex-col gap-1">
-             <div className="group flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 shadow-inner min-w-[180px] focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all hover:bg-white/[0.05]">
-                <LayoutGrid size={16} className="text-slate-500 group-focus-within:text-brand-400 transition-colors" />
+             <div className="group flex items-center gap-2 rounded-xl border border-slate-200 bg-white/[0.03] px-4 py-3 shadow-inner min-w-[180px] focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all hover:bg-white/[0.05]">
+                <LayoutGrid size={16} className="text-slate-500 group-focus-within:text-brand-600 transition-colors" />
                 <select
-                  className="bg-transparent text-sm text-slate-200 focus:text-white outline-none w-full cursor-pointer [&>option]:bg-[#0b1221] [&>option]:text-white"
+                  className="bg-transparent text-sm text-slate-800 focus:ih-text-primary outline-none w-full cursor-pointer [&>option]:bg-[#0b1221] [&>option]:ih-text-primary"
                   value={campaignFilter}
                   onChange={(e) => setCampaignFilter(e.target.value)}
                 >
@@ -503,20 +503,20 @@ const BrandReports = () => {
 
           {/* Date Range */}
           <div className="flex items-center gap-3">
-            <div className="group flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 shadow-inner focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all hover:bg-white/[0.05]">
-              <Calendar size={16} className="text-slate-500 group-focus-within:text-brand-400 transition-colors" />
+            <div className="group flex items-center gap-2 rounded-xl border border-slate-200 bg-white/[0.03] px-4 py-3 shadow-inner focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all hover:bg-white/[0.05]">
+              <Calendar size={16} className="text-slate-500 group-focus-within:text-brand-600 transition-colors" />
               <input 
                 type="date" 
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="bg-transparent text-xs text-slate-200 focus:text-white outline-none cursor-pointer"
+                className="bg-transparent text-xs text-slate-800 focus:ih-text-primary outline-none cursor-pointer"
               />
-              <span className="text-slate-600 px-1">to</span>
+              <span className="ih-text-muted px-1">to</span>
               <input 
                 type="date" 
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="bg-transparent text-xs text-slate-200 focus:text-white outline-none cursor-pointer"
+                className="bg-transparent text-xs text-slate-800 focus:ih-text-primary outline-none cursor-pointer"
               />
             </div>
           </div>
@@ -524,7 +524,7 @@ const BrandReports = () => {
           {/* Reset */}
           <button
             onClick={resetFilters}
-            className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-brand-400 transition-all active:scale-95"
+            className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 ih-text-muted hover:bg-slate-100 hover:text-brand-600 transition-all active:scale-95"
             title="Reset Filters"
           >
             <RotateCcw size={18} />
@@ -533,11 +533,11 @@ const BrandReports = () => {
       </div>
 
       {/* Reports Listing */}
-      <AdminPanel className="!p-0 overflow-hidden border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] bg-[#0b1221]/60 backdrop-blur-2xl rounded-[2rem]">
+      <AdminPanel className="!p-0 overflow-hidden border-slate-900/5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] bg-[#0b1221]/60 backdrop-blur-2xl rounded-[2rem]">
         {filteredReports.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-white/5 bg-white/[0.01]">
+              <thead className="border-b border-slate-900/5 bg-white/[0.01]">
                 <tr>
                   <th className="px-8 py-5 font-bold uppercase tracking-widest text-[10px] text-slate-500">Influencer Profile</th>
                   <th className="px-8 py-5 font-bold uppercase tracking-widest text-[10px] text-slate-500">Target Campaign</th>
@@ -557,11 +557,11 @@ const BrandReports = () => {
                     >
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-4">
-                          <div className="ih-gradient-brand flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold text-white shadow-lg ring-2 ring-white/5 transition-transform group-hover:scale-110">
+                          <div className="ih-gradient-brand flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold ih-text-primary shadow-lg ring-2 ring-white/5 transition-transform group-hover:scale-110">
                             {report.influencerName.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                             <span className="font-bold text-white block tracking-tight group-hover:text-brand-400 transition-colors">
+                             <span className="font-bold ih-text-primary block tracking-tight group-hover:text-brand-600 transition-colors">
                               {report.influencerName}
                             </span>
                             <span className="text-[10px] text-slate-500 uppercase font-medium">
@@ -572,10 +572,10 @@ const BrandReports = () => {
                       </td>
                       <td className="px-8 py-6">
                         <div className="flex flex-col gap-1">
-                          <span className="text-slate-300 font-medium line-clamp-1 max-w-[200px]" title={report.campaignTitle}>
+                          <span className="ih-text-secondary font-medium line-clamp-1 max-w-[200px]" title={report.campaignTitle}>
                             {report.campaignTitle}
                           </span>
-                          <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">
+                          <span className="text-[10px] ih-text-muted font-bold uppercase tracking-wider">
                             ID: {report.campaignId.toString().slice(0, 8)}
                           </span>
                         </div>
@@ -583,13 +583,13 @@ const BrandReports = () => {
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-6">
                           <div>
-                            <span className="text-[10px] text-slate-600 block font-bold uppercase mb-1">Views</span>
-                            <span className="font-bold text-white text-base tracking-tight">{formatCompactNumber(report.views)}</span>
+                            <span className="text-[10px] ih-text-muted block font-bold uppercase mb-1">Views</span>
+                            <span className="font-bold ih-text-primary text-base tracking-tight">{formatCompactNumber(report.views)}</span>
                           </div>
-                          <div className="h-8 w-px bg-white/5"></div>
+                          <div className="h-8 w-px bg-slate-50"></div>
                           <div>
-                            <span className="text-[10px] text-slate-600 block font-bold uppercase mb-1">Engage</span>
-                            <span className="font-bold text-brand-400 text-base tracking-tight">{formatCompactNumber(engagement)}</span>
+                            <span className="text-[10px] ih-text-muted block font-bold uppercase mb-1">Engage</span>
+                            <span className="font-bold text-brand-600 text-base tracking-tight">{formatCompactNumber(engagement)}</span>
                           </div>
                         </div>
                       </td>
@@ -601,7 +601,7 @@ const BrandReports = () => {
                       <td className="px-8 py-6 text-right">
                         <div className="flex items-center justify-end gap-3">
                            <button
-                            className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/5 text-slate-400 transition-all hover:bg-brand-500 hover:text-white shadow-lg group-hover:translate-x-[-4px]"
+                            className="flex items-center justify-center h-10 w-10 rounded-xl bg-slate-50 ih-text-muted transition-all hover:bg-brand-500 hover:ih-text-primary shadow-lg group-hover:translate-x-[-4px]"
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedReport(report);
@@ -626,7 +626,7 @@ const BrandReports = () => {
               action={
                 <button 
                   onClick={resetFilters}
-                  className="mt-2 text-sm font-bold text-brand-400 hover:text-brand-300 underline underline-offset-4"
+                  className="mt-2 text-sm font-bold text-brand-600 hover:text-brand-300 underline underline-offset-4"
                 >
                   Clear all active filters
                 </button>

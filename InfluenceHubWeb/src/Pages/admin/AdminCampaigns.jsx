@@ -220,7 +220,7 @@ const AdminCampaigns = () => {
                     </td>
                     <td className="ih-text-primary py-4 font-medium">
                       {formatCurrency(campaign.budget)}
-                      <p className="mt-1 text-xs text-slate-400">{getBudgetTypeLabel(campaign.budgetType)}</p>
+                      <p className="mt-1 text-xs ih-text-muted">{getBudgetTypeLabel(campaign.budgetType)}</p>
                     </td>
                     <td className="ih-text-secondary py-4 text-sm">{formatDate(campaign.deadline)}</td>
                     <td className="py-4">
@@ -270,57 +270,57 @@ const AdminCampaigns = () => {
 
       {selectedCampaign ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] p-6 shadow-2xl">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Campaign profile</p>
-                <h3 className="mt-1 text-xl font-semibold text-white">{selectedCampaign.title || "Untitled campaign"}</h3>
+                <p className="text-xs uppercase tracking-[0.22em] ih-text-muted">Campaign profile</p>
+                <h3 className="mt-1 text-xl font-semibold ih-text-primary">{selectedCampaign.title || "Untitled campaign"}</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedCampaign(null)}
-                className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10"
+                className="rounded-lg border border-slate-900/20 p-2 ih-text-secondary hover:bg-slate-100"
               >
                 <X size={16} aria-hidden="true" />
               </button>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">Brand</p>
-                <p className="mt-1 text-sm text-white">{selectedCampaign.brandName || "-"}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs ih-text-muted">Brand</p>
+                <p className="mt-1 text-sm ih-text-primary">{selectedCampaign.brandName || "-"}</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">Status</p>
-                <p className="mt-1 text-sm text-white">{humanizeEnum(selectedCampaign.status)}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs ih-text-muted">Status</p>
+                <p className="mt-1 text-sm ih-text-primary">{humanizeEnum(selectedCampaign.status)}</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">Budget</p>
-                <p className="mt-1 text-sm text-white">{formatCurrency(selectedCampaign.budget)}</p>
-                <p className="text-xs text-slate-400">{getBudgetTypeLabel(selectedCampaign.budgetType)}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs ih-text-muted">Budget</p>
+                <p className="mt-1 text-sm ih-text-primary">{formatCurrency(selectedCampaign.budget)}</p>
+                <p className="text-xs ih-text-muted">{getBudgetTypeLabel(selectedCampaign.budgetType)}</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">Deadline</p>
-                <p className="mt-1 text-sm text-white">{formatDate(selectedCampaign.deadline)}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs ih-text-muted">Deadline</p>
+                <p className="mt-1 text-sm ih-text-primary">{formatDate(selectedCampaign.deadline)}</p>
               </div>
             </div>
 
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-4">
-              <p className="text-xs text-slate-400">Platforms</p>
-              <p className="mt-1 text-sm text-white">{selectedCampaign.platforms?.join(", ") || "-"}</p>
+            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs ih-text-muted">Platforms</p>
+              <p className="mt-1 text-sm ih-text-primary">{selectedCampaign.platforms?.join(", ") || "-"}</p>
             </div>
 
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-4">
-              <p className="text-xs text-slate-400">Location</p>
-              <p className="mt-1 text-sm text-white">{selectedCampaign.location || "-"}</p>
+            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs ih-text-muted">Location</p>
+              <p className="mt-1 text-sm ih-text-primary">{selectedCampaign.location || "-"}</p>
             </div>
 
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-4">
-              <p className="text-xs text-slate-400">Tags</p>
+            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs ih-text-muted">Tags</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {(selectedCampaign.tags || []).length > 0 ? selectedCampaign.tags.map((tag) => (
-                  <span key={tag} className="rounded-full border border-white/10 px-2 py-1 text-xs text-slate-200">{tag}</span>
-                )) : <span className="text-sm text-slate-300">-</span>}
+                  <span key={tag} className="rounded-full border border-slate-200 px-2 py-1 text-xs text-slate-800">{tag}</span>
+                )) : <span className="text-sm ih-text-secondary">-</span>}
               </div>
             </div>
           </div>

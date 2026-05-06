@@ -7,10 +7,10 @@ import { TransitionLink } from "../../Components/Motion/TransitionLink";
 
 const pageContent = {
   about: {
-    kicker: "About InfluenceHub",
+    kicker: "About Influix",
     title: "Built for campaigns that need trust, speed, and clear handoffs.",
     description:
-      "InfluenceHub brings brands, influencers, and admins into one shared operating system for campaign setup, matching, reporting, and follow-up.",
+      "Influix brings brands, influencers, and admins into one shared operating system for campaign setup, matching, reporting, and follow-up.",
     sections: [
       {
         title: "Who it serves",
@@ -35,7 +35,7 @@ const pageContent = {
       {
         title: "Support and partnerships",
         body:
-          "Email contact@influencehub.com for support, partnership requests, or security follow-up. Messages are reviewed inside the admin inbox.",
+          "Email contact@influix.com for support, partnership requests, or security follow-up. Messages are reviewed inside the admin inbox.",
       },
       {
         title: "Monthly briefing",
@@ -44,13 +44,13 @@ const pageContent = {
       },
     ],
     primaryCta: { label: "Open briefing form", to: "/#Subscription" },
-    secondaryCta: { label: "Email contact@influencehub.com", href: "mailto:contact@influencehub.com" },
+    secondaryCta: { label: "Email contact@influix.com", href: "mailto:contact@influix.com" },
   },
   security: {
     kicker: "Security",
     title: "Operational controls are built around role-based access and admin oversight.",
     description:
-      "InfluenceHub separates access for brands, influencers, and admins, and keeps campaign review and contact follow-up inside authenticated admin surfaces.",
+      "Influix separates access for brands, influencers, and admins, and keeps campaign review and contact follow-up inside authenticated admin surfaces.",
     sections: [
       {
         title: "Access control",
@@ -64,7 +64,7 @@ const pageContent = {
       },
     ],
     primaryCta: { label: "Go to login", to: "/auth/login" },
-    secondaryCta: { label: "Contact security team", href: "mailto:contact@influencehub.com?subject=Security%20question" },
+    secondaryCta: { label: "Contact security team", href: "mailto:contact@influix.com?subject=Security%20question" },
   },
   privacy: {
     kicker: "Privacy",
@@ -156,7 +156,7 @@ const PublicInfoPage = ({ pageKey }) => {
           <section className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
             <div className="ih-panel-outline rounded-[2rem] p-6 sm:p-8" data-ih-reveal>
               <p className="ih-kicker ih-kicker-warm mb-5">{page.kicker}</p>
-              <h1 className="max-w-4xl text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
+              <h1 className="max-w-4xl text-4xl font-semibold tracking-[-0.04em] ih-text-primary sm:text-5xl">
                 {page.title}
               </h1>
               <p className="ih-text-secondary mt-6 max-w-3xl text-base leading-8 sm:text-lg">
@@ -185,7 +185,7 @@ const PublicInfoPage = ({ pageKey }) => {
                 data-ih-reveal
                 style={{ "--ih-delay": `${140 + (index * 70)}ms` }}
               >
-                <h2 className="text-2xl font-semibold text-white">{section.title}</h2>
+                <h2 className="text-2xl font-semibold ih-text-primary">{section.title}</h2>
                 <p className="ih-text-secondary mt-4 text-sm leading-7 sm:text-base">{section.body}</p>
               </article>
             ))}

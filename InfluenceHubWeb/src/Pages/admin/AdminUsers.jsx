@@ -261,37 +261,37 @@ const AdminUsers = () => {
 
       {selectedUser ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-[#0f172a] p-6 shadow-2xl">
+          <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-[#0f172a] p-6 shadow-2xl">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-slate-400">User profile</p>
-                <h3 className="mt-1 text-xl font-semibold text-white">{selectedUser.displayName || "Unnamed user"}</h3>
+                <p className="text-xs uppercase tracking-[0.22em] ih-text-muted">User profile</p>
+                <h3 className="mt-1 text-xl font-semibold ih-text-primary">{selectedUser.displayName || "Unnamed user"}</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedUser(null)}
-                className="rounded-lg border border-white/20 p-2 text-slate-300 hover:bg-white/10"
+                className="rounded-lg border border-slate-900/20 p-2 ih-text-secondary hover:bg-slate-100"
               >
                 <X size={16} aria-hidden="true" />
               </button>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">Email</p>
-                <p className="mt-1 text-sm text-white break-all">{selectedUser.email || "-"}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs ih-text-muted">Email</p>
+                <p className="mt-1 text-sm ih-text-primary break-all">{selectedUser.email || "-"}</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">Role</p>
-                <p className="mt-1 text-sm text-white">{selectedUser.roleName || "-"}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs ih-text-muted">Role</p>
+                <p className="mt-1 text-sm ih-text-primary">{selectedUser.roleName || "-"}</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">Account status</p>
-                <p className="mt-1 text-sm text-white">{getActivityLabel(selectedUser.isActive)}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs ih-text-muted">Account status</p>
+                <p className="mt-1 text-sm ih-text-primary">{getActivityLabel(selectedUser.isActive)}</p>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs text-slate-400">Created</p>
-                <p className="mt-1 text-sm text-white">{formatDateTime(selectedUser.createdAt)}</p>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs ih-text-muted">Created</p>
+                <p className="mt-1 text-sm ih-text-primary">{formatDateTime(selectedUser.createdAt)}</p>
               </div>
             </div>
           </div>

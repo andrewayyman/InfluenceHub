@@ -161,18 +161,18 @@ const CampaignApplications = () => {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {filteredApplications.map((app) => (
-              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-white/8 transition-all">
+              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-slate-200 transition-all">
                 <div>
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/20 text-sm font-semibold text-indigo-300">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-sm font-semibold text-indigo-300">
                         {getInitials(app.influencerName)}
                       </div>
                       <div className="min-w-0">
-                        <p className="truncate font-semibold text-white" title={app.influencerName}>
+                        <p className="truncate font-semibold ih-text-primary" title={app.influencerName}>
                           {app.influencerName || "Unknown Influencer"}
                         </p>
-                        <p className="text-xs text-slate-400 mt-0.5 truncate">
+                        <p className="text-xs ih-text-muted mt-0.5 truncate">
                           Applied {formatDateTime(app.createdAt)}
                         </p>
                       </div>
@@ -182,22 +182,22 @@ const CampaignApplications = () => {
                     </StatusBadge>
                   </div>
 
-                  <p className="mb-4 line-clamp-3 text-sm italic text-slate-300 border-l-2 border-indigo-500/50 pl-3">
+                  <p className="mb-4 line-clamp-3 text-sm italic ih-text-secondary border-l-2 border-indigo-500/50 pl-3">
                     "{app.message || "No specific pitch provided."}"
                   </p>
 
                   <div className="mb-6 flex items-center gap-2">
-                    <span className="text-xs text-slate-400">Campaign:</span>
+                    <span className="text-xs ih-text-muted">Campaign:</span>
                     <span className="ih-pill-tint ih-pill-brand truncate max-w-[200px]">
                       {app.campaignTitle || "-"}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 mt-auto border-t border-white/10 pt-4">
+                <div className="flex items-center justify-between gap-2 mt-auto border-t border-slate-200 pt-4">
                   <button
                     onClick={() => setSelectedApplication(app)}
-                    className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-white/15 px-3 py-2.5 text-sm font-medium text-slate-200 hover:bg-white/10 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-slate-900/15 px-3 py-2.5 text-sm font-medium text-slate-800 hover:bg-slate-100 transition-colors"
                   >
                     <Eye size={16} /> View Details
                   </button>
@@ -215,7 +215,7 @@ const CampaignApplications = () => {
                       <button
                         onClick={() => handleAction(app.id, "Accepted")}
                         disabled={updatingId === app.id}
-                        className="flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-2.5 hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
+                        className="flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-3 py-2.5 hover:bg-emerald-100 transition-colors disabled:opacity-50"
                         title="Accept"
                       >
                         <Check size={18} />
@@ -231,25 +231,25 @@ const CampaignApplications = () => {
 
       {selectedApplication ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="flex items-start justify-between p-6 border-b border-white/10">
+            <div className="flex items-start justify-between p-6 border-b border-slate-200">
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/20 text-lg font-bold text-indigo-300">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-lg font-bold text-indigo-300">
                   {getInitials(selectedApplication.influencerName)}
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">{selectedApplication.influencerName || "Unknown Influencer"}</h3>
+                  <h3 className="text-xl font-bold ih-text-primary">{selectedApplication.influencerName || "Unknown Influencer"}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-sm text-slate-400">Campaign: {selectedApplication.campaignTitle || "-"}</span>
+                    <span className="text-sm ih-text-muted">Campaign: {selectedApplication.campaignTitle || "-"}</span>
                     <StatusBadge tone={selectedApplication.status === "Accepted" ? "success" : selectedApplication.status === "Rejected" ? "danger" : "warning"}>
                       {selectedApplication.status}
                     </StatusBadge>
                   </div>
                 </div>
               </div>
-              <button onClick={() => setSelectedApplication(null)} className="rounded-xl border border-white/10 p-2 text-slate-400 hover:bg-white/5 transition-colors">
+              <button onClick={() => setSelectedApplication(null)} className="rounded-xl border border-slate-200 p-2 ih-text-muted hover:bg-slate-50 transition-colors">
                 <X size={20} />
               </button>
             </div>
@@ -258,33 +258,33 @@ const CampaignApplications = () => {
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-xl border border-white/5 bg-white/5 p-4">
-                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Applied On</p>
-                  <p className="text-sm font-semibold text-white">{formatDateTime(selectedApplication.createdAt)}</p>
+                <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4">
+                  <p className="text-xs font-medium ih-text-muted uppercase tracking-wider mb-1">Applied On</p>
+                  <p className="text-sm font-semibold ih-text-primary">{formatDateTime(selectedApplication.createdAt)}</p>
                 </div>
-                <div className="rounded-xl border border-white/5 bg-white/5 p-4">
-                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Proposed Budget</p>
-                  <p className="text-sm font-semibold text-emerald-400">${Number(selectedApplication.proposedBudget || 0).toLocaleString()}</p>
+                <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4">
+                  <p className="text-xs font-medium ih-text-muted uppercase tracking-wider mb-1">Proposed Budget</p>
+                  <p className="text-sm font-semibold text-emerald-600">${Number(selectedApplication.proposedBudget || 0).toLocaleString()}</p>
                 </div>
               </div>
 
               <div>
-                <p className="text-sm font-semibold text-white mb-2">Message to Brand</p>
-                <div className="rounded-xl border border-white/5 bg-white/5 p-4 text-sm text-slate-300 leading-relaxed italic border-l-2 border-indigo-500/50">
+                <p className="text-sm font-semibold ih-text-primary mb-2">Message to Brand</p>
+                <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4 text-sm ih-text-secondary leading-relaxed italic border-l-2 border-indigo-500/50">
                   "{selectedApplication.message || "No specific message provided."}"
                 </div>
               </div>
 
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <p className="text-sm font-semibold text-white mb-2">Influencer Bio</p>
-                  <div className="rounded-xl border border-white/5 bg-white/5 p-4 text-sm text-slate-300 leading-relaxed min-h-[100px]">
+                  <p className="text-sm font-semibold ih-text-primary mb-2">Influencer Bio</p>
+                  <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4 text-sm ih-text-secondary leading-relaxed min-h-[100px]">
                     {selectedApplication.bio || "No bio provided."}
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white mb-2">Proposal Details</p>
-                  <div className="rounded-xl border border-white/5 bg-white/5 p-4 text-sm text-slate-300 leading-relaxed min-h-[100px]">
+                  <p className="text-sm font-semibold ih-text-primary mb-2">Proposal Details</p>
+                  <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4 text-sm ih-text-secondary leading-relaxed min-h-[100px]">
                     {selectedApplication.proposal || "No proposal provided."}
                   </div>
                 </div>
@@ -292,8 +292,8 @@ const CampaignApplications = () => {
 
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <p className="text-sm font-semibold text-white mb-2">Attached Links</p>
-                  <div className="rounded-xl border border-white/5 bg-white/5 p-4">
+                  <p className="text-sm font-semibold ih-text-primary mb-2">Attached Links</p>
+                  <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4">
                     <ul className="space-y-2 text-sm text-indigo-300">
                       {(selectedApplication.links || []).length === 0 ? <li className="text-slate-500">-</li> : (selectedApplication.links || []).map((link, i) => (
                         <li key={i} className="truncate hover:text-indigo-200 transition-colors">
@@ -307,9 +307,9 @@ const CampaignApplications = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white mb-2">Media Files</p>
-                  <div className="rounded-xl border border-white/5 bg-white/5 p-4">
-                    <ul className="space-y-2 text-sm text-slate-300">
+                  <p className="text-sm font-semibold ih-text-primary mb-2">Media Files</p>
+                  <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4">
+                    <ul className="space-y-2 text-sm ih-text-secondary">
                       {(selectedApplication.mediaFiles || []).length === 0 ? <li className="text-slate-500">-</li> : (selectedApplication.mediaFiles || []).map((item, i) => (
                         <li key={i} className="truncate flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
@@ -324,7 +324,7 @@ const CampaignApplications = () => {
             </div>
 
             {/* Modal Footer (Actions) */}
-            <div className="p-6 border-t border-white/10 bg-[#0f172a] rounded-b-2xl flex items-center justify-end gap-3">
+            <div className="p-6 border-t border-slate-200 bg-[#0f172a] rounded-b-2xl flex items-center justify-end gap-3">
               <button 
                 onClick={() => setSelectedApplication(null)} 
                 className="ih-button-secondary px-5 py-2.5 text-sm"
@@ -350,7 +350,7 @@ const CampaignApplications = () => {
                       setSelectedApplication(null);
                     }}
                     disabled={updatingId === selectedApplication.id}
-                    className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-500/20 transition-all"
+                    className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-100 transition-all"
                   >
                     <Check size={16} /> Accept
                   </button>

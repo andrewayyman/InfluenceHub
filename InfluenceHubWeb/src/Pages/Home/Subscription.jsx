@@ -17,7 +17,7 @@ const Subscription = () => {
         name: values.name.trim(),
         email: values.email.trim(),
         subject: "Monthly briefing request",
-        message: "Please add this contact to the monthly InfluenceHub briefing follow-up list.",
+        message: "Please add this contact to the monthly Influix briefing follow-up list.",
       });
 
       resetForm();
@@ -41,7 +41,7 @@ const Subscription = () => {
         <div className="ih-panel-outline ih-briefing-panel ih-home-briefing-panel grid gap-10 rounded-[2rem] px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(340px,1.1fr)] lg:items-end lg:px-10">
           <div data-ih-reveal style={{ "--ih-delay": "100ms" }}>
             <p className="ih-kicker ih-kicker-warm mb-4">Monthly briefing</p>
-            <h2 id="subscription-heading" className="max-w-xl text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl lg:text-[2.75rem]">
+            <h2 id="subscription-heading" className="max-w-xl text-3xl font-semibold tracking-[-0.04em] ih-text-primary sm:text-4xl lg:text-[2.75rem]">
               Request the monthly briefing and the team will follow up directly.
             </h2>
             <p className="ih-text-muted mt-5 max-w-xl text-base leading-7 sm:text-lg">

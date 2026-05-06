@@ -234,7 +234,7 @@ const CreateCampaign = () => {
 
         <form onSubmit={formik.handleSubmit} className="max-w-2xl space-y-6">
           <div className="space-y-1">
-            <label htmlFor="title" className="block text-sm font-medium text-white">Campaign Title</label>
+            <label htmlFor="title" className="block text-sm font-medium ih-text-primary">Campaign Title</label>
             <input
               id="title"
               name="title"
@@ -251,7 +251,7 @@ const CreateCampaign = () => {
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="description" className="block text-sm font-medium text-white">Description</label>
+            <label htmlFor="description" className="block text-sm font-medium ih-text-primary">Description</label>
             <textarea
               id="description"
               name="description"
@@ -269,7 +269,7 @@ const CreateCampaign = () => {
 
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="space-y-1">
-              <label htmlFor="budget" className="block text-sm font-medium text-white">Budget ($)</label>
+              <label htmlFor="budget" className="block text-sm font-medium ih-text-primary">Budget ($)</label>
               <input
                 id="budget"
                 name="budget"
@@ -288,7 +288,7 @@ const CreateCampaign = () => {
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="deadline" className="block text-sm font-medium text-white">Deadline</label>
+              <label htmlFor="deadline" className="block text-sm font-medium ih-text-primary">Deadline</label>
               <input
                 id="deadline"
                 name="deadline"
@@ -305,7 +305,7 @@ const CreateCampaign = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-white">Budget Type</label>
+            <label className="block text-sm font-medium ih-text-primary">Budget Type</label>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {BUDGET_TYPE_OPTIONS.map((option) => {
                 const active = Number(formik.values.budgetType) === option.value;
@@ -318,13 +318,13 @@ const CreateCampaign = () => {
                       "flex flex-col gap-1 rounded-xl border px-4 py-3 text-left transition-all duration-150 focus:outline-none",
                       active
                         ? "border-indigo-500 bg-indigo-500/10 ring-1 ring-indigo-500/40"
-                        : "border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/10",
+                        : "border-slate-200 bg-slate-50 hover:border-slate-900/25 hover:bg-slate-100",
                     ].join(" ")}
                   >
-                    <span className={["text-sm font-semibold", active ? "text-indigo-300" : "text-white"].join(" ")}>
+                    <span className={["text-sm font-semibold", active ? "text-indigo-300" : "ih-text-primary"].join(" ")}>
                       {option.label}
                     </span>
-                    <span className={["text-xs leading-tight", active ? "text-indigo-400/80" : "text-slate-500"].join(" ")}>
+                    <span className={["text-xs leading-tight", active ? "text-indigo-600/80" : "text-slate-500"].join(" ")}>
                       {option.description}
                     </span>
                   </button>
@@ -337,7 +337,7 @@ const CreateCampaign = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-white">Platforms</label>
+            <label className="block text-sm font-medium ih-text-primary">Platforms</label>
             <div className="flex flex-wrap gap-3">
               {PLATFORM_OPTIONS.map((platform) => {
                 const selected = formik.values.platforms.includes(platform);
@@ -357,17 +357,17 @@ const CreateCampaign = () => {
                       "flex w-[86px] flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 transition-all duration-150 focus:outline-none",
                       selected
                         ? "border-indigo-500 bg-indigo-500/10 ring-1 ring-indigo-500/30"
-                        : "border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/10",
+                        : "border-slate-200 bg-slate-50 hover:border-slate-900/25 hover:bg-slate-100",
                     ].join(" ")}
                   >
                     {Icon && (
                       <Icon
                         size={22}
                         style={{ color: selected ? brandColor : undefined }}
-                        className={selected ? "" : "text-slate-400"}
+                        className={selected ? "" : "ih-text-muted"}
                       />
                     )}
-                    <span className={["text-xs font-medium leading-tight text-center", selected ? "text-white" : "text-slate-400"].join(" ")}>
+                    <span className={["text-xs font-medium leading-tight text-center", selected ? "ih-text-primary" : "ih-text-muted"].join(" ")}>
                       {platform}
                     </span>
                   </button>
@@ -380,11 +380,11 @@ const CreateCampaign = () => {
           </div>
 
           <div className="max-w-xs space-y-1">
-            <label htmlFor="location" className="block text-sm font-medium text-white">Location / Region</label>
+            <label htmlFor="location" className="block text-sm font-medium ih-text-primary">Location / Region</label>
             <select
               id="location"
               name="location"
-              className="ih-input w-full bg-[#1E293B] text-white"
+              className="ih-input w-full bg-[#1E293B] ih-text-primary"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.location}
@@ -400,12 +400,12 @@ const CreateCampaign = () => {
           </div>
 
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-white">Tags</label>
-            <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-white/10 bg-black/20 p-3">
+            <label className="block text-sm font-medium ih-text-primary">Tags</label>
+            <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-slate-200 bg-black/20 p-3">
               {tagNames.map((tag) => {
                 const checked = formik.values.tags.includes(tag);
                 return (
-                  <label key={tag} className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-300 hover:border-white/30">
+                  <label key={tag} className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5 text-xs ih-text-secondary hover:border-slate-900/30">
                     <input
                       type="checkbox"
                       className="accent-indigo-500"
@@ -422,16 +422,16 @@ const CreateCampaign = () => {
                 );
               })}
               {tagNames.length === 0 ? (
-                <p className="text-sm text-slate-400">No tags are available yet. Ask an admin to seed or create tags first.</p>
+                <p className="text-sm ih-text-muted">No tags are available yet. Ask an admin to seed or create tags first.</p>
               ) : null}
             </div>
             {formik.touched.tags && formik.errors.tags ? (
               <p className="text-sm text-red-500">{formik.errors.tags}</p>
             ) : null}
-            <p className="mt-1 text-xs text-slate-400">Choose the most relevant niche tags for matching.</p>
+            <p className="mt-1 text-xs ih-text-muted">Choose the most relevant niche tags for matching.</p>
           </div>
 
-          <div className="border-t border-white/10 pt-4">
+          <div className="border-t border-slate-200 pt-4">
             <button
               type="submit"
               disabled={isSubmittingForm}

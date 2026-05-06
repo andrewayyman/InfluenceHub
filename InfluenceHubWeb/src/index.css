@@ -171,44 +171,51 @@
     --ih-space-9: 3rem;
     --ih-space-10: 4rem;
 
-    --ih-bg-canvas: #0f172a;
-    --ih-bg-canvas-deep: #09111f;
-    --ih-bg-shell: #0d1324;
-    --ih-bg-shell-elevated: #121b31;
-    --ih-bg-overlay: rgb(2 8 23 / 0.72);
-    --ih-surface-glass: rgb(255 255 255 / 0.08);
-    --ih-surface-soft: rgb(148 163 184 / 0.08);
-    --ih-surface-panel: #1e293b;
-    --ih-surface-panel-strong: #243247;
-    --ih-surface-brand: rgb(147 51 234 / 0.11);
-    --ih-surface-emerald: rgb(16 185 129 / 0.1);
-    --ih-surface-warm: rgb(245 158 11 / 0.1);
-    --ih-border-subtle: rgb(255 255 255 / 0.1);
-    --ih-border-strong: rgb(167 139 250 / 0.22);
-    --ih-border-soft: rgb(255 255 255 / 0.16);
-    --ih-text-primary: rgb(248 250 252);
-    --ih-text-secondary: rgb(203 213 225);
-    --ih-text-muted: rgb(148 163 184);
-    --ih-text-subtle: rgb(100 116 139);
-    --ih-text-accent: rgb(196 181 253);
-    --ih-text-emerald: rgb(110 231 183);
-    --ih-text-amber: rgb(252 211 77);
-    --ih-text-info: rgb(125 211 252);
-    --ih-text-danger: rgb(248 113 113);
-    --ih-status-success-bg: rgb(6 78 59 / 0.42);
-    --ih-status-success-text: rgb(110 231 183);
-    --ih-status-warning-bg: rgb(120 53 15 / 0.42);
-    --ih-status-warning-text: rgb(253 186 116);
-    --ih-status-danger-bg: rgb(127 29 29 / 0.45);
-    --ih-status-danger-text: rgb(252 165 165);
-    --ih-status-info-bg: rgb(30 64 175 / 0.38);
-    --ih-status-info-text: rgb(147 197 253);
-    --ih-brand-start: #9333ea;
+    --ih-bg-canvas: #fbfcfe;
+    --ih-bg-canvas-deep: #f4f7fa;
+    --ih-bg-shell: #ffffff;
+    --ih-bg-shell-elevated: #ffffff;
+    --ih-bg-overlay: rgba(15, 23, 42, 0.4);
+    --ih-surface-glass: rgba(255, 255, 255, 0.85);
+    --ih-surface-soft: rgba(241, 245, 249, 0.8);
+    --ih-surface-panel: #ffffff;
+    --ih-surface-panel-strong: #f8fafc;
+    --ih-surface-brand: rgba(124, 58, 237, 0.05);
+    --ih-surface-emerald: rgba(16, 185, 129, 0.05);
+    --ih-surface-warm: rgba(245, 158, 11, 0.05);
+    --ih-border-subtle: rgba(226, 232, 240, 0.6);
+    --ih-border-strong: rgba(124, 58, 237, 0.2);
+    --ih-border-soft: rgba(203, 213, 225, 0.5);
+    --ih-text-primary: #1e293b;
+    --ih-text-secondary: #475569;
+    --ih-text-muted: #64748b;
+    --ih-text-subtle: #94a3b8;
+    --ih-text-accent: #7c3aed;
+    --ih-text-emerald: #059669;
+    --ih-text-amber: #d97706;
+    --ih-text-info: #0284c7;
+    --ih-text-danger: #dc2626;
+    --ih-status-success-bg: rgba(16, 185, 129, 0.1);
+    --ih-status-success-text: #059669;
+    --ih-status-warning-bg: rgba(245, 158, 11, 0.1);
+    --ih-status-warning-text: #d97706;
+    --ih-status-danger-bg: rgba(239, 68, 68, 0.1);
+    --ih-status-danger-text: #dc2626;
+    --ih-status-info-bg: rgba(14, 165, 233, 0.1);
+    --ih-status-info-text: #0284c7;
+    --ih-brand-start: #7c3aed;
     --ih-brand-end: #10b981;
     --ih-brand-warm: #f59e0b;
-    --ih-aurora-plum: rgb(147 51 234 / 0.2);
-    --ih-aurora-emerald: rgb(16 185 129 / 0.16);
-    --ih-aurora-warm: rgb(245 158 11 / 0.14);
+    --ih-aurora-plum: rgba(124, 58, 237, 0.04);
+    --ih-aurora-emerald: rgba(16, 185, 129, 0.03);
+    --ih-aurora-warm: rgba(245, 158, 11, 0.03);
+
+    /* Shadows */
+    --ih-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --ih-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    --ih-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    --ih-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    --ih-shadow-premium: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
   }
 
   :focus-visible {
@@ -378,7 +385,8 @@
   }
 
   .ih-focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/90 focus-visible:ring-offset-2;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    --tw-ring-color: rgba(124, 58, 237, 0.4);
     --tw-ring-offset-color: var(--ih-bg-canvas);
   }
 
@@ -394,8 +402,8 @@
   }
 
   .ih-input:focus {
-    border-color: color-mix(in srgb, var(--ih-brand-start) 68%, white 8%);
-    box-shadow: 0 0 0 2px rgb(147 51 234 / 0.3);
+    border-color: var(--ih-brand-start);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
   }
 
   .ih-input-error {
@@ -423,22 +431,33 @@
   }
 
   .ih-button-primary {
-    @apply rounded-lg font-semibold text-white transition duration-200;
-    background-image: linear-gradient(135deg, rgb(109 40 217 / 0.92), rgb(5 150 105 / 0.92));
-    box-shadow: 0 18px 36px rgb(15 23 42 / 0.28), inset 0 1px 0 rgb(255 255 255 / 0.14);
-    @apply hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70;
+    @apply rounded-xl font-semibold text-white transition-all duration-300;
+    background: linear-gradient(135deg, var(--ih-brand-start), var(--ih-brand-end));
+    box-shadow: 0 10px 20px -5px rgba(124, 58, 237, 0.3);
+    @apply hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:scale-100 disabled:shadow-none;
   }
 
   .ih-button-secondary {
-    @apply rounded-lg transition duration-200;
-    border: 1px solid color-mix(in srgb, var(--ih-border-soft) 85%, var(--ih-brand-start) 15%);
+    @apply rounded-xl font-medium transition-all duration-300;
+    border: 1px solid var(--ih-border-subtle);
     color: var(--ih-text-secondary);
-    background: linear-gradient(135deg, rgb(147 51 234 / 0.08), rgb(16 185 129 / 0.03));
+    background: var(--ih-bg-shell);
+    @apply hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 active:scale-[0.98] disabled:opacity-50;
   }
 
-  .ih-button-secondary:hover {
-    background: linear-gradient(135deg, rgb(147 51 234 / 0.12), rgb(16 185 129 / 0.06));
-    color: var(--ih-text-primary);
+  .ih-button-outline {
+    @apply rounded-xl font-medium transition-all duration-300 border-2;
+    border-color: var(--ih-brand-start);
+    color: var(--ih-brand-start);
+    background: transparent;
+    @apply hover:bg-brand-50 hover:text-brand-700 active:scale-[0.98] disabled:opacity-50;
+  }
+
+  .ih-button-ghost {
+    @apply rounded-xl font-medium transition-all duration-300;
+    color: var(--ih-text-secondary);
+    background: transparent;
+    @apply hover:bg-slate-100 hover:text-slate-900 active:scale-[0.98] disabled:opacity-50;
   }
 
   .ih-action-button {
@@ -475,16 +494,16 @@
   .ih-nav-shell {
     border-color: var(--ih-border-subtle);
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(255 255 255 / 0.01)),
+      linear-gradient(180deg, rgb(15 23 42 / 0.04), rgb(15 23 42 / 0.01)),
       color-mix(in srgb, var(--ih-bg-canvas) 78%, var(--ih-bg-shell) 22%);
-    box-shadow: 0 12px 30px rgb(2 8 23 / 0.18);
+    box-shadow: 0 12px 30px rgb(15 23 42 / 0.08);
   }
 
   .ih-nav-panel {
     border-color: var(--ih-border-subtle);
     background:
       radial-gradient(circle at top right, rgb(147 51 234 / 0.08), transparent 30%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.01)),
+      linear-gradient(180deg, rgb(15 23 42 / 0.03), rgb(15 23 42 / 0.01)),
       var(--ih-bg-shell);
     color: var(--ih-text-primary);
   }
@@ -500,7 +519,8 @@
   .ih-panel {
     border: 1px solid var(--ih-border-subtle);
     background: var(--ih-surface-panel);
-    box-shadow: 0 16px 40px rgb(2 8 23 / 0.18);
+    box-shadow: var(--ih-shadow-md);
+    @apply rounded-2xl;
   }
 
   .ih-panel-soft {
@@ -509,18 +529,15 @@
   }
 
   .ih-panel-outline {
-    border: 1px solid color-mix(in srgb, var(--ih-border-soft) 88%, transparent);
-    background:
-      radial-gradient(circle at top right, rgb(147 51 234 / 0.08), transparent 28%),
-      radial-gradient(circle at bottom left, rgb(16 185 129 / 0.06), transparent 24%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.04), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell) 92%, black 8%);
-    box-shadow: 0 20px 44px rgb(2 8 23 / 0.16);
+    border: 1px solid var(--ih-border-subtle);
+    background: var(--ih-bg-shell);
+    box-shadow: var(--ih-shadow-lg);
+    @apply rounded-3xl;
   }
 
   .ih-home-shell {
     background:
-      linear-gradient(180deg, rgb(15 23 42 / 0.96), rgb(9 17 31 / 0.98));
+      linear-gradient(180deg, var(--ih-bg-canvas), var(--ih-bg-canvas-deep));
     isolation: isolate;
   }
 
@@ -577,8 +594,8 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+      linear-gradient(rgb(15 23 42 / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(15 23 42 / 0.03) 1px, transparent 1px);
     background-size: 72px 72px;
     mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.5), transparent 82%);
     opacity: 0.24;
@@ -587,7 +604,7 @@
   .ih-home-sheen {
     position: absolute;
     inset: 0;
-    background: linear-gradient(125deg, transparent 12%, rgb(255 255 255 / 0.04) 42%, transparent 74%);
+    background: linear-gradient(125deg, transparent 12%, rgb(15 23 42 / 0.04) 42%, transparent 74%);
     opacity: 0.36;
     mix-blend-mode: screen;
     will-change: transform, opacity;
@@ -595,7 +612,7 @@
   }
 
   .ih-auth-shell {
-    background: linear-gradient(180deg, rgb(9 17 31 / 0.96), rgb(6 12 24 / 0.98));
+    background: linear-gradient(180deg, var(--ih-bg-canvas-deep), var(--ih-bg-canvas));
     isolation: isolate;
   }
 
@@ -603,44 +620,40 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(circle at 12% 14%, rgb(147 51 234 / 0.09), transparent 22%),
-      radial-gradient(circle at 84% 18%, rgb(16 185 129 / 0.08), transparent 22%),
-      radial-gradient(circle at 50% 90%, rgb(245 158 11 / 0.06), transparent 18%);
-    opacity: 0.76;
+      radial-gradient(circle at 12% 14%, rgba(124, 58, 237, 0.05), transparent 22%),
+      radial-gradient(circle at 84% 18%, rgba(16, 185, 129, 0.04), transparent 22%),
+      radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.03), transparent 18%);
+    opacity: 1;
   }
 
   .ih-auth-grid {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+      linear-gradient(rgba(15, 23, 42, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
     background-size: 64px 64px;
-    mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.4), transparent 84%);
-    opacity: 0.1;
+    mask-image: linear-gradient(180deg, white, transparent 84%);
+    opacity: 1;
   }
 
   .ih-auth-card {
-    border: 1px solid color-mix(in srgb, var(--ih-brand-start) 10%, var(--ih-border-soft));
-    background:
-      radial-gradient(circle at top right, rgb(147 51 234 / 0.06), transparent 24%),
-      radial-gradient(circle at bottom left, rgb(16 185 129 / 0.05), transparent 22%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.025)),
-      color-mix(in srgb, var(--ih-bg-shell) 90%, black 10%);
-    box-shadow: 0 20px 42px rgb(2 8 23 / 0.22);
+    border: 1px solid var(--ih-border-subtle);
+    background: white;
+    box-shadow: var(--ih-shadow-xl);
   }
 
   .ih-auth-support {
-    border: 1px solid rgb(255 255 255 / 0.08);
-    background: rgb(255 255 255 / 0.03);
+    border: 1px solid rgb(15 23 42 / 0.08);
+    background: rgb(15 23 42 / 0.03);
   }
 
   .ih-readiness-panel {
     border: 1px solid color-mix(in srgb, var(--ih-brand-start) 16%, var(--ih-border-soft));
     background:
       radial-gradient(circle at top right, rgb(147 51 234 / 0.12), transparent 24%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02));
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+      linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02));
+    box-shadow: inset 0 1px 0 rgb(15 23 42 / 0.04);
   }
 
   .ih-progress-ring {
@@ -654,13 +667,13 @@
     background:
       conic-gradient(
         from 180deg,
-        rgb(16 185 129 / 0.98) 0deg,
-        rgb(147 51 234 / 0.96) calc(var(--ih-progress-angle) * 0.65),
-        rgb(245 158 11 / 0.96) var(--ih-progress-angle),
-        rgb(255 255 255 / 0.08) var(--ih-progress-angle)
+        rgba(16, 185, 129, 0.8) 0deg,
+        rgba(124, 58, 237, 0.8) calc(var(--ih-progress-angle) * 0.65),
+        rgba(245, 158, 11, 0.8) var(--ih-progress-angle),
+        rgba(15, 23, 42, 0.05) var(--ih-progress-angle)
       );
     transition: --ih-progress-angle 420ms cubic-bezier(0.16, 1, 0.3, 1), transform 420ms ease;
-    box-shadow: 0 16px 34px rgb(2 8 23 / 0.2);
+    box-shadow: var(--ih-shadow-md);
   }
 
   .ih-progress-ring::before {
@@ -668,16 +681,14 @@
     position: absolute;
     inset: 0.48rem;
     border-radius: inherit;
-    background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell) 88%, black 12%);
+    background: white;
   }
 
   .ih-readiness-bar {
     height: 0.45rem;
     overflow: hidden;
     border-radius: 9999px;
-    background: rgb(255 255 255 / 0.08);
+    background: rgb(15 23 42 / 0.08);
   }
 
   .ih-readiness-bar-fill {
@@ -696,9 +707,9 @@
     display: flex;
     gap: 0.75rem;
     align-items: flex-start;
-    border: 1px solid rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(15 23 42 / 0.06);
     border-radius: 1rem;
-    background: rgb(255 255 255 / 0.02);
+    background: rgb(15 23 42 / 0.02);
     color: var(--ih-text-secondary);
     padding: 0.85rem 0.95rem;
     transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease, transform 220ms ease;
@@ -718,8 +729,8 @@
     flex: 0 0 auto;
     margin-top: 0.25rem;
     border-radius: 9999px;
-    background: rgb(255 255 255 / 0.18);
-    box-shadow: 0 0 0 4px rgb(255 255 255 / 0.04);
+    background: rgb(15 23 42 / 0.18);
+    box-shadow: 0 0 0 4px rgb(15 23 42 / 0.04);
   }
 
   .ih-readiness-item-active .ih-readiness-dot {
@@ -744,7 +755,7 @@
 
   .ih-dashboard-main {
     position: relative;
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.01), transparent 26%);
+    background: linear-gradient(180deg, rgb(15 23 42 / 0.01), transparent 26%);
   }
 
   .ih-section-tint-brand {
@@ -837,8 +848,8 @@
   }
 
   .ih-pill-neutral {
-    border: 1px solid rgb(255 255 255 / 0.08);
-    background: rgb(255 255 255 / 0.04);
+    border: 1px solid rgb(15 23 42 / 0.08);
+    background: rgb(15 23 42 / 0.04);
     color: var(--ih-text-secondary);
     border-radius: 9999px;
     padding: 0.45rem 0.85rem;
@@ -855,32 +866,32 @@
   }
 
   .ih-pill-brand {
-    border: 1px solid rgb(167 139 250 / 0.26);
-    background: rgb(88 28 135 / 0.24);
-    color: rgb(233 213 255);
+    border: 1px solid var(--ih-border-strong);
+    background: var(--ih-status-info-bg);
+    color: var(--ih-brand-start);
   }
 
   .ih-pill-emerald {
-    border: 1px solid rgb(52 211 153 / 0.24);
-    background: rgb(6 78 59 / 0.28);
-    color: rgb(167 243 208);
+    border: 1px solid var(--ih-status-success-bg);
+    background: var(--ih-status-success-bg);
+    color: var(--ih-status-success-text);
   }
 
   .ih-pill-warm {
-    border: 1px solid rgb(251 191 36 / 0.26);
-    background: rgb(120 53 15 / 0.3);
-    color: rgb(253 230 138);
+    border: 1px solid var(--ih-status-warning-bg);
+    background: var(--ih-status-warning-bg);
+    color: var(--ih-status-warning-text);
   }
 
   .ih-choice-chip {
     border: 1px solid color-mix(in srgb, var(--ih-border-soft) 82%, transparent);
-    background: rgb(255 255 255 / 0.025);
+    background: rgb(15 23 42 / 0.025);
     color: var(--ih-text-secondary);
     transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
   }
 
   .ih-choice-chip:hover {
-    background: rgb(255 255 255 / 0.045);
+    background: rgb(15 23 42 / 0.045);
     color: var(--ih-text-primary);
   }
 
@@ -930,15 +941,15 @@
   }
 
   .ih-dashboard-icon-button {
-    border: 1px solid rgb(255 255 255 / 0.08);
+    border: 1px solid rgb(15 23 42 / 0.08);
     background: linear-gradient(135deg, rgb(147 51 234 / 0.1), rgb(16 185 129 / 0.04));
     min-width: 2.75rem;
     min-height: 2.75rem;
   }
 
   .ih-dashboard-profile {
-    border: 1px solid rgb(255 255 255 / 0.08);
-    background: linear-gradient(135deg, rgb(147 51 234 / 0.08), rgb(255 255 255 / 0.04));
+    border: 1px solid rgb(15 23 42 / 0.08);
+    background: linear-gradient(135deg, rgb(147 51 234 / 0.08), rgb(15 23 42 / 0.04));
   }
 
   .ih-dashboard-search {
@@ -953,23 +964,20 @@
   }
 
   .ih-dashboard-hero {
-    border: 1px solid color-mix(in srgb, var(--ih-brand-start) 18%, var(--ih-border-soft));
-    background:
-      radial-gradient(circle at top left, rgb(147 51 234 / 0.14), transparent 24%),
-      radial-gradient(circle at bottom right, rgb(16 185 129 / 0.1), transparent 26%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell-elevated) 86%, black 14%);
-    box-shadow: 0 24px 54px rgb(2 8 23 / 0.22);
+    border: 1px solid var(--ih-border-subtle);
+    background: white;
+    box-shadow: var(--ih-shadow-xl);
   }
 
   .ih-dashboard-hero-aside {
-    border: 1px solid rgb(255 255 255 / 0.08);
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02));
+    border: 1px solid rgb(15 23 42 / 0.08);
+    background: linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02));
   }
 
   .ih-metric-card {
-    border: 1px solid color-mix(in srgb, var(--ih-border-soft) 86%, transparent);
-    box-shadow: 0 18px 36px rgb(2 8 23 / 0.16);
+    border: 1px solid var(--ih-border-subtle);
+    background: white;
+    box-shadow: var(--ih-shadow-md);
   }
 
   .ih-metric-trace {
@@ -977,7 +985,7 @@
     height: 0.48rem;
     overflow: hidden;
     border-radius: 9999px;
-    background: rgb(255 255 255 / 0.08);
+    background: rgb(15 23 42 / 0.08);
   }
 
   .ih-metric-trace-fill {
@@ -996,7 +1004,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+    background: linear-gradient(90deg, transparent, rgb(15 23 42 / 0.45), transparent);
     animation: ih-trace-sheen 2.8s linear infinite;
   }
 
@@ -1017,52 +1025,51 @@
   }
 
   .ih-metric-card-brand {
-    background:
-      linear-gradient(135deg, rgb(147 51 234 / 0.14), transparent 40%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell-elevated) 88%, black 12%);
+    background: white;
+    border: 1px solid var(--ih-border-subtle);
+    box-shadow: var(--ih-shadow-md);
+    @apply rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
 
   .ih-metric-card-warm {
-    background:
-      linear-gradient(135deg, rgb(245 158 11 / 0.14), transparent 40%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell-elevated) 88%, black 12%);
+    background: white;
+    border: 1px solid var(--ih-border-subtle);
+    box-shadow: var(--ih-shadow-md);
+    @apply rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
 
   .ih-metric-card-success {
-    background:
-      linear-gradient(135deg, rgb(16 185 129 / 0.14), transparent 40%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell-elevated) 88%, black 12%);
+    background: white;
+    border: 1px solid var(--ih-border-subtle);
+    box-shadow: var(--ih-shadow-md);
+    @apply rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
 
   .ih-metric-card-danger {
-    background:
-      linear-gradient(135deg, rgb(248 113 113 / 0.14), transparent 40%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell-elevated) 88%, black 12%);
+    background: white;
+    border: 1px solid var(--ih-border-subtle);
+    box-shadow: var(--ih-shadow-md);
+    @apply rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
 
   .ih-table-panel {
-    border: 1px solid color-mix(in srgb, var(--ih-border-soft) 88%, transparent);
-    background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell-elevated) 90%, black 10%);
-    box-shadow: 0 22px 46px rgb(2 8 23 / 0.18);
+    border: 1px solid var(--ih-border-subtle);
+    background: white;
+    box-shadow: var(--ih-shadow-lg);
+    @apply rounded-3xl overflow-hidden;
   }
 
   .ih-table-panel-brand {
     background:
       radial-gradient(circle at top right, rgb(147 51 234 / 0.1), transparent 22%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
+      linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02)),
       color-mix(in srgb, var(--ih-bg-shell-elevated) 90%, black 10%);
   }
 
   .ih-table-panel-emerald {
     background:
       radial-gradient(circle at top right, rgb(16 185 129 / 0.1), transparent 22%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
+      linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02)),
       color-mix(in srgb, var(--ih-bg-shell-elevated) 90%, black 10%);
   }
 
@@ -1070,13 +1077,13 @@
     border: 1px solid color-mix(in srgb, var(--ih-brand-start) 18%, var(--ih-border-soft));
     background:
       radial-gradient(circle at top right, rgb(147 51 234 / 0.12), transparent 26%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02));
-    box-shadow: 0 18px 40px rgb(2 8 23 / 0.18);
+      linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02));
+    box-shadow: 0 18px 40px rgb(15 23 42 / 0.08);
   }
 
   .ih-sidebar-user {
-    border: 1px solid rgb(255 255 255 / 0.08);
-    background: linear-gradient(135deg, rgb(147 51 234 / 0.08), rgb(255 255 255 / 0.03));
+    border: 1px solid rgb(15 23 42 / 0.08);
+    background: linear-gradient(135deg, rgb(147 51 234 / 0.08), rgb(15 23 42 / 0.03));
   }
 
   .ih-sidebar-badge {
@@ -1089,8 +1096,8 @@
     background:
       radial-gradient(circle at top right, rgb(245 158 11 / 0.12), transparent 24%),
       radial-gradient(circle at bottom left, rgb(147 51 234 / 0.12), transparent 30%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell) 90%, black 10%);
+      linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02)),
+      color-mix(in srgb, var(--ih-bg-shell) 90%, rgb(15 23 42 / 0.12));
   }
 
   .ih-home-hero-copy {
@@ -1162,7 +1169,7 @@
     inset: auto -14% -28% 40%;
     height: 10rem;
     border-radius: 9999px;
-    background: linear-gradient(135deg, rgb(255 255 255 / 0.12), transparent 72%);
+    background: linear-gradient(135deg, rgb(15 23 42 / 0.12), transparent 72%);
     opacity: 0;
     pointer-events: none;
     transform: translate3d(-8px, 10px, 0) rotate(-10deg);
@@ -1182,24 +1189,24 @@
     border-color: color-mix(in srgb, var(--ih-brand-start) 24%, var(--ih-border-soft));
     background:
       linear-gradient(135deg, rgb(147 51 234 / 0.12), transparent 38%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell) 90%, black 10%);
+      linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02)),
+      color-mix(in srgb, var(--ih-bg-shell) 90%, rgb(15 23 42 / 0.12));
   }
 
   .ih-service-panel-emerald {
     border-color: color-mix(in srgb, var(--ih-brand-end) 22%, var(--ih-border-soft));
     background:
       linear-gradient(135deg, rgb(16 185 129 / 0.12), transparent 38%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell) 90%, black 10%);
+      linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02)),
+      color-mix(in srgb, var(--ih-bg-shell) 90%, rgb(15 23 42 / 0.12));
   }
 
   .ih-service-panel-warm {
     border-color: color-mix(in srgb, var(--ih-brand-warm) 24%, var(--ih-border-soft));
     background:
       linear-gradient(135deg, rgb(245 158 11 / 0.12), transparent 38%),
-      linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell) 90%, black 10%);
+      linear-gradient(180deg, rgb(15 23 42 / 0.05), rgb(15 23 42 / 0.02)),
+      color-mix(in srgb, var(--ih-bg-shell) 90%, rgb(15 23 42 / 0.12));
   }
 
   .ih-note-pill {
@@ -1232,9 +1239,9 @@
     background:
       radial-gradient(circle at top right, rgb(245 158 11 / 0.14), transparent 24%),
       radial-gradient(circle at bottom left, rgb(147 51 234 / 0.14), transparent 28%),
-      linear-gradient(145deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell) 88%, black 12%);
-    box-shadow: 0 24px 50px rgb(2 8 23 / 0.22);
+      linear-gradient(145deg, rgb(15 23 42 / 0.06), rgb(15 23 42 / 0.02)),
+      color-mix(in srgb, var(--ih-bg-shell) 88%, rgb(15 23 42 / 0.14));
+    box-shadow: 0 24px 50px rgb(15 23 42 / 0.08);
   }
 
   .ih-home-briefing-panel {
@@ -1243,7 +1250,7 @@
 
   .ih-home-briefing-panel:hover {
     transform: translate3d(0, -4px, 0);
-    box-shadow: 0 28px 58px rgb(2 8 23 / 0.24);
+    box-shadow: 0 28px 58px rgb(15 23 42 / 0.08);
   }
 
   .ih-footer-heading {
@@ -1260,8 +1267,8 @@
     justify-content: center;
     width: 2.75rem;
     height: 2.75rem;
-    border: 1px solid rgb(255 255 255 / 0.08);
-    background: rgb(255 255 255 / 0.04);
+    border: 1px solid rgb(15 23 42 / 0.08);
+    background: rgb(15 23 42 / 0.04);
     color: var(--ih-text-secondary);
     transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
   }
@@ -1278,14 +1285,14 @@
   }
 
   .ih-nav-link-active {
-    color: var(--ih-text-primary);
-    background-image: linear-gradient(135deg, rgb(147 51 234 / 0.18), rgb(16 185 129 / 0.08));
-    box-shadow: inset 0 0 0 1px var(--ih-border-strong);
+    color: var(--ih-brand-start);
+    background: rgba(124, 58, 237, 0.05);
+    @apply font-semibold;
   }
 
   .ih-nav-link-active .ih-surface-interactive {
-    background: linear-gradient(135deg, rgb(147 51 234 / 0.22), rgb(16 185 129 / 0.12));
-    color: var(--ih-text-primary);
+    background: var(--ih-brand-start);
+    color: white;
   }
 
   .ih-nav-link-inactive {
@@ -1372,7 +1379,7 @@
   }
 
   .ih-status-pill-neutral {
-    background: rgb(51 65 85 / 0.92);
+    background: rgb(241 245 249 / 0.92);
     color: var(--ih-text-secondary);
   }
 
@@ -1402,12 +1409,12 @@
   }
 
   .ih-table-row {
-    border-color: rgb(255 255 255 / 0.08);
+    border-color: rgb(15 23 42 / 0.08);
     transition: background-color 200ms ease;
   }
 
   .ih-table-row:hover {
-    background: rgb(30 41 59 / 0.72);
+    background: rgb(226 232 240 / 0.72);
   }
 
   .ih-action-icon {
@@ -1432,7 +1439,7 @@
   }
 
   .ih-loader-ring {
-    border-color: rgb(255 255 255 / 0.14);
+    border-color: rgb(15 23 42 / 0.14);
     border-top-color: color-mix(in srgb, var(--ih-brand-end) 64%, white 36%);
     border-right-color: color-mix(in srgb, var(--ih-brand-start) 48%, white 18%);
   }
@@ -1444,7 +1451,7 @@
     background:
       radial-gradient(ellipse 80% 60% at 50% -10%, rgb(147 51 234 / 0.18), transparent 62%),
       radial-gradient(ellipse 60% 40% at 82% 20%, rgb(16 185 129 / 0.13), transparent 52%),
-      linear-gradient(180deg, rgb(15 23 42 / 0.96), rgb(9 17 31 / 0.98));
+      linear-gradient(180deg, var(--ih-bg-canvas), var(--ih-bg-canvas-deep));
   }
 
   /* Kicker badge above headline */
@@ -1514,11 +1521,11 @@
     border: 1px solid var(--ih-border-subtle);
     border-radius: 1.5rem;
     background:
-      linear-gradient(135deg, rgb(255 255 255 / 0.04), rgb(255 255 255 / 0.02)),
-      color-mix(in srgb, var(--ih-bg-shell) 92%, black 8%);
+      linear-gradient(135deg, rgb(15 23 42 / 0.04), rgb(15 23 42 / 0.02)),
+      color-mix(in srgb, var(--ih-bg-shell) 92%, rgb(15 23 42 / 0.1));
     backdrop-filter: blur(12px);
     padding: 1.5rem 2rem;
-    box-shadow: 0 18px 38px rgb(2 8 23 / 0.18);
+    box-shadow: 0 18px 38px rgb(15 23 42 / 0.08);
   }
 
   .ih-hero-proof-item {
@@ -1545,29 +1552,29 @@
     background:
       radial-gradient(circle at 20% 30%, rgb(147 51 234 / 0.14), transparent 38%),
       radial-gradient(circle at 80% 70%, rgb(16 185 129 / 0.1), transparent 34%),
-      linear-gradient(180deg, rgb(9 17 31 / 0.96), rgb(6 12 24 / 0.98));
+      linear-gradient(180deg, var(--ih-bg-canvas-deep), var(--ih-bg-canvas));
   }
 
   /* Feature item inside brand panel */
   .ih-auth-feature-item {
     padding: 0.75rem 1rem;
-    border: 1px solid rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(15 23 42 / 0.06);
     border-radius: 1rem;
-    background: rgb(255 255 255 / 0.025);
+    background: rgb(15 23 42 / 0.025);
     transition: background-color 200ms ease, border-color 200ms ease;
   }
 
   .ih-auth-feature-item:hover {
-    border-color: rgb(255 255 255 / 0.1);
-    background: rgb(255 255 255 / 0.045);
+    border-color: rgb(15 23 42 / 0.1);
+    background: rgb(15 23 42 / 0.045);
   }
 
   /* Stat items in Register left panel */
   .ih-auth-stat-item {
     padding: 0.6rem 1rem;
-    border: 1px solid rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(15 23 42 / 0.06);
     border-radius: 0.875rem;
-    background: rgb(255 255 255 / 0.025);
+    background: rgb(15 23 42 / 0.025);
   }
 
   .ih-auth-stat-dot {
@@ -1612,8 +1619,8 @@
 
   /* Admin hint card */
   .ih-auth-hint-card {
-    border: 1px solid rgb(255 255 255 / 0.08);
-    background: rgb(255 255 255 / 0.03);
+    border: 1px solid rgb(15 23 42 / 0.08);
+    background: rgb(15 23 42 / 0.03);
   }
 
   /* Role chip — column layout override */

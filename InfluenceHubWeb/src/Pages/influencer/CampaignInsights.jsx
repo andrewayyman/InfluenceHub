@@ -96,8 +96,8 @@ const CampaignInsights = () => {
     <DashboardPage>
       <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight mb-2">Campaign Insights</h1>
-          <p className="text-slate-400 text-sm max-w-xl">
+          <h1 className="text-2xl font-bold ih-text-primary tracking-tight mb-2">Campaign Insights</h1>
+          <p className="ih-text-muted text-sm max-w-xl">
             Review your completed campaign history, track submitted performance reports, and analyze brand feedback.
           </p>
         </div>
@@ -138,45 +138,45 @@ const CampaignInsights = () => {
               : "0.0";
 
             return (
-              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-white/8 transition-all">
+              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-slate-200 transition-all">
                 <div>
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4 min-w-0">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/20 text-indigo-400">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600">
                         <BarChart3 size={20} />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="text-lg font-bold text-white truncate" title={app.campaignTitle}>
+                        <h3 className="text-lg font-bold ih-text-primary truncate" title={app.campaignTitle}>
                           {app.campaignTitle}
                         </h3>
-                        <p className="text-sm text-slate-400 truncate">{app.brandName || "Brand Partner"}</p>
+                        <p className="text-sm ih-text-muted truncate">{app.brandName || "Brand Partner"}</p>
                       </div>
                     </div>
                     {campaignStatusLabel(app.campaignStatus)}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-5">
-                    <div className="rounded-xl bg-white/5 p-3 border border-white/5">
-                      <div className="flex items-center gap-1.5 text-slate-400 text-xs font-medium mb-1 uppercase tracking-wider">
+                    <div className="rounded-xl bg-slate-50 p-3 border border-slate-900/5">
+                      <div className="flex items-center gap-1.5 ih-text-muted text-xs font-medium mb-1 uppercase tracking-wider">
                         <Calendar size={14} /> Submitted
                       </div>
-                      <p className="text-sm font-semibold text-white">
+                      <p className="text-sm font-semibold ih-text-primary">
                         {latestReport ? new Date(latestReport.postingDate).toLocaleDateString() : "—"}
                       </p>
                     </div>
-                    <div className="rounded-xl bg-white/5 p-3 border border-white/5">
-                      <div className="flex items-center gap-1.5 text-slate-400 text-xs font-medium mb-1 uppercase tracking-wider">
+                    <div className="rounded-xl bg-slate-50 p-3 border border-slate-900/5">
+                      <div className="flex items-center gap-1.5 ih-text-muted text-xs font-medium mb-1 uppercase tracking-wider">
                         <DollarSign size={14} /> Payout
                       </div>
-                      <p className="text-sm font-semibold text-emerald-400">
+                      <p className="text-sm font-semibold text-emerald-600">
                         {formatCurrency(app.proposedBudget)}
                       </p>
                     </div>
                   </div>
 
                   {latestReport && (
-                    <div className="mb-5 bg-white/[0.02] border border-white/5 rounded-xl p-4">
-                      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Top-Line Performance</h4>
+                    <div className="mb-5 bg-white/[0.02] border border-slate-900/5 rounded-xl p-4">
+                      <h4 className="text-xs font-semibold ih-text-muted uppercase tracking-wider mb-3">Top-Line Performance</h4>
                       <div className="grid grid-cols-4 gap-2">
                         {[
                           ["Views", latestReport.views],
@@ -185,7 +185,7 @@ const CampaignInsights = () => {
                           ["Eng. Rate", `${engagementRate}%`],
                         ].map(([label, val]) => (
                           <div key={label} className="text-center">
-                            <p className="text-base font-bold text-white">
+                            <p className="text-base font-bold ih-text-primary">
                               {typeof val === "number" ? val.toLocaleString() : val}
                             </p>
                             <p className="text-xs text-slate-500 mt-0.5">{label}</p>
@@ -196,13 +196,13 @@ const CampaignInsights = () => {
                   )}
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-white/10 mt-auto">
+                <div className="flex items-center justify-between pt-4 border-t border-slate-200 mt-auto">
                   <div className="text-xs text-slate-500">
                     {reports.length} report{reports.length !== 1 ? "s" : ""} submitted
                   </div>
                   <button
                     onClick={() => setSelectedInsight({ app, reports })}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/10 transition-colors"
+                    className="flex items-center justify-center gap-2 rounded-xl border border-slate-900/15 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100 transition-colors"
                   >
                     Full Breakdown
                   </button>
@@ -216,18 +216,18 @@ const CampaignInsights = () => {
       {/* Deep Dive Modal */}
       {selectedInsight && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-4xl rounded-2xl border border-white/10 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-white/10 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-slate-200 gap-4">
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/20 text-indigo-400">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600">
                   <BarChart3 size={28} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white leading-tight mb-1">
+                  <h3 className="text-xl font-bold ih-text-primary leading-tight mb-1">
                     {selectedInsight.app.campaignTitle}
                   </h3>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-slate-400">
+                  <div className="flex flex-wrap items-center gap-3 text-sm ih-text-muted">
                     {campaignStatusLabel(selectedInsight.app.campaignStatus)}
                     <span className="flex items-center gap-1">
                       <Calendar size={14} /> Accepted: {new Date(selectedInsight.app.createdAt).toLocaleDateString()}
@@ -235,7 +235,7 @@ const CampaignInsights = () => {
                   </div>
                 </div>
               </div>
-              <button onClick={() => setSelectedInsight(null)} className="rounded-xl border border-white/10 p-2 text-slate-400 hover:bg-white/5 transition-colors self-start sm:self-center">
+              <button onClick={() => setSelectedInsight(null)} className="rounded-xl border border-slate-200 p-2 ih-text-muted hover:bg-slate-50 transition-colors self-start sm:self-center">
                 <X size={20} />
               </button>
             </div>
@@ -244,17 +244,17 @@ const CampaignInsights = () => {
 
               {/* Campaign Summary */}
               <div className="grid gap-4 md:grid-cols-3">
-                <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Brand</p>
-                  <p className="text-sm font-medium text-white">{selectedInsight.app.brandName || "—"}</p>
+                  <p className="text-sm font-medium ih-text-primary">{selectedInsight.app.brandName || "—"}</p>
                 </div>
-                <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Agreed Payout</p>
-                  <p className="text-sm font-semibold text-emerald-400">{formatCurrency(selectedInsight.app.proposedBudget)}</p>
+                  <p className="text-sm font-semibold text-emerald-600">{formatCurrency(selectedInsight.app.proposedBudget)}</p>
                 </div>
-                <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Campaign Deadline</p>
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-sm font-medium ih-text-primary">
                     {selectedInsight.app.campaignDeadline ? new Date(selectedInsight.app.campaignDeadline).toLocaleDateString() : "—"}
                   </p>
                 </div>
@@ -273,7 +273,7 @@ const CampaignInsights = () => {
                     </div>
                   ) : selectedInsight.app.campaignStatus === "Completed" ? (
                     <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 flex items-center gap-3">
-                      <CheckCircle size={18} className="text-emerald-400 shrink-0" />
+                      <CheckCircle size={18} className="text-emerald-600 shrink-0" />
                       <p className="text-sm text-emerald-300">Your report has been approved. Excellent work!</p>
                     </div>
                   ) : (
@@ -287,13 +287,13 @@ const CampaignInsights = () => {
 
               {/* Report History */}
               <section>
-                <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                  <FileText size={16} className="text-slate-400" /> Submitted Reports
+                <h4 className="text-sm font-semibold ih-text-primary mb-4 flex items-center gap-2">
+                  <FileText size={16} className="ih-text-muted" /> Submitted Reports
                 </h4>
 
                 {selectedInsight.reports.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.02] p-8 text-center">
-                    <p className="text-sm text-slate-400">No report data found for this campaign.</p>
+                  <div className="rounded-xl border border-dashed border-slate-200 bg-white/[0.02] p-8 text-center">
+                    <p className="text-sm ih-text-muted">No report data found for this campaign.</p>
                   </div>
                 ) : (
                   <div className="space-y-6">
@@ -302,21 +302,21 @@ const CampaignInsights = () => {
                       const engRate = report.views > 0 ? ((totalEng / report.views) * 100).toFixed(1) : "0.0";
 
                       return (
-                        <div key={report.id} className="rounded-xl border border-white/10 bg-[#162032] overflow-hidden">
-                          <div className="bg-white/5 p-4 border-b border-white/10 flex items-center justify-between">
-                            <span className="text-sm font-bold text-white">
+                        <div key={report.id} className="rounded-xl border border-slate-200 bg-[#162032] overflow-hidden">
+                          <div className="bg-slate-50 p-4 border-b border-slate-200 flex items-center justify-between">
+                            <span className="text-sm font-bold ih-text-primary">
                               Submission #{selectedInsight.reports.length - index}
                             </span>
                             <div className="flex items-center gap-3">
                               {reportStatusLabel(report.status)}
-                              <span className="text-xs text-slate-400">{new Date(report.postingDate).toLocaleDateString()}</span>
+                              <span className="text-xs ih-text-muted">{new Date(report.postingDate).toLocaleDateString()}</span>
                             </div>
                           </div>
 
                           <div className="p-5">
                             {report.postUrl && (
                               <a href={report.postUrl} target="_blank" rel="noopener noreferrer"
-                                className="mb-5 flex items-center gap-2 text-sm bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-3 py-2 rounded-lg w-fit hover:bg-indigo-500/20 transition-colors">
+                                className="mb-5 flex items-center gap-2 text-sm bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-3 py-2 rounded-lg w-fit hover:bg-indigo-100 transition-colors">
                                 <ExternalLink size={16} /> View Content Post
                               </a>
                             )}
@@ -329,9 +329,9 @@ const CampaignInsights = () => {
                                 ["Shares", report.shares],
                                 ["Eng. %", `${engRate}%`],
                               ].map(([label, val]) => (
-                                <div key={label} className="bg-black/20 rounded-lg p-3 text-center border border-white/5">
-                                  <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">{label}</p>
-                                  <p className="text-lg font-bold text-white">
+                                <div key={label} className="bg-black/20 rounded-lg p-3 text-center border border-slate-900/5">
+                                  <p className="text-xs ih-text-muted uppercase tracking-wider mb-1">{label}</p>
+                                  <p className="text-lg font-bold ih-text-primary">
                                     {typeof val === "number" ? val.toLocaleString() : val}
                                   </p>
                                 </div>
@@ -339,13 +339,13 @@ const CampaignInsights = () => {
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                              <div className="text-slate-400 flex justify-between bg-black/20 px-3 py-2 rounded">
+                              <div className="ih-text-muted flex justify-between bg-black/20 px-3 py-2 rounded">
                                 <span>Posting Date:</span>
-                                <span className="text-white">{new Date(report.postingDate).toLocaleDateString()}</span>
+                                <span className="ih-text-primary">{new Date(report.postingDate).toLocaleDateString()}</span>
                               </div>
-                              <div className="text-slate-400 flex justify-between bg-black/20 px-3 py-2 rounded">
+                              <div className="ih-text-muted flex justify-between bg-black/20 px-3 py-2 rounded">
                                 <span>Metrics Window:</span>
-                                <span className="text-white">
+                                <span className="ih-text-primary">
                                   {new Date(report.startDate).toLocaleDateString()} — {new Date(report.endDate).toLocaleDateString()}
                                 </span>
                               </div>
@@ -353,11 +353,11 @@ const CampaignInsights = () => {
 
                             {report.platformInsights && report.platformInsights.length > 0 && (
                               <div className="mt-4 space-y-2">
-                                <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Per Platform</p>
+                                <p className="text-xs font-semibold ih-text-secondary uppercase tracking-wider">Per Platform</p>
                                 {report.platformInsights.map((pi, i) => (
-                                  <div key={i} className="flex items-center justify-between text-xs bg-white/5 px-3 py-2 rounded-lg">
+                                  <div key={i} className="flex items-center justify-between text-xs bg-slate-50 px-3 py-2 rounded-lg">
                                     <span className="font-medium text-brand-300">{pi.platform}</span>
-                                    <span className="text-slate-400">
+                                    <span className="ih-text-muted">
                                       {pi.views?.toLocaleString()} views · {pi.likes?.toLocaleString()} likes
                                     </span>
                                   </div>

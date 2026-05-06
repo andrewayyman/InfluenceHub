@@ -267,23 +267,23 @@ const AdminDashboard = () => {
           />
 
           <div className="space-y-4">
-            <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4 ih-grid-min">
+            <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4 ih-grid-min">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="ih-text-muted text-sm">Open campaigns</p>
-                  <p className="mt-2 text-3xl font-semibold text-white ih-truncate" title={campaignPulse.open}>{campaignPulse.open}</p>
+                  <p className="mt-2 text-3xl font-semibold ih-text-primary ih-truncate" title={campaignPulse.open}>{campaignPulse.open}</p>
                 </div>
                 <StatusBadge tone="brand">Needs monitoring</StatusBadge>
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4 ih-grid-min">
+              <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4 ih-grid-min">
                 <p className="ih-text-muted text-sm">Completed</p>
-                <p className="mt-2 text-2xl font-semibold text-white ih-truncate" title={campaignPulse.completed}>{campaignPulse.completed}</p>
+                <p className="mt-2 text-2xl font-semibold ih-text-primary ih-truncate" title={campaignPulse.completed}>{campaignPulse.completed}</p>
               </div>
-              <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4 ih-grid-min">
+              <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4 ih-grid-min">
                 <p className="ih-text-muted text-sm">Closed</p>
-                <p className="mt-2 text-2xl font-semibold text-white ih-truncate" title={campaignPulse.closed}>{campaignPulse.closed}</p>
+                <p className="mt-2 text-2xl font-semibold ih-text-primary ih-truncate" title={campaignPulse.closed}>{campaignPulse.closed}</p>
               </div>
             </div>
             <TransitionLink to="/dashboard/admin/campaigns" className="ih-button-secondary ih-focus-ring inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-sm">
@@ -301,18 +301,18 @@ const AdminDashboard = () => {
         />
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
-          <form onSubmit={handleCreateTag} className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
+          <form onSubmit={handleCreateTag} className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4">
             <div className="mb-4 flex items-center gap-3">
               <div className="ih-icon-chip ih-icon-chip-brand flex h-10 w-10 items-center justify-center rounded-2xl">
                 <Tags size={18} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Create new tag</p>
+                <p className="text-sm font-semibold ih-text-primary">Create new tag</p>
                 <p className="ih-text-muted text-sm">Keep names short and reusable across brands and creators.</p>
               </div>
             </div>
 
-            <label className="mb-2 block text-sm font-medium text-white" htmlFor="tagName">Tag name</label>
+            <label className="mb-2 block text-sm font-medium ih-text-primary" htmlFor="tagName">Tag name</label>
             <input
               id="tagName"
               type="text"
@@ -333,10 +333,10 @@ const AdminDashboard = () => {
             </button>
           </form>
 
-          <div className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4">
+          <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-white">Current tag library</p>
+                <p className="text-sm font-semibold ih-text-primary">Current tag library</p>
                 <p className="ih-text-muted text-sm">These tags are available to brands and influencers right now.</p>
               </div>
               <StatusBadge tone="brand">{tags.length} tags</StatusBadge>
@@ -344,11 +344,11 @@ const AdminDashboard = () => {
 
             <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto">
               {tags.length > 0 ? tags.map((tag) => (
-                <span key={tag.id} className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-200">
+                <span key={tag.id} className="rounded-full border border-slate-200 px-3 py-1.5 text-xs text-slate-800">
                   {tag.name}
                 </span>
               )) : (
-                <p className="text-sm text-slate-400">No tags available yet.</p>
+                <p className="text-sm ih-text-muted">No tags available yet.</p>
               )}
             </div>
           </div>
@@ -414,10 +414,10 @@ const AdminDashboard = () => {
           {dashboardData?.unreadMessages.length ? (
             <div className="space-y-4">
               {dashboardData.unreadMessages.slice(0, 4).map((message) => (
-                <article key={message.id} className="rounded-[1.35rem] border border-white/8 bg-white/4 p-4 ih-grid-min">
+                <article key={message.id} className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4 ih-grid-min">
                   <div className="flex items-start justify-between gap-3">
                     <div className="ih-min-0">
-                      <p className="text-sm font-semibold text-white ih-clamp-2" title={message.subject}>{message.subject}</p>
+                      <p className="text-sm font-semibold ih-text-primary ih-clamp-2" title={message.subject}>{message.subject}</p>
                       <p className="ih-text-muted mt-1 text-sm ih-wrap ih-clamp-2" title={`${message.name} · ${message.email}`}>
                         {message.name} · {message.email}
                       </p>
