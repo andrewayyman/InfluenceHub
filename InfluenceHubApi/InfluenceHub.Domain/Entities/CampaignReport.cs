@@ -21,6 +21,7 @@ public class CampaignReport
     public DateTime? ReviewedAt { get; set; }
     public Guid? ReviewedBy { get; set; }
     public string? RejectionReason { get; set; }
+    public string? AdditionalNotes { get; set; }
 
     public Application Application { get; set; } = null!;
 }
