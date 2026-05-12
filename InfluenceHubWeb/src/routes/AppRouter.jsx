@@ -12,6 +12,8 @@ const AdminDashboard = lazy(() => import("../Pages/admin/AdminDashboard"));
 const AdminUsers = lazy(() => import("../Pages/admin/AdminUsers"));
 const AdminCampaigns = lazy(() => import("../Pages/admin/AdminCampaigns"));
 const AdminMessages = lazy(() => import("../Pages/admin/AdminMessages"));
+const AdminCommission = lazy(() => import("../Pages/admin/AdminCommission"));
+const AdminPayments = lazy(() => import("../Pages/admin/AdminPayments"));
 const BrandDashboard = lazy(() => import("../Pages/brand/BrandDashboard"));
 const BrandStub = lazy(() => import("../Pages/brand/BrandStub"));
 const CreateCampaign = lazy(() => import("../Pages/brand/CreateCampaign"));
@@ -26,6 +28,9 @@ const ActiveCampaigns = lazy(() => import("../Pages/influencer/ActiveCampaigns")
 const SubmitReport = lazy(() => import("../Pages/influencer/SubmitReport"));
 const CampaignInsights = lazy(() => import("../Pages/influencer/CampaignInsights"));
 const InfluencerProfile = lazy(() => import("../Pages/influencer/InfluencerProfile"));
+const MyEarnings = lazy(() => import("../Pages/influencer/MyEarnings"));
+
+const InfluencerPublicProfile = lazy(() => import("../Pages/public/InfluencerPublicProfile"));
 
 const withSuspense = (element) => (
   <Suspense fallback={<RouteLoader />}>
@@ -67,6 +72,10 @@ export const router = createBrowserRouter([
     element: withSuspense(<PublicInfoPage pageKey="terms" />),
   },
   {
+    path: "/influencer/:influencerId",
+    element: withSuspense(<InfluencerPublicProfile />),
+  },
+  {
     path: "/dashboard/admin",
     element: (
       withSuspense(
@@ -80,6 +89,8 @@ export const router = createBrowserRouter([
       { path: "users", element: withSuspense(<AdminUsers />) },
       { path: "campaigns", element: withSuspense(<AdminCampaigns />) },
       { path: "messages", element: withSuspense(<AdminMessages />) },
+      { path: "commission", element: withSuspense(<AdminCommission />) },
+      { path: "payments", element: withSuspense(<AdminPayments />) },
     ],
   },
   {
@@ -131,6 +142,7 @@ export const router = createBrowserRouter([
       { path: "active", element: withSuspense(<ActiveCampaigns />) },
       { path: "report", element: withSuspense(<SubmitReport />) },
       { path: "insights", element: withSuspense(<CampaignInsights />) },
+      { path: "earnings", element: withSuspense(<MyEarnings />) },
       { path: "profile", element: withSuspense(<InfluencerProfile />) },
     ],
   },

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowUpRight,
   BarChart3,
@@ -30,6 +30,7 @@ import {
   getBrandCampaigns,
 } from "../../services/api/brandService";
 import { isAbortError, resolveApiUrl } from "../../services/api/client";
+import { createReview } from "../../services/api/reviewService";
 import { getStatusTone, humanizeEnum } from "../../utils/admin";
 import {
   formatCompactNumber,
@@ -42,6 +43,36 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
   const [feedback, setFeedback] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  // Review form state
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewHover, setReviewHover] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [reviewError, setReviewError] = useState("");
+
+  const handleSubmitReview = async () => {
+    if (!reviewRating) {
+      setReviewError("Please select a star rating.");
+      return;
+    }
+    setReviewSubmitting(true);
+    setReviewError("");
+    try {
+      await createReview(token, {
+        targetId: report.influencerId,
+        campaignId: report.campaignId,
+        rating: reviewRating,
+        comment: reviewComment,
+      });
+      setReviewSubmitted(true);
+    } catch (err) {
+      setReviewError(err.message || "Failed to submit review.");
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
 
   if (!report) return null;
 
@@ -86,7 +117,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
 
   return (
     <div className="fixed  inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 sm:p-6 backdrop-blur-md transition-all">
-      <div className="ih-panel flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-[#0b1221] shadow-[0_0_50px_rgba(0,0,0,0.5)] motion-safe:animate-in motion-safe:zoom-in-95 motion-safe:fade-in duration-300">
+      <div className="ih-panel flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.16)] motion-safe:animate-in motion-safe:zoom-in-95 motion-safe:fade-in duration-300">
         {/* Modal Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-slate-900/5 bg-white/[0.02] px-6 py-5 md:px-8 md:py-6">
           <div className="flex items-center gap-5">
@@ -102,7 +133,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
               </div>
               <p className="text-sm ih-text-muted mt-0.5 flex items-center gap-2">
                 <span className="text-brand-600 font-medium">{report.campaignTitle}</span>
-                <span className="ih-text-muted">•</span>
+                <span className="ih-text-muted">|</span>
                 <span>Submitted on {formatDate(report.createdAt || report.postingDate)}</span>
               </p>
             </div>
@@ -128,7 +159,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                 </div>
                 
                 <div className="grid gap-5">
-                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2 ih-text-secondary">
                         <LayoutGrid size={16} className="text-brand-600" />
@@ -148,7 +179,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                         href={report.postUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center justify-between rounded-xl bg-black/40 px-4 py-3 text-sm text-brand-300 transition-all hover:bg-brand-500/10 hover:text-brand-200 border border-slate-900/5"
+                        className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm text-brand-700 transition-all hover:bg-brand-500/10 hover:text-brand-800 border border-slate-200"
                       >
                         <span className="truncate">{report.postUrl}</span>
                         <ArrowUpRight size={16} className="shrink-0" />
@@ -160,8 +191,8 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                         <MessageSquare size={16} className="text-brand-600" />
                         <span className="text-sm font-medium">Caption / Notes</span>
                       </div>
-                      <div className="rounded-xl bg-black/40 px-4 py-3 text-sm ih-text-muted italic border border-slate-900/5 leading-relaxed">
-                        "Great working on this campaign! The products are amazing and my audience loved the aesthetics. #ad #influix"
+                      <div className="rounded-xl bg-white px-4 py-3 text-sm ih-text-muted border border-slate-200 leading-relaxed">
+                        {report.additionalNotes || "No notes provided."}
                       </div>
                     </div>
                   </div>
@@ -176,25 +207,25 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-transform hover:scale-[1.02]">
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Views</p>
                     <p className="text-2xl font-bold ih-text-primary tracking-tight">
                       {formatCompactNumber(report.views)}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-transform hover:scale-[1.02]">
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Reach</p>
                     <p className="text-2xl font-bold ih-text-primary tracking-tight">
                       {formatCompactNumber(reach)}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-transform hover:scale-[1.02]">
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Clicks</p>
                     <p className="text-2xl font-bold ih-text-primary tracking-tight">
                       {formatCompactNumber(clicks)}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-slate-900/5 bg-white/[0.03] p-5 transition-transform hover:scale-[1.02]">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-transform hover:scale-[1.02]">
                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Engagement</p>
                     <p className="text-2xl font-bold text-brand-600 tracking-tight">
                       {formatPercent(engagementRate)}
@@ -212,7 +243,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
               </div>
               
               {report.screenshotUrl ? (
-                <div className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-black/40 shadow-2xl">
+                <div className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl">
                   <img
                     src={resolveApiUrl(report.screenshotUrl)}
                     alt="Analytics screenshot"
@@ -228,7 +259,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                   </div>
                 </div>
               ) : (
-                <div className="flex h-[250px] md:h-[300px] flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-slate-900/5 bg-white/[0.02] ih-text-muted">
+                <div className="flex h-[250px] md:h-[300px] flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-slate-200 bg-slate-50 ih-text-muted">
                   <FileText size={60} className="mb-4 opacity-10" />
                   <p className="text-sm font-medium">No analytics proof provided</p>
                 </div>
@@ -247,13 +278,13 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                 <div className="space-y-6">
                   <div>
                     <textarea
-                      className="ih-input w-full min-h-[120px] rounded-2xl bg-black/40 border-slate-900/5 text-sm p-5 focus:border-brand-500/50 transition-all placeholder:ih-text-muted"
+                      className="ih-input w-full min-h-[120px] rounded-2xl bg-white border-slate-900/5 text-sm p-5 focus:border-brand-500/50 transition-all placeholder:ih-text-muted"
                       placeholder="Add notes for the influencer. Required for revisions or rejections..."
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
                       disabled={isSubmitting}
                     />
-                    {error && <p className="mt-3 text-sm text-red-400 flex items-center gap-2">
+                    {error && <p className="mt-3 text-sm text-red-600 flex items-center gap-2">
                       <X size={14} /> {error}
                     </p>}
                   </div>
@@ -281,7 +312,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                       <button
                         onClick={() => handleAction("Reject")}
                         disabled={isSubmitting}
-                        className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-red-400 bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 transition-all"
+                        className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 transition-all"
                       >
                         <X size={18} /> Reject Submission
                       </button>
@@ -289,11 +320,80 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-4 p-5 rounded-2xl bg-green-500/5 border border-green-500/10 text-green-400">
-                  <CheckCircle size={24} />
-                  <div>
-                    <p className="font-bold">This report has been approved</p>
-                    <p className="text-sm opacity-80">Funds will be released to the influencer shortly.</p>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700">
+                    <CheckCircle size={24} />
+                    <div>
+                      <p className="font-bold">This report has been approved</p>
+                      <p className="text-sm opacity-80">Funds will be released to the influencer shortly.</p>
+                    </div>
+                  </div>
+
+                  {/* Leave a Review */}
+                  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.03] p-6 space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <MessageSquare size={16} className="text-amber-500" />
+                      <h4 className="text-sm font-bold uppercase tracking-[0.1em] text-amber-700">Leave a Review</h4>
+                    </div>
+
+                    {reviewSubmitted ? (
+                      <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700">
+                        <CheckCircle size={18} />
+                        <p className="text-sm font-medium">Review submitted successfully. Thank you!</p>
+                      </div>
+                    ) : (
+                      <>
+                        {/* Star Rating */}
+                        <div>
+                          <p className="text-xs font-semibold ih-text-secondary mb-2">Rating</p>
+                          <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                type="button"
+                                onClick={() => setReviewRating(star)}
+                                onMouseEnter={() => setReviewHover(star)}
+                                onMouseLeave={() => setReviewHover(0)}
+                                className="text-2xl transition-transform hover:scale-110 focus:outline-none"
+                              >
+                                <span className={star <= (reviewHover || reviewRating) ? "text-amber-400" : "text-slate-300"}>
+                                  ★
+                                </span>
+                              </button>
+                            ))}
+                            {reviewRating > 0 && (
+                              <span className="ml-2 text-sm font-medium text-amber-500">{reviewRating} / 5</span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Comment */}
+                        <div>
+                          <p className="text-xs font-semibold ih-text-secondary mb-2">Comment (optional)</p>
+                          <textarea
+                            className="ih-input w-full min-h-[90px] rounded-xl bg-white border-slate-900/5 text-sm p-4 focus:border-amber-500/50 transition-all placeholder:ih-text-muted"
+                            placeholder="Share your experience working with this influencer..."
+                            value={reviewComment}
+                            onChange={(e) => setReviewComment(e.target.value)}
+                            disabled={reviewSubmitting}
+                          />
+                        </div>
+
+                        {reviewError && (
+                          <p className="text-sm text-red-600 flex items-center gap-2">
+                            <X size={14} /> {reviewError}
+                          </p>
+                        )}
+
+                        <button
+                          onClick={handleSubmitReview}
+                          disabled={reviewSubmitting}
+                          className="flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-amber-500/20 hover:bg-amber-400 transition-all disabled:opacity-50"
+                        >
+                          {reviewSubmitting ? "Submitting…" : "Submit Review"}
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
@@ -301,7 +401,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
         </div>
 
         {/* Modal Footer */}
-        <div className="flex shrink-0 items-center justify-between border-t border-slate-900/5 bg-white/[0.01] px-6 py-5 md:px-8 md:py-6">
+        <div className="flex shrink-0 items-center justify-between border-t border-slate-200 bg-slate-50 px-6 py-5 md:px-8 md:py-6">
           <button
             onClick={onClose}
             className="rounded-xl px-6 py-3 text-sm font-bold ih-text-muted hover:ih-text-primary transition-colors"
@@ -452,7 +552,7 @@ const BrandReports = () => {
       {error && <ErrorState message={error} onRetry={() => loadData()} />}
 
       {/* Sticky Filter Bar */}
-      <div className="sticky top-0   px-4 py-4 mb-6 backdrop-blur-xl bg-[#0b1221]/60 border-y border-slate-900/5 shadow-2xl">
+      <div className="sticky top-0   px-4 py-4 mb-6 backdrop-blur-xl bg-white/95 border-y border-slate-900/5 shadow-2xl">
         <div className="flex flex-wrap items-center gap-4">
           {/* Search */}
           <div className="relative flex-1 min-w-[280px]">
@@ -471,7 +571,7 @@ const BrandReports = () => {
              <div className="group flex items-center gap-2 rounded-xl border border-slate-200 bg-white/[0.03] px-4 py-3 shadow-inner min-w-[160px] focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all hover:bg-white/[0.05]">
                 <Filter size={16} className="text-slate-500 group-focus-within:text-brand-600 transition-colors" />
                 <select
-                  className="bg-transparent text-sm text-slate-800 focus:ih-text-primary outline-none w-full cursor-pointer [&>option]:bg-[#0b1221] [&>option]:ih-text-primary"
+                  className="bg-transparent text-sm text-slate-800 focus:ih-text-primary outline-none w-full cursor-pointer"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -489,7 +589,7 @@ const BrandReports = () => {
              <div className="group flex items-center gap-2 rounded-xl border border-slate-200 bg-white/[0.03] px-4 py-3 shadow-inner min-w-[180px] focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all hover:bg-white/[0.05]">
                 <LayoutGrid size={16} className="text-slate-500 group-focus-within:text-brand-600 transition-colors" />
                 <select
-                  className="bg-transparent text-sm text-slate-800 focus:ih-text-primary outline-none w-full cursor-pointer [&>option]:bg-[#0b1221] [&>option]:ih-text-primary"
+                  className="bg-transparent text-sm text-slate-800 focus:ih-text-primary outline-none w-full cursor-pointer"
                   value={campaignFilter}
                   onChange={(e) => setCampaignFilter(e.target.value)}
                 >
@@ -533,7 +633,7 @@ const BrandReports = () => {
       </div>
 
       {/* Reports Listing */}
-      <AdminPanel className="!p-0 overflow-hidden border-slate-900/5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] bg-[#0b1221]/60 backdrop-blur-2xl rounded-[2rem]">
+      <AdminPanel className="!p-0 overflow-hidden border-slate-900/5 shadow-[0_20px_50px_rgba(0,0,0,0.3)] bg-white/95 backdrop-blur-2xl rounded-[2rem]">
         {filteredReports.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
@@ -648,3 +748,4 @@ const BrandReports = () => {
 };
 
 export default BrandReports;
+

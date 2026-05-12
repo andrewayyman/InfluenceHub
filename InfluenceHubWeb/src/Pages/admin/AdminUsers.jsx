@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Eye, ShieldCheck, UserMinus, X } from "lucide-react";
 import {
   AdminHero,
@@ -261,7 +261,7 @@ const AdminUsers = () => {
 
       {selectedUser ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-[#0f172a] p-6 shadow-2xl">
+          <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] ih-text-muted">User profile</p>
@@ -302,3 +302,4 @@ const AdminUsers = () => {
 };
 
 export default AdminUsers;
+

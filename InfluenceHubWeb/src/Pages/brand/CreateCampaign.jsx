@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -321,7 +321,7 @@ const CreateCampaign = () => {
                         : "border-slate-200 bg-slate-50 hover:border-slate-900/25 hover:bg-slate-100",
                     ].join(" ")}
                   >
-                    <span className={["text-sm font-semibold", active ? "text-indigo-300" : "ih-text-primary"].join(" ")}>
+                    <span className={["text-sm font-semibold", active ? "text-indigo-700" : "ih-text-primary"].join(" ")}>
                       {option.label}
                     </span>
                     <span className={["text-xs leading-tight", active ? "text-indigo-600/80" : "text-slate-500"].join(" ")}>
@@ -384,14 +384,14 @@ const CreateCampaign = () => {
             <select
               id="location"
               name="location"
-              className="ih-input w-full bg-[#1E293B] ih-text-primary"
+              className="ih-input w-full"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.location}
             >
-              <option value="" disabled className="bg-[#1E293B]">Select a city…</option>
+              <option value="" disabled>Select a city…</option>
               {EGYPT_CITIES.map((city) => (
-                <option key={city} value={city} className="bg-[#1E293B]">{city}</option>
+                <option key={city} value={city}>{city}</option>
               ))}
             </select>
             {formik.touched.location && formik.errors.location ? (
@@ -401,7 +401,7 @@ const CreateCampaign = () => {
 
           <div className="space-y-1">
             <label className="block text-sm font-medium ih-text-primary">Tags</label>
-            <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-slate-200 bg-black/20 p-3">
+            <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
               {tagNames.map((tag) => {
                 const checked = formik.values.tags.includes(tag);
                 return (
@@ -449,3 +449,4 @@ const CreateCampaign = () => {
 };
 
 export default CreateCampaign;
+

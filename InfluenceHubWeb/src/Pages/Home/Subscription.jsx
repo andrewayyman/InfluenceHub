@@ -17,7 +17,7 @@ const Subscription = () => {
         name: values.name.trim(),
         email: values.email.trim(),
         subject: "Monthly briefing request",
-        message: "Please add this contact to the monthly Influix briefing follow-up list.",
+        message: "Please add this contact to the monthly InfluiX briefing follow-up list.",
       });
 
       resetForm();
@@ -42,10 +42,10 @@ const Subscription = () => {
           <div data-ih-reveal style={{ "--ih-delay": "100ms" }}>
             <p className="ih-kicker ih-kicker-warm mb-4">Monthly briefing</p>
             <h2 id="subscription-heading" className="max-w-xl text-3xl font-semibold tracking-[-0.04em] ih-text-primary sm:text-4xl lg:text-[2.75rem]">
-              Request the monthly briefing and the team will follow up directly.
+              Request the monthly briefing.
             </h2>
             <p className="ih-text-muted mt-5 max-w-xl text-base leading-7 sm:text-lg">
-              Briefing requests go to the product contact inbox so brands, influencers, and admins can get updates without chasing the right person.
+              Get monthly updates sent directly to your inbox.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -99,7 +99,7 @@ const Subscription = () => {
                       className={`ih-input ih-focus-ring rounded-xl px-5 py-4 ${touched.email && errors.email ? "ih-input-error" : ""}`}
                     />
                     <p id="subscription-email-help" className="ih-helper-text">
-                      Sent to the admin contact inbox for follow-up.
+                      We'll send updates to this email.
                     </p>
                     {touched.email && errors.email ? (
                       <p id="subscription-email-error" className="ih-error-text" role="alert">
@@ -120,7 +120,7 @@ const Subscription = () => {
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <p className="ih-text-subtle text-sm leading-6">
-                    Best for teams that want a short monthly recap without digging through the full dashboard.
+                    Stay updated with platform news and insights.
                   </p>
                   <button
                     type="submit"

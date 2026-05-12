@@ -14,6 +14,9 @@ public class FileStorageAdapter : IFileStorage
     public Task<string> SaveReportScreenshotAsync(Guid applicationId, Stream fileStream, string extension, CancellationToken ct = default)
         => _storage.SaveReportScreenshotAsync(applicationId, fileStream, extension, ct);
 
+    public Task<string> SavePaymentProofAsync(Guid paymentId, Stream fileStream, string extension, CancellationToken ct = default)
+        => _storage.SavePaymentProofAsync(paymentId, fileStream, extension, ct);
+
     public bool FileExists(string relativePath)
         => _storage.FileExists(relativePath);
 }

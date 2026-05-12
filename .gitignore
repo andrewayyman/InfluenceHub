@@ -6,7 +6,8 @@
 !/InfluenceHubApi/
 !/InfluenceHubWeb/
 !/openspec/
-!/.agents/
+/.agents
+/.claude
 !/.gitignore
 !/.github/
 !/.cursor/

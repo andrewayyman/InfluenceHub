@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Edit3, Facebook, Instagram, Link as LinkIcon, Linkedin, User, Youtube, Twitter } from "lucide-react";
 import {
   AdminPage as DashboardPage,
@@ -197,28 +197,28 @@ const InfluencerProfile = () => {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs ih-text-muted">Name</p>
-              <p className="mt-1 text-sm ih-text-primary">{formData.name || "-"}</p>
+              <p className="mt-1 text-sm ih-text-primary">{profile?.name || "-"}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs ih-text-muted">Followers</p>
-              <p className="mt-1 text-sm ih-text-primary">{Number(formData.followersCount || 0).toLocaleString()}</p>
+              <p className="mt-1 text-sm ih-text-primary">{Number(profile?.followersCount || 0).toLocaleString()}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 md:col-span-2">
               <p className="text-xs ih-text-muted">Bio</p>
-              <p className="mt-1 text-sm ih-text-primary">{formData.bio || "-"}</p>
+              <p className="mt-1 text-sm ih-text-primary">{profile?.bio || "-"}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs ih-text-muted">Location</p>
-              <p className="mt-1 text-sm ih-text-primary">{formData.location || "-"}</p>
+              <p className="mt-1 text-sm ih-text-primary">{profile?.location || "-"}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs ih-text-muted">Platforms</p>
-              <p className="mt-1 text-sm ih-text-primary">{formData.platforms.join(", ") || "-"}</p>
+              <p className="mt-1 text-sm ih-text-primary">{profile?.platforms?.join(", ") || "-"}</p>
             </div>
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 md:col-span-2">
               <p className="text-xs ih-text-muted">Tags</p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {formData.tags.length === 0 ? <span className="text-sm ih-text-secondary">-</span> : formData.tags.map((tag) => (
+                {!profile?.tags || profile.tags.length === 0 ? <span className="text-sm ih-text-secondary">-</span> : profile.tags.map((tag) => (
                   <span key={tag} className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-slate-800">{tag}</span>
                 ))}
               </div>
@@ -259,7 +259,7 @@ const InfluencerProfile = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full pl-10"
+                    className="ih-input bg-white w-full pl-10"
                     placeholder="Your creator name"
                     required
                   />
@@ -273,7 +273,7 @@ const InfluencerProfile = () => {
                   rows={4}
                   value={formData.bio}
                   onChange={handleChange}
-                  className="ih-input bg-black/40 w-full resize-none"
+                  className="ih-input bg-white w-full resize-none"
                   placeholder="Tell brands about your audience and style..."
                 />
               </div>
@@ -287,7 +287,7 @@ const InfluencerProfile = () => {
                     min="0"
                     value={formData.followersCount}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full"
+                    className="ih-input bg-white w-full"
                   />
                 </div>
                 <div className="space-y-2">
@@ -297,7 +297,7 @@ const InfluencerProfile = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full"
+                    className="ih-input bg-white w-full"
                     placeholder="e.g. New York, USA"
                   />
                 </div>
@@ -340,7 +340,7 @@ const InfluencerProfile = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium ih-text-primary">Niche Tags</label>
-                <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-slate-200 bg-black/20 p-3">
+                <div className="flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
                   {tagNames.map((tag) => (
                     <label key={tag} className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5 text-xs ih-text-secondary hover:border-slate-900/30">
                       <input
@@ -372,7 +372,7 @@ const InfluencerProfile = () => {
                     name="instagramUrl"
                     value={formData.instagramUrl}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full pl-10"
+                    className="ih-input bg-white w-full pl-10"
                     placeholder="https://instagram.com/..."
                   />
                 </div>
@@ -387,7 +387,7 @@ const InfluencerProfile = () => {
                     name="tikTokUrl"
                     value={formData.tikTokUrl}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full pl-10"
+                    className="ih-input bg-white w-full pl-10"
                     placeholder="https://tiktok.com/@..."
                   />
                 </div>
@@ -402,7 +402,7 @@ const InfluencerProfile = () => {
                     name="youTubeUrl"
                     value={formData.youTubeUrl}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full pl-10"
+                    className="ih-input bg-white w-full pl-10"
                     placeholder="https://youtube.com/c/..."
                   />
                 </div>
@@ -417,7 +417,7 @@ const InfluencerProfile = () => {
                     name="twitterUrl"
                     value={formData.twitterUrl}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full pl-10"
+                    className="ih-input bg-white w-full pl-10"
                     placeholder="https://twitter.com/..."
                   />
                 </div>
@@ -432,7 +432,7 @@ const InfluencerProfile = () => {
                     name="facebookUrl"
                     value={formData.facebookUrl}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full pl-10"
+                    className="ih-input bg-white w-full pl-10"
                     placeholder="https://facebook.com/..."
                   />
                 </div>
@@ -447,7 +447,7 @@ const InfluencerProfile = () => {
                     name="linkedInUrl"
                     value={formData.linkedInUrl}
                     onChange={handleChange}
-                    className="ih-input bg-black/40 w-full pl-10"
+                    className="ih-input bg-white w-full pl-10"
                     placeholder="https://linkedin.com/in/..."
                   />
                 </div>
@@ -480,3 +480,4 @@ const InfluencerProfile = () => {
 };
 
 export default InfluencerProfile;
+

@@ -67,4 +67,7 @@ export const influencerService = {
 
   getMyReports: (token, signal) =>
     apiRequest("/api/Reports/GetMyReports", { method: "GET", token, signal }),
+
+  getPublicProfile: (influencerId, signal) =>
+    apiRequest(`/api/Influencers/GetPublicProfile/${influencerId}`, { method: "GET", signal }),
 };

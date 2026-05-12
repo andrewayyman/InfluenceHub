@@ -74,7 +74,7 @@ const Register = () => {
         </div>
 
         <h2 className="mb-2 mt-6 text-3xl font-semibold ih-text-primary">
-          Create your Influix account
+          Create your InfluiX account
         </h2>
         <p className="ih-text-muted mb-8 leading-7">
           Pick your role, add your details, and set up the account you will use to sign in.
@@ -97,7 +97,7 @@ const Register = () => {
               <fieldset>
                 <legend className="ih-label">Account type</legend>
                 <p id="register-role-help" className="ih-helper-text mt-0">
-                  Choose how you will use Influix.
+                  Choose how you will use InfluiX.
                 </p>
                 <div
                   className="mt-4 grid grid-cols-2 gap-3"

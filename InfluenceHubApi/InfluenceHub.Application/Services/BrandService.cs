@@ -17,6 +17,7 @@ public class BrandService : IBrandService
     private readonly IRepository<CampaignTag> _campaignTagRepository;
     private readonly ICampaignRepository _campaignRepo;
     private readonly IRepository<CampaignReport> _reportRepository;
+    private readonly IPaymentService _paymentService;
 
     public BrandService(
         IBrandRepository brandRepository,
@@ -25,7 +26,8 @@ public class BrandService : IBrandService
         IRepository<Tag> tagRepository,
         IRepository<CampaignTag> campaignTagRepository,
         ICampaignRepository campaignRepo,
-        IRepository<CampaignReport> reportRepository)
+        IRepository<CampaignReport> reportRepository,
+        IPaymentService paymentService)
     {
         _brandRepository = brandRepository;
         _brandRepo = brandRepo;
@@ -34,6 +36,7 @@ public class BrandService : IBrandService
         _campaignTagRepository = campaignTagRepository;
         _campaignRepo = campaignRepo;
         _reportRepository = reportRepository;
+        _paymentService = paymentService;
     }
 
     public async Task<BrandProfileResponse?> GetProfileAsync(Guid userId, CancellationToken ct = default)
@@ -217,6 +220,13 @@ public class BrandService : IBrandService
             if (status == ReportStatus.Approved)
             {
                 report.Application.Campaign.Status = CampaignStatus.Completed;
+                try
+                {
+                    await _paymentService.ProcessPaymentAsync(reportId, userId, ct);
+                }
+                catch (InvalidOperationException)
+                {
+                }
             }
         }
 

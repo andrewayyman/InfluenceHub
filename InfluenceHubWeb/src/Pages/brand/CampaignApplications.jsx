@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Check, Eye, X } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+﻿import React, { useCallback, useEffect, useState } from "react";
+import { Check, Eye, User, X } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   AdminPage,
   AdminPanel,
@@ -161,11 +161,11 @@ const CampaignApplications = () => {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {filteredApplications.map((app) => (
-              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-slate-200 transition-all">
+              <div key={app.id} className="ih-panel-hover flex flex-col justify-between rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 transition-all">
                 <div>
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-sm font-semibold text-indigo-300">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-sm font-semibold text-indigo-600">
                         {getInitials(app.influencerName)}
                       </div>
                       <div className="min-w-0">
@@ -182,7 +182,7 @@ const CampaignApplications = () => {
                     </StatusBadge>
                   </div>
 
-                  <p className="mb-4 line-clamp-3 text-sm italic ih-text-secondary border-l-2 border-indigo-500/50 pl-3">
+                  <p className="mb-4 line-clamp-3 border-l-2 border-indigo-500/35 pl-3 text-sm italic ih-text-secondary">
                     "{app.message || "No specific pitch provided."}"
                   </p>
 
@@ -201,6 +201,13 @@ const CampaignApplications = () => {
                   >
                     <Eye size={16} /> View Details
                   </button>
+                  <Link
+                    to={`/influencer/${app.influencerId}`}
+                    className="flex items-center justify-center gap-2 rounded-xl border border-indigo-200 px-3 py-2.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50 transition-colors"
+                    title="View Influencer Profile"
+                  >
+                    <User size={16} />
+                  </Link>
                   
                   {app.status === "Pending" && (
                     <>
@@ -231,12 +238,12 @@ const CampaignApplications = () => {
 
       {selectedApplication ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white shadow-2xl flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
             <div className="flex items-start justify-between p-6 border-b border-slate-200">
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-lg font-bold text-indigo-300">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-lg font-bold text-indigo-600">
                   {getInitials(selectedApplication.influencerName)}
                 </div>
                 <div>
@@ -294,9 +301,9 @@ const CampaignApplications = () => {
                 <div>
                   <p className="text-sm font-semibold ih-text-primary mb-2">Attached Links</p>
                   <div className="rounded-xl border border-slate-900/5 bg-slate-50 p-4">
-                    <ul className="space-y-2 text-sm text-indigo-300">
+                    <ul className="space-y-2 text-sm text-indigo-700">
                       {(selectedApplication.links || []).length === 0 ? <li className="text-slate-500">-</li> : (selectedApplication.links || []).map((link, i) => (
-                        <li key={i} className="truncate hover:text-indigo-200 transition-colors">
+                        <li key={i} className="truncate hover:text-indigo-500 transition-colors">
                           <a href={link} target="_blank" rel="noreferrer" className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500/50"></span>
                             {link}
@@ -324,9 +331,15 @@ const CampaignApplications = () => {
             </div>
 
             {/* Modal Footer (Actions) */}
-            <div className="p-6 border-t border-slate-200 bg-[#0f172a] rounded-b-2xl flex items-center justify-end gap-3">
-              <button 
-                onClick={() => setSelectedApplication(null)} 
+            <div className="p-6 border-t border-slate-200 bg-white rounded-b-2xl flex items-center justify-end gap-3">
+              <Link
+                to={`/influencer/${selectedApplication.influencerId}`}
+                className="flex items-center gap-2 rounded-xl border border-indigo-200 px-5 py-2.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50 transition-colors"
+              >
+                <User size={16} /> View Full Profile
+              </Link>
+              <button
+                onClick={() => setSelectedApplication(null)}
                 className="ih-button-secondary px-5 py-2.5 text-sm"
               >
                 Close
@@ -366,3 +379,4 @@ const CampaignApplications = () => {
 };
 
 export default CampaignApplications;
+

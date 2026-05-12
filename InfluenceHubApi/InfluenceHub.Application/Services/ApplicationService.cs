@@ -33,6 +33,9 @@ public class ApplicationService : IApplicationService
         var influencer = await _influencerRepository.GetByUserIdAsync(influencerUserId, ct)
             ?? throw new InvalidOperationException("Influencer profile not found");
 
+        if (influencer.FollowersCount < 10000)
+            throw new InvalidOperationException("A minimum of 10,000 followers is required to apply for campaigns.");
+
         var campaign = await _campaignRepository.GetByIdAsync(request.CampaignId, ct)
             ?? throw new InvalidOperationException("Campaign not found");
 

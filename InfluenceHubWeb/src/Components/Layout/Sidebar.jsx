@@ -14,7 +14,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
   const closeButtonRef = useRef(null);
   const { logout, user } = useAuth();
   const activeRole = user?.role ?? role ?? "admin";
-  const profileName = user?.displayName || user?.email || "Influix";
+  const profileName = user?.displayName || user?.email || "InfluiX";
   const profileInitials = getUserInitials(user);
 
   useOverlayAccessibility({
@@ -64,7 +64,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
           <div className="flex items-center gap-3">
             <span className="ih-brand-mark shrink-0">IH</span>
             <span className="ih-text-primary text-[15px] font-bold tracking-tight">
-              Influix
+              InfluiX
             </span>
           </div>
           <button
@@ -79,7 +79,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 sm:py-6">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 sm:py-6" style={{ maxHeight: 'calc(100vh - 120px)' }}>
           {links.map((link) => {
             const Icon = link.icon;
             return (
@@ -109,7 +109,7 @@ const Sidebar = ({ role, isOpen = false, onClose = () => {}, triggerRef }) => {
         </nav>
 
         {/* Footer / User Profile Area */}
-        <div className="ih-divider-top px-4 py-4">
+        <div className="ih-divider-top shrink-0 px-4 py-4">
           <div className="ih-sidebar-user mb-3 flex items-center gap-3 rounded-[1.15rem] p-3 transition-colors">
             <div className="ih-gradient-brand flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ih-text-primary shadow-inner">
               {profileInitials}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { MailCheck, MessageSquareMore, MessagesSquare } from "lucide-react";
 import {
   AdminHero,
@@ -171,7 +171,7 @@ const AdminMessages = () => {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-sm font-semibold ih-text-primary">{message.subject}</p>
-                        <p className="ih-text-muted mt-1 text-sm">{message.name} · {message.email}</p>
+                        <p className="ih-text-muted mt-1 text-sm">{message.name} آ· {message.email}</p>
                       </div>
                       <StatusBadge tone={message.isReplied ? "success" : "warning"}>{getMessageLabel(message.isReplied)}</StatusBadge>
                     </div>
@@ -188,23 +188,23 @@ const AdminMessages = () => {
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       <p className="text-xl font-semibold ih-text-primary">{selectedMessage.subject}</p>
-                      <p className="ih-text-muted mt-1 text-sm">From {selectedMessage.name} · {selectedMessage.email}</p>
+                      <p className="ih-text-muted mt-1 text-sm">From {selectedMessage.name} آ· {selectedMessage.email}</p>
                     </div>
                     <StatusBadge tone={selectedMessage.isReplied ? "success" : "warning"}>{getMessageLabel(selectedMessage.isReplied)}</StatusBadge>
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-slate-200 bg-slate-950/20 px-4 py-4">
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                       <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Received</p>
                       <p className="mt-2 text-sm font-medium ih-text-primary">{formatDateTime(selectedMessage.createdAt)}</p>
                     </div>
-                    <div className="rounded-2xl border border-slate-200 bg-slate-950/20 px-4 py-4">
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                       <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Status</p>
                       <p className="mt-2 text-sm font-medium ih-text-primary">{getMessageLabel(selectedMessage.isReplied)}</p>
                     </div>
                   </div>
 
-                  <div className="rounded-[1.35rem] border border-slate-200 bg-slate-950/20 px-4 py-4">
+                  <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50 px-4 py-4">
                     <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Message</p>
                     <p className="ih-text-secondary mt-3 whitespace-pre-wrap text-sm leading-7">{selectedMessage.message}</p>
                   </div>
@@ -233,3 +233,4 @@ const AdminMessages = () => {
 };
 
 export default AdminMessages;
+

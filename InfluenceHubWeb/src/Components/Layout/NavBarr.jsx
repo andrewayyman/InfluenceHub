@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, Bell, ChevronDown, Plus, Search, Users as UsersIcon } from "lucide-react";
+import { Menu, ChevronDown, Plus, Search, Users as UsersIcon } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { getRoleLabel, getUserInitials } from "../../utils/auth";
@@ -61,12 +61,6 @@ const Navbar = ({ isSidebarOpen, onOpenSidebar, triggerRef }) => {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Notifications Icon */}
-        <button className="ih-dashboard-icon-button ih-focus-ring ih-text-secondary relative flex items-center justify-center rounded-xl p-2 transition-colors hover:ih-text-primary">
-          <Bell size={18} />
-          <span className="ih-notification-badge absolute right-[6px] top-[6px] block h-2 w-2 rounded-full ring-2 ring-[#0d1324] mix-blend-normal"></span>
-        </button>
-
         {/* Primary Quick Action Button */}
         {action && (
           <TransitionLink

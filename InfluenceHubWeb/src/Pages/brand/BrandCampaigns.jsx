@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+﻿import React, { useCallback, useEffect, useState } from "react";
 import { ExternalLink, Eye, Pencil, Plus, Trash2, X } from "lucide-react";
 import {
   AdminPage,
@@ -129,8 +129,8 @@ const BrandCampaigns = () => {
                         <p className="ih-text-primary font-medium ih-truncate" title={campaign.title}>
                           {campaign.title}
                         </p>
-                        <p className="ih-text-muted mt-1 text-sm ih-truncate" title={`${campaign.platforms?.join(", ")} · ${campaign.location}`}>
-                          {campaign.platforms?.join(", ")} · {campaign.location}
+                        <p className="ih-text-muted mt-1 text-sm ih-truncate" title={`${campaign.platforms?.join(", ")} آ· ${campaign.location}`}>
+                          {campaign.platforms?.join(", ")} آ· {campaign.location}
                         </p>
                       </td>
                       <td className="px-4">
@@ -192,7 +192,7 @@ const BrandCampaigns = () => {
 
       {selectedCampaign ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] p-6 shadow-2xl">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs tracking-[0.2em] ih-text-muted uppercase">Campaign profile</p>
@@ -239,3 +239,4 @@ const BrandCampaigns = () => {
 };
 
 export default BrandCampaigns;
+

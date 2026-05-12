@@ -5,7 +5,7 @@ const services = [
   {
     id: "01",
     title: "Brands",
-    description: "Create campaigns, review matched influencers, manage applications, and track delivery through reporting.",
+    description: "Create campaigns, review matched influencers, and track ROI.",
     icon: BriefcaseBusiness,
     notes: ["Create campaigns", "Review applications", "Track ROI"],
     iconClass: "ih-icon-chip-brand",
@@ -16,7 +16,7 @@ const services = [
   {
     id: "02",
     title: "Influencers",
-    description: "Build a profile, find relevant campaigns, apply to briefs, and submit performance reports after posting.",
+    description: "Build a profile, find campaigns, apply, and submit reports.",
     icon: Users,
     notes: ["Profile setup", "Campaign matches", "Report submission"],
     iconClass: "ih-icon-chip-success",
@@ -27,7 +27,7 @@ const services = [
   {
     id: "03",
     title: "Admin",
-    description: "Review platform activity, manage users and campaigns, validate reports, and follow up on contact messages.",
+    description: "Manage users and campaigns, validate reports, and handle inquiries.",
     icon: ShieldCheck,
     notes: ["Manage users", "Review reports", "Handle messages"],
     iconClass: "ih-icon-chip-warning",
@@ -44,10 +44,10 @@ const Services = () => {
         <div className="lg:sticky lg:top-28 lg:self-start" data-ih-reveal style={{ "--ih-delay": "80ms" }}>
           <p className="ih-kicker mb-5">What each role can do</p>
           <h2 id="services-heading" className="max-w-sm text-4xl font-semibold tracking-[-0.04em] ih-text-primary sm:text-5xl">
-            One platform. <span className="ih-text-accent">Clear role-based workflows.</span>
+            One platform. <span className="ih-text-accent">Three workflows.</span>
           </h2>
           <p className="ih-text-muted mt-6 max-w-md text-base leading-7 sm:text-lg">
-            Each role gets direct tools for campaign creation, matching, reporting, and oversight.
+            Tailored tools for campaigns, matching, reporting, and oversight.
           </p>
         </div>
 

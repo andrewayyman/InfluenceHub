@@ -29,7 +29,7 @@ const Footer = () => {
         <div className="max-w-md">
           <div className="mb-4 inline-flex items-center gap-3">
             <span className="ih-brand-mark">IH</span>
-            <p className="ih-kicker ih-kicker-warm">Influix</p>
+            <p className="ih-kicker ih-kicker-warm">InfluiX</p>
           </div>
           <h3 className="text-2xl font-semibold tracking-[-0.04em] ih-text-primary">Create campaigns, match influencers, and track results with one shared workflow.</h3>
           <p className="ih-text-muted mt-4 text-sm leading-7 sm:text-base">
@@ -90,7 +90,7 @@ const Footer = () => {
       </div>
 
       <div className="ih-divider-top ih-text-subtle mt-14 flex flex-col items-start justify-between gap-4 pt-6 text-sm md:flex-row md:items-center">
-        <p>© {new Date().getFullYear()} Influix. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} InfluiX. All rights reserved.</p>
 
         <div className="flex flex-wrap gap-6">
           {legalLinks.map((link) => (

@@ -14,5 +14,12 @@ public record InfluencerProfileResponse(
     string? TwitterUrl,
     string? YouTubeUrl,
     string? TikTokUrl,
-    string? LinkedInUrl
+    string? LinkedInUrl,
+    string? InstapayPhone,
+    string? WalletProvider,
+    string? WalletNumber,
+    string? BankName,
+    string? BankAccountNumber,
+    string? PreferredPaymentMethod,
+    bool IsEligible
 );

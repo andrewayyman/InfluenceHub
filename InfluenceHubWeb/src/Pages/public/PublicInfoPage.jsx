@@ -7,10 +7,10 @@ import { TransitionLink } from "../../Components/Motion/TransitionLink";
 
 const pageContent = {
   about: {
-    kicker: "About Influix",
+    kicker: "About InfluiX",
     title: "Built for campaigns that need trust, speed, and clear handoffs.",
     description:
-      "Influix brings brands, influencers, and admins into one shared operating system for campaign setup, matching, reporting, and follow-up.",
+      "InfluiX brings brands, influencers, and admins into one shared operating system for campaign setup, matching, reporting, and follow-up.",
     sections: [
       {
         title: "Who it serves",
@@ -50,7 +50,7 @@ const pageContent = {
     kicker: "Security",
     title: "Operational controls are built around role-based access and admin oversight.",
     description:
-      "Influix separates access for brands, influencers, and admins, and keeps campaign review and contact follow-up inside authenticated admin surfaces.",
+      "InfluiX separates access for brands, influencers, and admins, and keeps campaign review and contact follow-up inside authenticated admin surfaces.",
     sections: [
       {
         title: "Access control",

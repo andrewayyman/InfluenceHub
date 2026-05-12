@@ -20,6 +20,9 @@ public class InfluenceHubDbContext : DbContext
     public DbSet<Domain.Entities.Application> Applications => Set<Domain.Entities.Application>();
     public DbSet<CampaignReport> CampaignReports => Set<CampaignReport>();
     public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
+    public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<CommissionSetting> CommissionSettings => Set<CommissionSetting>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

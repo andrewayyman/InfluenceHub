@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Eye, Megaphone, X } from "lucide-react";
 import {
   AdminHero,
@@ -207,7 +207,7 @@ const AdminCampaigns = () => {
                         </div>
                         <div>
                           <p className="ih-text-primary font-medium">{title}</p>
-                          <p className="ih-text-muted mt-1 text-sm">{brandName} · {platform} · {location}</p>
+                          <p className="ih-text-muted mt-1 text-sm">{brandName} آ· {platform} آ· {location}</p>
                           {campaign.tags?.length ? (
                             <div className="mt-3 flex flex-wrap gap-2">
                               {campaign.tags.map((tag) => (
@@ -270,7 +270,7 @@ const AdminCampaigns = () => {
 
       {selectedCampaign ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] p-6 shadow-2xl">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] ih-text-muted">Campaign profile</p>
@@ -331,3 +331,4 @@ const AdminCampaigns = () => {
 };
 
 export default AdminCampaigns;
+

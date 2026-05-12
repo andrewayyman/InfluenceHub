@@ -58,7 +58,7 @@ const Login = () => {
         </div>
 
         <h2 className="mb-2 mt-6 text-3xl font-semibold ih-text-primary">
-          Log in to Influix
+          Log in to InfluiX
         </h2>
         <p className="ih-text-muted mb-8 leading-7">
           Access campaigns, applications, reports, and admin tools from one account.

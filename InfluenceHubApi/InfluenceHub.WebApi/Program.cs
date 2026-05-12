@@ -40,7 +40,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment.ContentRootPath);
 
-var key = builder.Configuration["Jwt:Key"] ?? "InfluenceHub-Super-Secret-Key-At-Least-32-Chars!";
+var key = builder.Configuration["Jwt:Key"] ?? "InfluiX-Super-Secret-Key-At-Least-32-Chars!";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -53,8 +53,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "InfluenceHub",
-            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "InfluenceHub",
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "InfluiX",
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "InfluiX",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
             NameClaimType = ClaimTypes.NameIdentifier,
             RoleClaimType = ClaimTypes.Role,
@@ -119,13 +119,13 @@ static async Task SeedSystemDataAsync(IServiceProvider services)
         await context.SaveChangesAsync();
     }
 
-    if (await userRepo.GetByEmailAsync("admin@influencehub.com") is not null)
+    if (await userRepo.GetByEmailAsync("admin@influix.com") is not null)
         return;
 
     var admin = new User
     {
         Id = Guid.NewGuid(),
-        Email = "admin@influencehub.com",
+        Email = "admin@influix.com",
         PasswordHash = HashPassword("Admin@123"),
         Role = UserRole.Admin,
         IsEnabled = true,
@@ -134,6 +134,21 @@ static async Task SeedSystemDataAsync(IServiceProvider services)
 
     context.Users.Add(admin);
     await context.SaveChangesAsync();
+
+    var existingCommission = await context.CommissionSettings.AnyAsync();
+    if (!existingCommission)
+    {
+        context.CommissionSettings.Add(new InfluenceHub.Domain.Entities.CommissionSetting
+        {
+            Id = Guid.NewGuid(),
+            Percentage = 10,
+            Description = "Default platform commission",
+            EffectiveFrom = DateTime.UtcNow,
+            UpdatedBy = admin.Id,
+            UpdatedAt = DateTime.UtcNow
+        });
+        await context.SaveChangesAsync();
+    }
 }
 
 static string HashPassword(string password)

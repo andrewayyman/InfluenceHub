@@ -20,6 +20,9 @@ public static class DependencyInjection
         services.AddScoped<IContactService, ContactService>();
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<ITagService, TagService>();
+        services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<ICommissionService, CommissionService>();
         services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
         return services;
     }

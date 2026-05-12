@@ -310,7 +310,7 @@ const BrandDashboard = () => {
                             <p className="text-xs ih-text-subtle">Ends {formatDate(c.deadline)}</p>
                           </div>
                         </div>
-                        <TransitionLink to="/dashboard/brand/campaigns" className="text-xs font-medium text-indigo-600 hover:text-indigo-300">
+                        <TransitionLink to="/dashboard/brand/campaigns" className="text-xs font-medium text-indigo-600 hover:text-indigo-500">
                           Manage
                         </TransitionLink>
                       </div>

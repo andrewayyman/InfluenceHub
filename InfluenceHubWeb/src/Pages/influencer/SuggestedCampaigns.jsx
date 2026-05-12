@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+﻿import React, { useCallback, useEffect, useState } from "react";
 import { Megaphone, CheckCircle, Eye, X } from "lucide-react";
 import {
   AdminPage as DashboardPage,
@@ -211,7 +211,7 @@ const SuggestedCampaigns = () => {
                             </span>
                           )}
                         </div>
-                        <p className="ih-text-muted text-xs truncate mt-0.5">Platforms: {campaign.platforms?.join(", ") || "—"}</p>
+                        <p className="ih-text-muted text-xs truncate mt-0.5">Platforms: {campaign.platforms?.join(", ") || "â€”"}</p>
                       </div>
                     </div>
                     
@@ -279,7 +279,7 @@ const SuggestedCampaigns = () => {
 
       {selectedCampaign ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] p-6 shadow-2xl">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs tracking-[0.2em] ih-text-muted uppercase">Campaign profile</p>
@@ -324,7 +324,7 @@ const SuggestedCampaigns = () => {
 
       {applyingCampaign ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <form onSubmit={submitApply} className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] p-6 shadow-2xl">
+          <form onSubmit={submitApply} className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs tracking-[0.2em] ih-text-muted uppercase">Apply now</p>
@@ -413,3 +413,4 @@ const SuggestedCampaigns = () => {
 };
 
 export default SuggestedCampaigns;
+

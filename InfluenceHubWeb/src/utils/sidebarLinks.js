@@ -11,7 +11,9 @@ import {
   MessageSquare,
   BarChart3,
   ClipboardList,
-  User
+  User,
+  DollarSign,
+  Percent,
 } from "lucide-react";
 
 /*
@@ -104,6 +106,11 @@ export const sidebarLinks = {
       path: "/dashboard/influencer/insights",
       icon: BarChart3,
     },
+    {
+      name: "Earnings",
+      path: "/dashboard/influencer/earnings",
+      icon: DollarSign,
+    },
   ],
 
   /*
@@ -132,6 +139,16 @@ export const sidebarLinks = {
       name: "Contact Messages",
       path: "/dashboard/admin/messages",
       icon: MessageSquare,
+    },
+    {
+      name: "Commission",
+      path: "/dashboard/admin/commission",
+      icon: Percent,
+    },
+    {
+      name: "Payments",
+      path: "/dashboard/admin/payments",
+      icon: DollarSign,
     },
   ],
 };

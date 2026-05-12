@@ -3,7 +3,6 @@ import {
   ArrowRight,
   Building2,
   CheckCircle2,
-  ChevronDown,
   TrendingUp,
   Zap,
 } from "lucide-react";
@@ -134,9 +133,7 @@ const Hero = () => {
           data-ih-reveal
           style={{ "--ih-delay": "200ms" }}
         >
-          Influix is the unified workspace where brands launch campaigns,
-          influencers apply and report results, and admins maintain full
-          oversight — all in one place.
+          Launch campaigns, match influencers, and track results—all in one place.
         </p>
 
         {/* CTA group */}
@@ -146,27 +143,25 @@ const Hero = () => {
           style={{ "--ih-delay": "280ms" }}
         >
           <TransitionLink
+            to="/auth/login"
+            id="hero-cta-login"
+            className="ih-button-secondary ih-hero-cta ih-focus-ring inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 text-base font-medium"
+          >
+            Sign In
+          </TransitionLink>
+
+          <TransitionLink
             to="/auth/register"
             id="hero-cta-register"
             className="ih-button-primary ih-hero-cta ih-focus-ring inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 text-base font-semibold"
           >
-            Get started free
+            Create Account
             <ArrowRight
               size={17}
               aria-hidden="true"
               className="ih-home-cta-icon"
             />
           </TransitionLink>
-
-          <button
-            type="button"
-            id="hero-cta-workflow"
-            onClick={handleScrollToServices}
-            className="ih-button-secondary ih-hero-cta ih-hero-cta-secondary ih-focus-ring inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 text-base font-medium"
-          >
-            <ChevronDown size={16} aria-hidden="true" className="ih-home-cta-icon ih-hero-cta-secondary-icon" />
-            Explore workflows
-          </button>
         </div>
 
         {/* Feature pills */}

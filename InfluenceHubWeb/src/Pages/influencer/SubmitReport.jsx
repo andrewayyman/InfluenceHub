@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+﻿import React, { useEffect, useState, useMemo } from "react";
 import { Plus, Trash2, UploadCloud, CheckCircle, AlertCircle, Calendar, Info } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
@@ -201,7 +201,7 @@ const SubmitReport = () => {
 
               {/* Step 1 */}
               <section className="space-y-4">
-                <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 1 — Campaign & Dates</h3>
+                <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 1 â€” Campaign & Dates</h3>
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium ih-text-primary">Select Campaign</label>
@@ -216,16 +216,16 @@ const SubmitReport = () => {
                       name="applicationId"
                       value={formData.applicationId}
                       onChange={handleInputChange}
-                      className="ih-input bg-black/40 w-full text-sm"
+                      className="ih-input bg-white w-full text-sm"
                       required
                     >
-                      <option value="" disabled>— Choose a campaign —</option>
+                      <option value="" disabled>â€” Choose a campaign â€”</option>
                       {submittableApps.map(app => {
                         const daysLeft = getDaysLeft(app.campaignDeadline);
                         const deadlinePart = daysLeft !== null
-                          ? (daysLeft === 0 ? " · Due Today!" : ` · Due in ${daysLeft}d`)
+                          ? (daysLeft === 0 ? " آ· Due Today!" : ` آ· Due in ${daysLeft}d`)
                           : "";
-                        const brandPart = app.brandName ? ` — ${app.brandName}` : "";
+                        const brandPart = app.brandName ? ` â€” ${app.brandName}` : "";
                         return (
                           <option key={app.id} value={app.id}>
                             {app.campaignTitle}{brandPart}{deadlinePart}
@@ -249,7 +249,7 @@ const SubmitReport = () => {
                         name={name}
                         value={formData[name]}
                         onChange={handleInputChange}
-                        className="ih-input bg-black/40 w-full"
+                        className="ih-input bg-white w-full"
                         required
                       />
                     </div>
@@ -263,7 +263,7 @@ const SubmitReport = () => {
               <section className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 2 — Performance Metrics</h3>
+                    <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 2 â€” Performance Metrics</h3>
                     <p className="text-xs text-slate-500 mt-1">Provide accurate engagement numbers per platform.</p>
                   </div>
                   <button type="button" onClick={addPlatformInsightRow} className="ih-button-secondary inline-flex items-center gap-2 px-3 py-1.5 text-xs">
@@ -273,14 +273,14 @@ const SubmitReport = () => {
 
                 <div className="space-y-4">
                   {platformInsights.map((row, index) => (
-                    <div key={`platform-${index}`} className="rounded-2xl border border-slate-200 bg-[#0f172a] p-5 shadow-lg relative overflow-hidden">
+                    <div key={`platform-${index}`} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500/50" />
 
                       <div className="mb-4 flex items-center justify-between gap-4">
                         <div className="flex-1 max-w-[200px]">
                           <label className="text-xs ih-text-muted block mb-1">Platform</label>
                           <select
-                            className="ih-input bg-black/40 w-full text-sm py-1.5"
+                            className="ih-input bg-white w-full text-sm py-1.5"
                             value={row.platform}
                             onChange={(e) => updatePlatformInsight(index, "platform", e.target.value)}
                           >
@@ -307,7 +307,7 @@ const SubmitReport = () => {
                             value={row.postUrl}
                             onChange={(e) => updatePlatformInsight(index, "postUrl", e.target.value)}
                             placeholder="https://instagram.com/p/..."
-                            className="ih-input bg-black/40 w-full text-sm"
+                            className="ih-input bg-white w-full text-sm"
                           />
                         </div>
 
@@ -325,7 +325,7 @@ const SubmitReport = () => {
                                 min="0"
                                 value={row[metric.key]}
                                 onChange={(e) => updatePlatformInsight(index, metric.key, e.target.value)}
-                                className="ih-input bg-black/40 w-full text-sm font-mono text-center"
+                                className="ih-input bg-white w-full text-sm font-mono text-center"
                                 required
                               />
                             </div>
@@ -341,7 +341,7 @@ const SubmitReport = () => {
 
               {/* Step 3 */}
               <section className="space-y-4">
-                <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 3 — Proof of Delivery</h3>
+                <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 3 â€” Proof of Delivery</h3>
 
                 <div className="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-indigo-500/30 bg-indigo-500/5 px-6 py-10 transition-colors hover:bg-indigo-500/10 cursor-pointer">
                   <div className="h-14 w-14 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
@@ -442,3 +442,4 @@ const SubmitReport = () => {
 };
 
 export default SubmitReport;
+

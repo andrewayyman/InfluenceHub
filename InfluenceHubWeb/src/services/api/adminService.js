@@ -69,3 +69,28 @@ export const markContactReplied = (token, messageId) => apiRequest(
   `/api/admin/markcontactreplied/${messageId}`,
   withToken(token, { method: "PATCH" }),
 );
+
+export const getCommission = (token, signal) => apiRequest(
+  `/api/admin/getcommission`,
+  withToken(token, { signal }),
+);
+
+export const setCommission = (token, data) => apiRequest(
+  `/api/admin/setcommission`,
+  withToken(token, { method: "PUT", body: data }),
+);
+
+export const getCommissionHistory = (token, signal) => apiRequest(
+  `/api/admin/getcommissionhistory`,
+  withToken(token, { signal }),
+);
+
+export const getPayments = (token, params, signal) => apiRequest(
+  `/api/admin/getpayments${buildQueryString(params)}`,
+  withToken(token, { signal }),
+);
+
+export const getPaymentSummary = (token, signal) => apiRequest(
+  `/api/admin/getpaymentsummary`,
+  withToken(token, { signal }),
+);

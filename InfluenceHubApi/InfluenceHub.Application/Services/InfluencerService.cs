@@ -3,6 +3,7 @@ using InfluenceHub.Application.DTOs.Request;
 using InfluenceHub.Application.DTOs.Response;
 using InfluenceHub.Application.Interfaces;
 using InfluenceHub.Domain.Entities;
+using InfluenceHub.Domain.Enums;
 using InfluenceHub.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -94,6 +95,31 @@ public class InfluencerService : IInfluencerService
         return MapToResponse(updated);
     }
 
+    public async Task<InfluencerPaymentInfoResponse> UpdatePaymentInfoAsync(Guid userId, UpdatePaymentInfoRequest request, CancellationToken ct = default)
+    {
+        var influencer = await _influencerRepository.GetByUserIdAsync(userId, ct)
+            ?? throw new InvalidOperationException("Influencer profile not found");
+
+        influencer.InstapayPhone = request.InstapayPhone?.Trim();
+        influencer.WalletProvider = request.WalletProvider?.Trim();
+        influencer.WalletNumber = request.WalletNumber?.Trim();
+        influencer.BankName = request.BankName?.Trim();
+        influencer.BankAccountNumber = request.BankAccountNumber?.Trim();
+        influencer.PreferredPaymentMethod = request.PreferredPaymentMethod?.Trim();
+        influencer.UpdatedAt = DateTime.UtcNow;
+
+        _influencerRepo.Update(influencer);
+        await _influencerRepo.SaveChangesAsync(ct);
+
+        return new InfluencerPaymentInfoResponse(
+            influencer.InstapayPhone,
+            influencer.WalletProvider,
+            influencer.WalletNumber,
+            influencer.BankName,
+            influencer.BankAccountNumber,
+            influencer.PreferredPaymentMethod);
+    }
+
     public async Task<IReadOnlyList<ApplicationResponse>> GetMyApplicationsAsync(Guid userId, CancellationToken ct = default)
     {
         var influencer = await _influencerRepository.GetByUserIdAsync(userId, ct);
@@ -112,13 +138,42 @@ public class InfluencerService : IInfluencerService
             a.Campaign.Status, a.Campaign.Brand?.Name ?? string.Empty, a.Campaign.Deadline)).ToList();
     }
 
+    private static PublicInfluencerProfileResponse MapToPublicResponse(Influencer i)
+    {
+        var platforms = SafeDeserializePlatforms(i.Platforms);
+        var tags = i.InfluencerTags.Select(it => it.Tag.Name).ToList();
+        var isEligible = i.FollowersCount >= 10000;
+        return new PublicInfluencerProfileResponse(
+            i.Id, i.Name, i.Bio, platforms, i.FollowersCount, i.Location, tags,
+            i.InstagramUrl, i.FacebookUrl, i.TwitterUrl, i.YouTubeUrl, i.TikTokUrl, i.LinkedInUrl,
+            0, 0, i.Applications.Count(a => a.Status == ApplicationStatus.Accepted), isEligible);
+    }
+
     private static InfluencerProfileResponse MapToResponse(Influencer i)
     {
         var platforms = SafeDeserializePlatforms(i.Platforms);
         var tags = i.InfluencerTags.Select(it => it.Tag.Name).ToList();
+        var isEligible = i.FollowersCount >= 10000;
         return new InfluencerProfileResponse(
             i.Id, i.UserId, i.Name, i.Bio, platforms, i.FollowersCount, i.Location, tags,
-            i.InstagramUrl, i.FacebookUrl, i.TwitterUrl, i.YouTubeUrl, i.TikTokUrl, i.LinkedInUrl);
+            i.InstagramUrl, i.FacebookUrl, i.TwitterUrl, i.YouTubeUrl, i.TikTokUrl, i.LinkedInUrl,
+            i.InstapayPhone, i.WalletProvider, i.WalletNumber, i.BankName, i.BankAccountNumber, i.PreferredPaymentMethod,
+            isEligible);
+    }
+
+    public async Task<PublicInfluencerProfileResponse?> GetPublicProfileAsync(Guid influencerId, CancellationToken ct = default)
+    {
+        var influencer = await _influencerRepository.GetByUserIdAsync(influencerId, ct);
+        if (influencer is null)
+        {
+            var byId = await _influencerRepo.Query()
+                .Include(i => i.InfluencerTags).ThenInclude(it => it.Tag)
+                .Include(i => i.Applications)
+                .FirstOrDefaultAsync(i => i.Id == influencerId, ct);
+            if (byId is null) return null;
+            return MapToPublicResponse(byId);
+        }
+        return MapToPublicResponse(influencer);
     }
 
     private static List<string> SafeDeserializePlatforms(string? platformsJson)

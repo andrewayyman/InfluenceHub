@@ -20,9 +20,9 @@ public class JwtTokenGenerator : ITokenGenerator
 
     public string GenerateToken(User user)
     {
-        var key = _configuration["Jwt:Key"] ?? "InfluenceHub-Super-Secret-Key-At-Least-32-Chars!";
-        var issuer = _configuration["Jwt:Issuer"] ?? "InfluenceHub";
-        var audience = _configuration["Jwt:Audience"] ?? "InfluenceHub";
+        var key = _configuration["Jwt:Key"] ?? "InfluiX-Super-Secret-Key-At-Least-32-Chars!";
+        var issuer = _configuration["Jwt:Issuer"] ?? "InfluiX";
+        var audience = _configuration["Jwt:Audience"] ?? "InfluiX";
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

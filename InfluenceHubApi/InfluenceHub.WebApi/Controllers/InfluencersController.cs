@@ -1,4 +1,5 @@
 using InfluenceHub.Application.Interfaces;
+using InfluenceHub.Application.DTOs.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,10 +30,26 @@ public class InfluencersController : BaseApiController
         return Ok(profile);
     }
 
+    [HttpPut]
+    public async Task<IActionResult> UpdatePaymentInfo([FromBody] UpdatePaymentInfoRequest request, CancellationToken ct)
+    {
+        var paymentInfo = await _influencerService.UpdatePaymentInfoAsync(UserId, request, ct);
+        return Ok(paymentInfo);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetMyApplications(CancellationToken ct)
     {
         var applications = await _influencerService.GetMyApplicationsAsync(UserId, ct);
         return Ok(applications);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{influencerId:guid}")]
+    public async Task<IActionResult> GetPublicProfile(Guid influencerId, CancellationToken ct)
+    {
+        var profile = await _influencerService.GetPublicProfileAsync(influencerId, ct);
+        if (profile is null) return NotFound();
+        return Ok(profile);
     }
 }

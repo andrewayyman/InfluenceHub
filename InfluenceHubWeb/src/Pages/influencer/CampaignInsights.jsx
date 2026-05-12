@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+﻿import React, { useCallback, useEffect, useState, useMemo } from "react";
 import {
   BarChart3, Clock, DollarSign, ExternalLink, CheckCircle,
   AlertCircle, X, FileText, Calendar,
@@ -161,7 +161,7 @@ const CampaignInsights = () => {
                         <Calendar size={14} /> Submitted
                       </div>
                       <p className="text-sm font-semibold ih-text-primary">
-                        {latestReport ? new Date(latestReport.postingDate).toLocaleDateString() : "—"}
+                        {latestReport ? new Date(latestReport.postingDate).toLocaleDateString() : "â€”"}
                       </p>
                     </div>
                     <div className="rounded-xl bg-slate-50 p-3 border border-slate-900/5">
@@ -216,7 +216,7 @@ const CampaignInsights = () => {
       {/* Deep Dive Modal */}
       {selectedInsight && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-white shadow-2xl flex flex-col max-h-[90vh]">
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-slate-200 gap-4">
               <div className="flex items-center gap-4">
@@ -246,7 +246,7 @@ const CampaignInsights = () => {
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Brand</p>
-                  <p className="text-sm font-medium ih-text-primary">{selectedInsight.app.brandName || "—"}</p>
+                  <p className="text-sm font-medium ih-text-primary">{selectedInsight.app.brandName || "â€”"}</p>
                 </div>
                 <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Agreed Payout</p>
@@ -255,7 +255,7 @@ const CampaignInsights = () => {
                 <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Campaign Deadline</p>
                   <p className="text-sm font-medium ih-text-primary">
-                    {selectedInsight.app.campaignDeadline ? new Date(selectedInsight.app.campaignDeadline).toLocaleDateString() : "—"}
+                    {selectedInsight.app.campaignDeadline ? new Date(selectedInsight.app.campaignDeadline).toLocaleDateString() : "â€”"}
                   </p>
                 </div>
               </div>
@@ -316,7 +316,7 @@ const CampaignInsights = () => {
                           <div className="p-5">
                             {report.postUrl && (
                               <a href={report.postUrl} target="_blank" rel="noopener noreferrer"
-                                className="mb-5 flex items-center gap-2 text-sm bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-3 py-2 rounded-lg w-fit hover:bg-indigo-100 transition-colors">
+                                className="mb-5 flex items-center gap-2 text-sm bg-indigo-500/10 border border-indigo-500/20 text-indigo-700 px-3 py-2 rounded-lg w-fit hover:bg-indigo-100 transition-colors">
                                 <ExternalLink size={16} /> View Content Post
                               </a>
                             )}
@@ -329,7 +329,7 @@ const CampaignInsights = () => {
                                 ["Shares", report.shares],
                                 ["Eng. %", `${engRate}%`],
                               ].map(([label, val]) => (
-                                <div key={label} className="bg-black/20 rounded-lg p-3 text-center border border-slate-900/5">
+                                <div key={label} className="bg-slate-50 rounded-lg p-3 text-center border border-slate-900/5">
                                   <p className="text-xs ih-text-muted uppercase tracking-wider mb-1">{label}</p>
                                   <p className="text-lg font-bold ih-text-primary">
                                     {typeof val === "number" ? val.toLocaleString() : val}
@@ -339,14 +339,14 @@ const CampaignInsights = () => {
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                              <div className="ih-text-muted flex justify-between bg-black/20 px-3 py-2 rounded">
+                              <div className="ih-text-muted flex justify-between bg-slate-50 px-3 py-2 rounded">
                                 <span>Posting Date:</span>
                                 <span className="ih-text-primary">{new Date(report.postingDate).toLocaleDateString()}</span>
                               </div>
-                              <div className="ih-text-muted flex justify-between bg-black/20 px-3 py-2 rounded">
+                              <div className="ih-text-muted flex justify-between bg-slate-50 px-3 py-2 rounded">
                                 <span>Metrics Window:</span>
                                 <span className="ih-text-primary">
-                                  {new Date(report.startDate).toLocaleDateString()} — {new Date(report.endDate).toLocaleDateString()}
+                                  {new Date(report.startDate).toLocaleDateString()} â€” {new Date(report.endDate).toLocaleDateString()}
                                 </span>
                               </div>
                             </div>
@@ -358,7 +358,7 @@ const CampaignInsights = () => {
                                   <div key={i} className="flex items-center justify-between text-xs bg-slate-50 px-3 py-2 rounded-lg">
                                     <span className="font-medium text-brand-300">{pi.platform}</span>
                                     <span className="ih-text-muted">
-                                      {pi.views?.toLocaleString()} views · {pi.likes?.toLocaleString()} likes
+                                      {pi.views?.toLocaleString()} views آ· {pi.likes?.toLocaleString()} likes
                                     </span>
                                   </div>
                                 ))}
@@ -380,3 +380,4 @@ const CampaignInsights = () => {
 };
 
 export default CampaignInsights;
+

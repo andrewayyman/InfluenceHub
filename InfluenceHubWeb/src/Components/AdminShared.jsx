@@ -78,6 +78,15 @@ export const AdminMetricCard = ({ accentClass, icon, index = 0, label, note, val
   const numericValue = typeof value === "number" ? value : Number(value || 0);
   const animatedValue = useCountUp(numericValue, { duration: 900 + (index * 120) });
   const displayValue = formatCompactNumber(animatedValue);
+  const iconToneClass = accentClass?.includes("success")
+    ? "ih-icon-chip-success"
+    : accentClass?.includes("warning") || accentClass?.includes("warm")
+      ? "ih-icon-chip-warning"
+      : accentClass?.includes("danger")
+        ? "ih-icon-chip-danger"
+        : accentClass?.includes("emerald")
+          ? "ih-icon-chip-success"
+          : "ih-icon-chip-brand";
 
   return (
     <div className={cx("ih-metric-card ih-panel-hover ih-auto-content rounded-2xl p-5 sm:p-6", accentClass)} data-ih-reveal>
@@ -86,7 +95,7 @@ export const AdminMetricCard = ({ accentClass, icon, index = 0, label, note, val
           <p className="ih-text-muted text-sm">{label}</p>
           <h3 className="mt-1 text-3xl font-bold ih-truncate" title={displayValue}>{displayValue}</h3>
         </div>
-        <div className="ih-icon-chip ih-icon-chip-brand h-12 w-12">
+        <div className={cx("ih-icon-chip h-12 w-12", iconToneClass)}>
           <Icon size={22} aria-hidden="true" />
         </div>
       </div>

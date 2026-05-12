@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+﻿import React, { useCallback, useEffect, useState, useMemo } from "react";
 import {
   FolderKanban, Calendar, Clock, DollarSign, ExternalLink, FileText,
   CheckCircle, AlertCircle, Eye, X, MessageSquare, UploadCloud,
@@ -245,7 +245,7 @@ const ActiveCampaigns = () => {
       {/* Campaign Details Modal */}
       {selectedCampaign && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-[#0f172a] shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white shadow-2xl flex flex-col max-h-[90vh]">
 
             <div className="flex items-start justify-between p-6 border-b border-slate-200">
               <div className="flex items-center gap-4">
@@ -315,7 +315,7 @@ const ActiveCampaigns = () => {
               </section>
             </div>
 
-            <div className="p-6 border-t border-slate-200 bg-[#0f172a] rounded-b-2xl flex items-center justify-end gap-3">
+            <div className="p-6 border-t border-slate-200 bg-white rounded-b-2xl flex items-center justify-end gap-3">
               <button onClick={() => setSelectedCampaign(null)} className="ih-button-secondary px-5 py-2.5 text-sm">
                 Close
               </button>
@@ -334,3 +334,4 @@ const ActiveCampaigns = () => {
 };
 
 export default ActiveCampaigns;
+
