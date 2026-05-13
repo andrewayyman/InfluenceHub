@@ -473,6 +473,21 @@
     @apply hover:bg-slate-100 hover:text-slate-900 active:scale-[0.98] disabled:opacity-50;
   }
 
+  .ih-button-danger {
+    @apply rounded-xl font-semibold text-white transition-all duration-300;
+    background: rgb(239 68 68);
+    box-shadow: 0 10px 20px -5px rgba(239, 68, 68, 0.3);
+    @apply hover:bg-red-600 hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:scale-100 disabled:shadow-none;
+  }
+
+  .ih-button-danger-outline {
+    @apply rounded-xl font-medium transition-all duration-300 border;
+    border-color: rgb(239 68 68 / 0.3);
+    color: rgb(239 68 68);
+    background: rgb(239 68 68 / 0.05);
+    @apply hover:bg-red-500 hover:text-white hover:border-red-500 active:scale-[0.98] disabled:opacity-50;
+  }
+
   .ih-action-button {
     @apply inline-flex items-center justify-center rounded-lg transition duration-200;
     @apply disabled:cursor-not-allowed disabled:opacity-70;
@@ -513,12 +528,13 @@
   }
 
   .ih-nav-panel {
-    border-color: var(--ih-border-subtle);
+    border-right: 1px solid var(--ih-border-subtle);
     background:
-      radial-gradient(circle at top right, rgb(147 51 234 / 0.08), transparent 30%),
-      linear-gradient(180deg, rgb(15 23 42 / 0.03), rgb(15 23 42 / 0.01)),
+      radial-gradient(circle at top right, rgba(124, 58, 237, 0.03), transparent 35%),
+      radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.02), transparent 30%),
       var(--ih-bg-shell);
     color: var(--ih-text-primary);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.01);
   }
 
   .ih-divider-top {
@@ -932,16 +948,21 @@
     justify-content: center;
     width: 2.25rem;
     height: 2.25rem;
-    border: 1px solid color-mix(in srgb, var(--ih-brand-start) 32%, var(--ih-border-soft));
-    border-radius: 0.9rem;
-    background:
-      linear-gradient(135deg, rgb(147 51 234 / 0.92), rgb(16 185 129 / 0.75));
-    box-shadow: 0 14px 28px rgb(15 23 42 / 0.22);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 0.95rem;
+    background: linear-gradient(135deg, var(--ih-brand-start), var(--ih-brand-end));
+    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.15);
     color: white;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ih-brand-mark:hover {
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
   }
 
   .ih-link-strong {
@@ -1093,14 +1114,24 @@
   }
 
   .ih-sidebar-user {
-    border: 1px solid rgb(15 23 42 / 0.08);
-    background: linear-gradient(135deg, rgb(147 51 234 / 0.08), rgb(15 23 42 / 0.03));
+    border: 1px solid var(--ih-border-subtle);
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.03), rgba(16, 185, 129, 0.01));
+    box-shadow: var(--ih-shadow-sm);
+    transition: all 0.2s ease;
+  }
+
+  .ih-sidebar-user:hover {
+    border-color: var(--ih-border-soft);
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(16, 185, 129, 0.03));
+    transform: translateY(-1px);
+    box-shadow: var(--ih-shadow-md);
   }
 
   .ih-sidebar-badge {
-    border: 1px solid rgb(251 191 36 / 0.24);
-    background: rgb(120 53 15 / 0.26);
-    color: rgb(253 230 138);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--ih-text-amber);
+    font-weight: 600;
   }
 
   .ih-hero-panel {
@@ -1296,38 +1327,62 @@
   }
 
   .ih-nav-link-active {
-    color: var(--ih-brand-start);
-    background: rgba(124, 58, 237, 0.05);
-    @apply font-semibold;
+    color: var(--ih-text-primary);
+    background: rgba(124, 58, 237, 0.06);
+    @apply font-bold;
+    box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.1);
+    position: relative;
+  }
+
+  .ih-nav-link-active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 25%;
+    bottom: 25%;
+    width: 3px;
+    background: var(--ih-brand-start);
+    border-radius: 0 4px 4px 0;
+    box-shadow: 2px 0 8px rgba(124, 58, 237, 0.4);
   }
 
   .ih-nav-link-active .ih-surface-interactive {
-    background: var(--ih-brand-start);
+    background: linear-gradient(135deg, var(--ih-brand-start), var(--ih-brand-end));
     color: white;
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.25);
   }
 
   .ih-nav-link-inactive {
     color: var(--ih-text-secondary);
+    background: transparent;
   }
 
   .ih-nav-link-inactive:hover {
     background: var(--ih-surface-soft);
     color: var(--ih-text-primary);
+    transform: translateX(4px);
   }
 
   .ih-nav-link-inactive:hover .ih-surface-interactive {
-    background: linear-gradient(135deg, rgb(147 51 234 / 0.08), rgb(16 185 129 / 0.04));
-    color: var(--ih-text-primary);
+    background: white;
+    color: var(--ih-brand-start);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--ih-border-subtle);
   }
 
   .ih-danger-button-subtle {
-    color: var(--ih-text-muted);
-    transition: background-color 200ms ease, color 200ms ease;
+    color: var(--ih-text-secondary);
+    background: rgba(15, 23, 42, 0.03);
+    border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .ih-danger-button-subtle:hover {
-    background: rgb(239 68 68 / 0.12);
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.15);
     color: var(--ih-status-danger-text);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
   }
 
   .ih-brand-text {

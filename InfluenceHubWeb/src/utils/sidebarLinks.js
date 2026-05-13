@@ -14,6 +14,7 @@ import {
   User,
   DollarSign,
   Percent,
+  Star,
 } from "lucide-react";
 
 /*
@@ -105,6 +106,11 @@ export const sidebarLinks = {
       name: "Campaign Insights",
       path: "/dashboard/influencer/insights",
       icon: BarChart3,
+    },
+    {
+      name: "Ratings",
+      path: "/dashboard/influencer/ratings",
+      icon: Star,
     },
     {
       name: "Earnings",

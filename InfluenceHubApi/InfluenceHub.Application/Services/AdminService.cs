@@ -300,6 +300,7 @@ public class AdminService : IAdminService
                 r.Status,
                 r.RejectionReason,
                 r.ReviewedAt,
+                r.Application?.InfluencerId ?? Guid.Empty,
                 r.Application?.Influencer?.Name ?? string.Empty,
                 r.Application?.Influencer?.User?.Email ?? string.Empty,
                 r.Application?.Campaign?.Title ?? string.Empty,

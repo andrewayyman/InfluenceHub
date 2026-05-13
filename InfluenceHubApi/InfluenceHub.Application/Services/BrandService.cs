@@ -17,6 +17,7 @@ public class BrandService : IBrandService
     private readonly IRepository<CampaignTag> _campaignTagRepository;
     private readonly ICampaignRepository _campaignRepo;
     private readonly IRepository<CampaignReport> _reportRepository;
+    private readonly IRepository<Review> _reviewRepository;
     private readonly IPaymentService _paymentService;
 
     public BrandService(
@@ -27,6 +28,7 @@ public class BrandService : IBrandService
         IRepository<CampaignTag> campaignTagRepository,
         ICampaignRepository campaignRepo,
         IRepository<CampaignReport> reportRepository,
+        IRepository<Review> reviewRepository,
         IPaymentService paymentService)
     {
         _brandRepository = brandRepository;
@@ -36,6 +38,7 @@ public class BrandService : IBrandService
         _campaignTagRepository = campaignTagRepository;
         _campaignRepo = campaignRepo;
         _reportRepository = reportRepository;
+        _reviewRepository = reviewRepository;
         _paymentService = paymentService;
     }
 
@@ -172,11 +175,29 @@ public class BrandService : IBrandService
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync(ct);
 
-        return reports.Select(r => new ReportResponse(
-            r.Id, r.ApplicationId, r.Application.CampaignId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
-            r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
-            r.RejectionReason, r.ReviewedAt, r.Application.Influencer.Name, r.Application.Influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
-            MapPlatformInsights(r))).ToList();
+        var reportResponses = new List<ReportResponse>();
+        foreach (var r in reports)
+        {
+            var review = await _reviewRepository.Query()
+                .Include(rev => rev.Reviewer)
+                .Include(rev => rev.Campaign)
+                .FirstOrDefaultAsync(rev => rev.CampaignId == r.Application.CampaignId 
+                    && rev.TargetId == r.Application.InfluencerId 
+                    && rev.TargetType == ReviewTargetType.Influencer, ct);
+
+            reportResponses.Add(new ReportResponse(
+                r.Id, r.ApplicationId, r.Application.CampaignId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
+                r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
+                r.RejectionReason, r.ReviewedAt, r.Application.InfluencerId, r.Application.Influencer.Name, r.Application.Influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
+                MapPlatformInsights(r),
+                review != null ? new ReviewResponse(
+                    review.Id, review.ReviewerUserId, review.Reviewer?.Email ?? "Brand", 
+                    review.ReviewerRole.ToString(), review.TargetId, review.Rating, 
+                    review.Comment, review.CampaignId, review.Campaign?.Title ?? "", review.CreatedAt) : null
+            ));
+        }
+
+        return reportResponses;
     }
 
     public async Task<ReportResponse?> GetReportAsync(Guid userId, Guid reportId, CancellationToken ct = default)
@@ -194,11 +215,23 @@ public class BrandService : IBrandService
 
         if (r is null) return null;
 
+        var review = await _reviewRepository.Query()
+            .Include(rev => rev.Reviewer)
+            .Include(rev => rev.Campaign)
+            .FirstOrDefaultAsync(rev => rev.CampaignId == r.Application.CampaignId 
+                && rev.TargetId == r.Application.InfluencerId 
+                && rev.TargetType == ReviewTargetType.Influencer, ct);
+
         return new ReportResponse(
             r.Id, r.ApplicationId, r.Application.CampaignId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
             r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
-            r.RejectionReason, r.ReviewedAt, r.Application.Influencer.Name, r.Application.Influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
-            MapPlatformInsights(r));
+            r.RejectionReason, r.ReviewedAt, r.Application.InfluencerId, r.Application.Influencer.Name, r.Application.Influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
+            MapPlatformInsights(r),
+            review != null ? new ReviewResponse(
+                review.Id, review.ReviewerUserId, review.Reviewer?.Email ?? "Brand", 
+                review.ReviewerRole.ToString(), review.TargetId, review.Rating, 
+                review.Comment, review.CampaignId, review.Campaign?.Title ?? "", review.CreatedAt) : null
+        );
     }
 
     public async Task<bool> UpdateReportStatusAsync(Guid userId, Guid reportId, ReportStatus status, CancellationToken ct = default)

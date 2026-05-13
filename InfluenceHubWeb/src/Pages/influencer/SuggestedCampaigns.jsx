@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Megaphone, CheckCircle, Eye, X } from "lucide-react";
 import {
   AdminPage as DashboardPage,

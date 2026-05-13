@@ -1,5 +1,5 @@
-﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Eye, ShieldCheck, UserMinus, X } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Eye, ShieldCheck, Trash2, UserMinus, X } from "lucide-react";
 import {
   AdminHero,
   AdminPage,
@@ -185,76 +185,78 @@ const AdminUsers = () => {
         ) : null}
 
         {!loading && users.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-[54rem] w-full text-left">
-              <thead className="ih-table-head border-b text-sm">
-                <tr>
-                  <th className="pb-3" scope="col">User</th>
-                  <th scope="col">Role</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Created</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => {
-                  const displayName = user.displayName?.trim() || "Unnamed user";
-                  const email = user.email?.trim() || "No email provided";
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {users.map((user) => {
+              const displayName = user.displayName?.trim() || "Unnamed user";
+              const email = user.email?.trim() || "No email provided";
 
-                  return (
-                  <tr key={user.id} className="ih-table-row border-b last:border-none">
-                    <td className="py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="ih-icon-chip ih-icon-chip-brand h-10 w-10 rounded-full font-semibold">
-                          {displayName.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="ih-text-primary font-medium">{displayName}</p>
-                          <p className="ih-text-muted mt-1 text-sm">{email}</p>
-                        </div>
+              return (
+                <div key={user.id} className="ih-panel-outline flex flex-col p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white border border-slate-200">
+                  {/* Card Header */}
+                  <div className="mb-6 flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="ih-icon-chip ih-icon-chip-brand flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-xl font-bold shadow-sm">
+                        {displayName.charAt(0).toUpperCase()}
                       </div>
-                    </td>
-                    <td>
+                      <div className="min-w-0">
+                        <h3 className="ih-text-primary truncate text-lg font-bold leading-tight" title={displayName}>
+                          {displayName}
+                        </h3>
+                        <p className="ih-text-muted mt-1 truncate text-sm font-medium">
+                          {email}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Account Details */}
+                  <div className="mb-6 space-y-4">
+                    <div className="flex items-center justify-between py-2 border-b border-slate-50">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Role</span>
                       <StatusBadge tone={getStatusTone(user.roleName)}>{user.roleName}</StatusBadge>
-                    </td>
-                    <td>
+                    </div>
+                    <div className="flex items-center justify-between py-2 border-b border-slate-50">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Status</span>
                       <StatusBadge tone={getStatusTone(user.isActive)}>{getActivityLabel(user.isActive)}</StatusBadge>
-                    </td>
-                    <td className="ih-text-secondary text-sm">{formatDateTime(user.createdAt)}</td>
-                    <td>
-                      <div className="flex flex-wrap gap-2 py-3">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedUser(user)}
-                          className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-3 py-2 text-sm"
-                        >
-                          <Eye size={16} aria-hidden="true" />
-                          View
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleEnableDisable(user)}
-                          disabled={actingId === user.id}
-                          className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-3 py-2 text-sm"
-                        >
-                          {user.isActive ? <UserMinus size={16} aria-hidden="true" /> : <ShieldCheck size={16} aria-hidden="true" />}
-                          {actingId === user.id ? "Updating..." : user.isActive ? "Disable" : "Enable"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(user)}
-                          disabled={actingId === user.id}
-                          className="ih-focus-ring rounded-lg border border-red-400/18 bg-red-500/8 px-3 py-2 text-sm font-medium text-red-100 transition hover:bg-red-500/12"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    </div>
+                    <div className="flex flex-col gap-1.5 pt-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Joined Date</span>
+                      <p className="ih-text-secondary text-sm font-medium">{formatDateTime(user.createdAt)}</p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-auto flex flex-wrap items-center gap-2 pt-5 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedUser(user)}
+                      className="ih-button-secondary ih-focus-ring flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold shadow-sm hover:shadow-md"
+                    >
+                      <Eye size={18} aria-hidden="true" />
+                      View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleEnableDisable(user)}
+                      disabled={actingId === user.id}
+                      className="ih-button-secondary ih-focus-ring flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold shadow-sm hover:shadow-md"
+                    >
+                      {user.isActive ? <UserMinus size={18} aria-hidden="true" /> : <ShieldCheck size={18} aria-hidden="true" />}
+                      <span className="truncate">{actingId === user.id ? "..." : user.isActive ? "Disable" : "Enable"}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(user)}
+                      disabled={actingId === user.id}
+                      className="ih-button-danger ih-focus-ring flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold shadow-md hover:shadow-lg disabled:shadow-none"
+                    >
+                      <Trash2 size={18} aria-hidden="true" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         ) : null}
       </AdminPanel>

@@ -1,5 +1,5 @@
-﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Eye, Megaphone, X } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Eye, Megaphone, Trash2, X } from "lucide-react";
 import {
   AdminHero,
   AdminPage,
@@ -179,91 +179,124 @@ const AdminCampaigns = () => {
         ) : null}
 
         {!loading && campaigns.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-[66rem] w-full text-left">
-              <thead className="ih-table-head border-b text-sm">
-                <tr>
-                  <th className="pb-3" scope="col">Campaign</th>
-                  <th scope="col">Budget</th>
-                  <th scope="col">Deadline</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Applications</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {campaigns.map((campaign) => {
-                  const title = campaign.title?.trim() || "Untitled campaign";
-                  const brandName = campaign.brandName?.trim() || "Unknown brand";
-                  const platform = campaign.platforms?.join(", ") || "Platform pending";
-                  const location = campaign.location?.trim() || "Location pending";
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {campaigns.map((campaign) => {
+              const title = campaign.title?.trim() || "Untitled campaign";
+              const brandName = campaign.brandName?.trim() || "Unknown brand";
+              const platforms = campaign.platforms?.join(", ") || "Platform pending";
+              const location = campaign.location?.trim() || "Location pending";
 
-                  return (
-                  <tr key={campaign.id} className="ih-table-row border-b last:border-none align-top">
-                    <td className="py-4">
-                      <div className="flex gap-3">
-                        <div className="ih-icon-chip ih-icon-chip-brand mt-1 h-10 w-10 shrink-0 rounded-2xl">
-                          <Megaphone size={18} aria-hidden="true" />
-                        </div>
-                        <div>
-                          <p className="ih-text-primary font-medium">{title}</p>
-                          <p className="ih-text-muted mt-1 text-sm">{brandName} آ· {platform} آ· {location}</p>
-                          {campaign.tags?.length ? (
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {campaign.tags.map((tag) => (
-                                <span key={tag} className="ih-pill-tint ih-pill-brand text-xs">{tag}</span>
-                              ))}
-                            </div>
-                          ) : null}
-                        </div>
+              return (
+                <div key={campaign.id} className="ih-panel-outline flex flex-col p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-white border border-slate-200">
+                  {/* Card Header */}
+                  <div className="mb-5 flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-4 min-w-0">
+                      <div className="ih-icon-chip ih-icon-chip-brand h-12 w-12 shrink-0 rounded-2xl shadow-sm">
+                        <Megaphone size={22} aria-hidden="true" />
                       </div>
-                    </td>
-                    <td className="ih-text-primary py-4 font-medium">
-                      {formatCurrency(campaign.budget)}
-                      <p className="mt-1 text-xs ih-text-muted">{getBudgetTypeLabel(campaign.budgetType)}</p>
-                    </td>
-                    <td className="ih-text-secondary py-4 text-sm">{formatDate(campaign.deadline)}</td>
-                    <td className="py-4">
-                      <StatusBadge tone={getStatusTone(campaign.status)}>{humanizeEnum(campaign.status)}</StatusBadge>
-                    </td>
-                    <td className="py-4">
-                      <span className="ih-pill-tint ih-pill-emerald text-sm">{campaign.applicationCount} applications</span>
-                    </td>
-                    <td className="py-4">
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedCampaign(campaign)}
-                          className="ih-button-secondary ih-focus-ring inline-flex items-center gap-2 px-3 py-2 text-sm"
-                        >
-                          <Eye size={16} aria-hidden="true" />
-                          View
-                        </button>
-                        {campaign.status !== "Closed" ? (
-                          <button
-                            type="button"
-                            onClick={() => handleClose(campaign)}
-                            disabled={actingId === campaign.id}
-                            className="ih-button-secondary ih-focus-ring px-3 py-2 text-sm"
-                          >
-                            {actingId === campaign.id ? "Updating..." : "Close"}
-                          </button>
-                        ) : null}
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(campaign)}
-                          disabled={actingId === campaign.id}
-                          className="ih-focus-ring rounded-lg border border-red-400/18 bg-red-500/8 px-3 py-2 text-sm font-medium text-red-100 transition hover:bg-red-500/12"
-                        >
-                          Delete
-                        </button>
+                      <div className="min-w-0">
+                        <h3 className="ih-text-primary truncate text-lg font-bold leading-tight" title={title}>
+                          {title}
+                        </h3>
+                        <p className="ih-text-muted mt-1 truncate text-sm font-medium">
+                          {brandName}
+                        </p>
                       </div>
-                    </td>
-                  </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    </div>
+                    <div className="shrink-0">
+                      <StatusBadge tone={getStatusTone(campaign.status)}>
+                        {humanizeEnum(campaign.status)}
+                      </StatusBadge>
+                    </div>
+                  </div>
+
+                  {/* Campaign Details */}
+                  <div className="mb-6 space-y-5">
+                    <div className="flex flex-col gap-2 text-sm">
+                      <div className="flex items-center gap-2 text-slate-500">
+                        <span className="font-bold text-slate-400 text-[10px] uppercase tracking-wider">Platforms</span>
+                        <span className="truncate font-medium text-slate-700">{platforms}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-500">
+                        <span className="font-bold text-slate-400 text-[10px] uppercase tracking-wider">Location</span>
+                        <span className="truncate font-medium text-slate-700">{location}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3 shadow-sm">
+                        <p className="ih-text-muted text-[10px] font-bold uppercase tracking-wider">Budget</p>
+                        <p className="ih-text-primary mt-1 text-base font-bold">{formatCurrency(campaign.budget)}</p>
+                        <p className="mt-0.5 text-[11px] font-medium ih-text-muted">
+                          {getBudgetTypeLabel(campaign.budgetType)}
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3 shadow-sm">
+                        <p className="ih-text-muted text-[10px] font-bold uppercase tracking-wider">Deadline</p>
+                        <p className="ih-text-primary mt-1 text-base font-bold">{formatDate(campaign.deadline)}</p>
+                        <p className="mt-0.5 text-[11px] font-medium text-amber-600/80">Active Phase</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-xl bg-emerald-50/50 px-4 py-3 border border-emerald-100/50">
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-sm font-bold text-emerald-700">Live Applications</span>
+                      </div>
+                      <span className="ih-pill-tint ih-pill-emerald px-3 py-1 text-sm font-bold shadow-sm">
+                        {campaign.applicationCount}
+                      </span>
+                    </div>
+
+                    {campaign.tags?.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {campaign.tags.slice(0, 3).map((tag) => (
+                          <span key={tag} className="ih-pill-tint ih-pill-brand text-[10px] uppercase tracking-wider font-bold">
+                            {tag}
+                          </span>
+                        ))}
+                        {campaign.tags.length > 3 && (
+                          <span className="ih-pill-tint ih-pill-brand text-[10px] font-bold">
+                            +{campaign.tags.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-auto flex flex-wrap items-center gap-2 pt-5 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCampaign(campaign)}
+                      className="ih-button-secondary ih-focus-ring flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold shadow-sm hover:shadow-md"
+                    >
+                      <Eye size={18} aria-hidden="true" />
+                      View
+                    </button>
+                    {campaign.status !== "Closed" ? (
+                      <button
+                        type="button"
+                        onClick={() => handleClose(campaign)}
+                        disabled={actingId === campaign.id}
+                        className="ih-button-secondary ih-focus-ring flex-1 px-3 py-2.5 text-sm font-bold shadow-sm hover:shadow-md"
+                      >
+                        {actingId === campaign.id ? "Updating..." : "Close"}
+                      </button>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(campaign)}
+                      disabled={actingId === campaign.id}
+                      className="ih-button-danger ih-focus-ring flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold shadow-md hover:shadow-lg disabled:shadow-none"
+                    >
+                      <Trash2 size={18} aria-hidden="true" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         ) : null}
       </AdminPanel>

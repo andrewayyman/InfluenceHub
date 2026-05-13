@@ -44,7 +44,7 @@ const DashboardLayout = () => {
       - Light dashboard background
     */
 
-    <div className="ih-dashboard-shell ih-page-shell relative flex min-h-screen overflow-hidden">
+    <div className="ih-dashboard-shell ih-page-shell relative flex h-screen overflow-hidden">
 
       <a href="#dashboard-content" className="ih-skip-link">
         Skip to dashboard content
@@ -76,7 +76,7 @@ const DashboardLayout = () => {
           Right Content Area
          ========================= */}
 
-      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
+      <div className="relative z-10 flex min-w-0 flex-1 flex-col lg:pl-64">
 
         {/* Top Navigation Bar */}
         <NavBarr
@@ -100,19 +100,10 @@ const DashboardLayout = () => {
 
         <main
           id="dashboard-content"
-          className="ih-dashboard-main flex-1 min-w-0 overflow-x-hidden"
+          className="ih-dashboard-main flex-1 min-w-0 overflow-y-auto overflow-x-hidden"
         >
-          <div className="min-w-0">
-            <Outlet />
-          </div>
+          <Outlet />
         </main>
-
-
-        {/* =========================
-            Footer Section
-           ========================= */}
-
-        <Footer />
 
       </div>
 

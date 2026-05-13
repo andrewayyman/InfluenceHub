@@ -1,7 +1,7 @@
-﻿import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import {
   BarChart3, Clock, DollarSign, ExternalLink, CheckCircle,
-  AlertCircle, X, FileText, Calendar,
+  AlertCircle, X, FileText, Calendar, Star,
 } from "lucide-react";
 import {
   AdminPage as DashboardPage,
@@ -138,7 +138,7 @@ const CampaignInsights = () => {
               : "0.0";
 
             return (
-              <div key={app.id} className="ih-surface ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-slate-200 transition-all">
+              <div key={app.id} className="ih-panel ih-panel-hover flex flex-col justify-between rounded-[1.5rem] p-6 border border-slate-200 transition-all">
                 <div>
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4 min-w-0">
@@ -161,7 +161,7 @@ const CampaignInsights = () => {
                         <Calendar size={14} /> Submitted
                       </div>
                       <p className="text-sm font-semibold ih-text-primary">
-                        {latestReport ? new Date(latestReport.postingDate).toLocaleDateString() : "â€”"}
+                        {latestReport ? new Date(latestReport.postingDate).toLocaleDateString() : "—"}
                       </p>
                     </div>
                     <div className="rounded-xl bg-slate-50 p-3 border border-slate-900/5">
@@ -202,7 +202,7 @@ const CampaignInsights = () => {
                   </div>
                   <button
                     onClick={() => setSelectedInsight({ app, reports })}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-slate-900/15 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-100 transition-colors"
+                    className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 transition-all duration-200"
                   >
                     Full Breakdown
                   </button>
@@ -215,7 +215,7 @@ const CampaignInsights = () => {
 
       {/* Deep Dive Modal */}
       {selectedInsight && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-white shadow-2xl flex flex-col max-h-[90vh]">
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 border-b border-slate-200 gap-4">
@@ -240,13 +240,13 @@ const CampaignInsights = () => {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-[#0b101a]">
+            <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-slate-50/50">
 
               {/* Campaign Summary */}
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Brand</p>
-                  <p className="text-sm font-medium ih-text-primary">{selectedInsight.app.brandName || "â€”"}</p>
+                  <p className="text-sm font-medium ih-text-primary">{selectedInsight.app.brandName || "—"}</p>
                 </div>
                 <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Agreed Payout</p>
@@ -255,35 +255,67 @@ const CampaignInsights = () => {
                 <div className="rounded-xl bg-slate-50 border border-slate-900/5 p-4">
                   <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Campaign Deadline</p>
                   <p className="text-sm font-medium ih-text-primary">
-                    {selectedInsight.app.campaignDeadline ? new Date(selectedInsight.app.campaignDeadline).toLocaleDateString() : "â€”"}
+                    {selectedInsight.app.campaignDeadline ? new Date(selectedInsight.app.campaignDeadline).toLocaleDateString() : "—"}
                   </p>
                 </div>
               </div>
 
-              {/* Admin Feedback Banner */}
-              {selectedInsight.reports[0] && (
-                <div>
-                  {selectedInsight.reports[0].rejectionReason ? (
-                    <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 flex items-start gap-3">
-                      <AlertCircle size={18} className="text-red-400 shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-sm text-red-300 font-medium">Report Issue</p>
-                        <p className="text-xs text-red-300/80 mt-1">{selectedInsight.reports[0].rejectionReason}</p>
+              {/* Admin Feedback Banner & Brand Review */}
+              <div className="space-y-4">
+                {selectedInsight.reports[0] && selectedInsight.reports[0].review && (
+                  <div className="rounded-xl border border-indigo-100 bg-indigo-50/30 p-5 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+                          <CheckCircle size={18} />
+                        </div>
+                        <h4 className="font-bold ih-text-primary text-sm uppercase tracking-wider">Brand Review</h4>
+                      </div>
+                      <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-lg border border-indigo-100 shadow-sm">
+                        <span className="text-sm font-bold text-indigo-600">{selectedInsight.reports[0].review.rating}</span>
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <svg key={i} className={`h-3.5 w-3.5 ${i < selectedInsight.reports[0].review.rating ? "text-amber-400 fill-amber-400" : "text-slate-200"}`} viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  ) : selectedInsight.app.campaignStatus === "Completed" ? (
-                    <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 flex items-center gap-3">
-                      <CheckCircle size={18} className="text-emerald-600 shrink-0" />
-                      <p className="text-sm text-emerald-300">Your report has been approved. Excellent work!</p>
+                    <blockquote className="ih-text-primary italic text-sm leading-relaxed mb-4 border-l-2 border-indigo-200 pl-4 py-1 bg-white/40 rounded-r-lg">
+                      "{selectedInsight.reports[0].review.comment}"
+                    </blockquote>
+                    <div className="flex items-center justify-between text-xs ih-text-muted mt-2">
+                      <span className="font-medium text-indigo-700">Reviewed by {selectedInsight.reports[0].review.reviewerName}</span>
+                      <span>{new Date(selectedInsight.reports[0].review.createdAt).toLocaleDateString()}</span>
                     </div>
-                  ) : (
-                    <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-4 flex items-center gap-3">
-                      <Clock size={18} className="text-blue-400 shrink-0" />
-                      <p className="text-sm text-blue-300">Your report is currently being reviewed by the brand manager.</p>
-                    </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+
+                {selectedInsight.reports[0] && (
+                  <div>
+                    {selectedInsight.reports[0].rejectionReason ? (
+                      <div className="rounded-xl border border-red-500/20 bg-red-50 p-4 flex items-start gap-3">
+                        <AlertCircle size={18} className="text-red-500 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-red-800 font-semibold">Report Issue</p>
+                          <p className="text-xs text-red-700 mt-1">{selectedInsight.reports[0].rejectionReason}</p>
+                        </div>
+                      </div>
+                    ) : selectedInsight.app.campaignStatus === "Completed" ? (
+                      <div className="rounded-xl border border-emerald-500/20 bg-emerald-50 p-4 flex items-center gap-3">
+                        <CheckCircle size={18} className="text-emerald-600 shrink-0" />
+                        <p className="text-sm text-emerald-800 font-medium">Your report has been approved. Excellent work!</p>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-blue-500/20 bg-blue-50 p-4 flex items-center gap-3">
+                        <Clock size={18} className="text-blue-600 shrink-0" />
+                        <p className="text-sm text-blue-800 font-medium">Your report is currently being reviewed by the brand manager.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               {/* Report History */}
               <section>
@@ -302,7 +334,7 @@ const CampaignInsights = () => {
                       const engRate = report.views > 0 ? ((totalEng / report.views) * 100).toFixed(1) : "0.0";
 
                       return (
-                        <div key={report.id} className="rounded-xl border border-slate-200 bg-[#162032] overflow-hidden">
+                        <div key={report.id} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
                           <div className="bg-slate-50 p-4 border-b border-slate-200 flex items-center justify-between">
                             <span className="text-sm font-bold ih-text-primary">
                               Submission #{selectedInsight.reports.length - index}
@@ -346,7 +378,7 @@ const CampaignInsights = () => {
                               <div className="ih-text-muted flex justify-between bg-slate-50 px-3 py-2 rounded">
                                 <span>Metrics Window:</span>
                                 <span className="ih-text-primary">
-                                  {new Date(report.startDate).toLocaleDateString()} â€” {new Date(report.endDate).toLocaleDateString()}
+                                  {new Date(report.startDate).toLocaleDateString()} — {new Date(report.endDate).toLocaleDateString()}
                                 </span>
                               </div>
                             </div>
@@ -356,9 +388,9 @@ const CampaignInsights = () => {
                                 <p className="text-xs font-semibold ih-text-secondary uppercase tracking-wider">Per Platform</p>
                                 {report.platformInsights.map((pi, i) => (
                                   <div key={i} className="flex items-center justify-between text-xs bg-slate-50 px-3 py-2 rounded-lg">
-                                    <span className="font-medium text-brand-300">{pi.platform}</span>
-                                    <span className="ih-text-muted">
-                                      {pi.views?.toLocaleString()} views آ· {pi.likes?.toLocaleString()} likes
+                                    <span className="font-semibold text-brand-600">{pi.platform}</span>
+                                    <span className="ih-text-muted font-medium">
+                                      {pi.views?.toLocaleString()} views · {pi.likes?.toLocaleString()} likes
                                     </span>
                                   </div>
                                 ))}

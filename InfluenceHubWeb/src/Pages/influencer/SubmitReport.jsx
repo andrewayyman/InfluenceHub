@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Plus, Trash2, UploadCloud, CheckCircle, AlertCircle, Calendar, Info } from "lucide-react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
@@ -201,7 +201,7 @@ const SubmitReport = () => {
 
               {/* Step 1 */}
               <section className="space-y-4">
-                <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 1 â€” Campaign & Dates</h3>
+                <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 1 — Campaign & Dates</h3>
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium ih-text-primary">Select Campaign</label>
@@ -216,18 +216,18 @@ const SubmitReport = () => {
                       name="applicationId"
                       value={formData.applicationId}
                       onChange={handleInputChange}
-                      className="ih-input bg-white w-full text-sm"
+                      className="ih-input bg-white w-full text-sm font-medium cursor-pointer hover:border-brand-300 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200"
                       required
                     >
-                      <option value="" disabled>â€” Choose a campaign â€”</option>
+                      <option value="" disabled className="text-slate-400">— Choose a campaign —</option>
                       {submittableApps.map(app => {
                         const daysLeft = getDaysLeft(app.campaignDeadline);
                         const deadlinePart = daysLeft !== null
-                          ? (daysLeft === 0 ? " آ· Due Today!" : ` آ· Due in ${daysLeft}d`)
+                          ? (daysLeft === 0 ? " · Due Today!" : ` · Due in ${daysLeft}d`)
                           : "";
-                        const brandPart = app.brandName ? ` â€” ${app.brandName}` : "";
+                        const brandPart = app.brandName ? ` — ${app.brandName}` : "";
                         return (
-                          <option key={app.id} value={app.id}>
+                          <option key={app.id} value={app.id} className="text-slate-900">
                             {app.campaignTitle}{brandPart}{deadlinePart}
                           </option>
                         );
@@ -263,7 +263,7 @@ const SubmitReport = () => {
               <section className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 2 â€” Performance Metrics</h3>
+                    <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 2 — Performance Metrics</h3>
                     <p className="text-xs text-slate-500 mt-1">Provide accurate engagement numbers per platform.</p>
                   </div>
                   <button type="button" onClick={addPlatformInsightRow} className="ih-button-secondary inline-flex items-center gap-2 px-3 py-1.5 text-xs">
@@ -280,11 +280,11 @@ const SubmitReport = () => {
                         <div className="flex-1 max-w-[200px]">
                           <label className="text-xs ih-text-muted block mb-1">Platform</label>
                           <select
-                            className="ih-input bg-white w-full text-sm py-1.5"
+                            className="ih-input bg-white w-full text-sm py-1.5 font-medium cursor-pointer hover:border-brand-300 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200"
                             value={row.platform}
                             onChange={(e) => updatePlatformInsight(index, "platform", e.target.value)}
                           >
-                            {PLATFORM_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
+                            {PLATFORM_OPTIONS.map(p => <option key={p} value={p} className="text-slate-900">{p}</option>)}
                           </select>
                         </div>
                         {platformInsights.length > 1 && (
@@ -341,7 +341,7 @@ const SubmitReport = () => {
 
               {/* Step 3 */}
               <section className="space-y-4">
-                <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 3 â€” Proof of Delivery</h3>
+                <h3 className="text-xs font-semibold ih-text-muted uppercase tracking-widest">Step 3 — Proof of Delivery</h3>
 
                 <div className="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-indigo-500/30 bg-indigo-500/5 px-6 py-10 transition-colors hover:bg-indigo-500/10 cursor-pointer">
                   <div className="h-14 w-14 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
@@ -384,8 +384,8 @@ const SubmitReport = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="hidden lg:block space-y-6">
-          <div className="ih-surface rounded-[1.5rem] p-6 border border-slate-200 sticky top-6">
+        <div className="space-y-6">
+          <div className="ih-panel rounded-[1.5rem] p-6 border border-slate-200 sticky top-6">
             <h3 className="text-lg font-semibold ih-text-primary mb-4 flex items-center gap-2">
               <Info size={18} className="text-brand-600" /> Campaign Details
             </h3>
@@ -425,9 +425,11 @@ const SubmitReport = () => {
                   </div>
                 )}
 
-                <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-4 mt-4">
-                  <h4 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Reminder</h4>
-                  <p className="text-xs text-amber-200/70 leading-relaxed">
+                <div className="rounded-xl bg-amber-50 border border-amber-200/60 p-4 mt-6">
+                  <h4 className="text-[10px] font-bold text-amber-600 uppercase tracking-[0.1em] mb-2 flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-amber-500" /> Reminder
+                  </h4>
+                  <p className="text-xs text-amber-800/90 leading-relaxed font-medium">
                     Ensure your screenshot clearly shows the post URL and all key metrics. Inaccurate reports may affect your standing on the platform.
                   </p>
                 </div>

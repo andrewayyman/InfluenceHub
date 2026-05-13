@@ -29,6 +29,7 @@ const SubmitReport = lazy(() => import("../Pages/influencer/SubmitReport"));
 const CampaignInsights = lazy(() => import("../Pages/influencer/CampaignInsights"));
 const InfluencerProfile = lazy(() => import("../Pages/influencer/InfluencerProfile"));
 const MyEarnings = lazy(() => import("../Pages/influencer/MyEarnings"));
+const InfluencerRatings = lazy(() => import("../Pages/influencer/InfluencerRatings"));
 
 const InfluencerPublicProfile = lazy(() => import("../Pages/public/InfluencerPublicProfile"));
 
@@ -142,6 +143,7 @@ export const router = createBrowserRouter([
       { path: "active", element: withSuspense(<ActiveCampaigns />) },
       { path: "report", element: withSuspense(<SubmitReport />) },
       { path: "insights", element: withSuspense(<CampaignInsights />) },
+      { path: "ratings", element: withSuspense(<InfluencerRatings />) },
       { path: "earnings", element: withSuspense(<MyEarnings />) },
       { path: "profile", element: withSuspense(<InfluencerProfile />) },
     ],

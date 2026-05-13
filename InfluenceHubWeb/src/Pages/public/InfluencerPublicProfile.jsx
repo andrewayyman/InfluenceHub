@@ -4,6 +4,8 @@ import { ArrowLeft, ExternalLink, MapPin, Users, CheckCircle, AlertTriangle } fr
 import { SiInstagram, SiTiktok, SiYoutube, SiFacebook } from "react-icons/si";
 import { FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import { influencerService } from "../../services/api/influencerService";
+import Footer from "../../Components/Layout/Footer";
+import Navbar from "../../Components/Layout/Navbar";
 import { getInfluencerReviews, getInfluencerReviewSummary } from "../../services/api/reviewService";
 import { StarRating } from "../../Components/Shared/StarRating";
 import { ReviewList } from "../../Components/Shared/ReviewList";
@@ -185,6 +187,7 @@ const InfluencerPublicProfile = () => {
           <ReviewList reviews={reviews} summary={reviewSummary} />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -38,16 +38,20 @@ public class ReviewService : IReviewService
         var application = await _applicationRepository.Query()
             .Include(a => a.Campaign)
             .Include(a => a.Influencer)
-            .FirstOrDefaultAsync(a => a.Id == request.CampaignId && a.Campaign.BrandId == brand.Id, ct)
-            ?? throw new InvalidOperationException("Application not found for this campaign.");
+            .FirstOrDefaultAsync(a => a.CampaignId == request.CampaignId 
+                && a.InfluencerId == request.TargetId 
+                && a.Campaign.BrandId == brand.Id, ct)
+            ?? throw new InvalidOperationException("Application not found for this influencer and campaign.");
 
         if (application.Status != ApplicationStatus.Accepted)
             throw new InvalidOperationException("Can only review after a successful collaboration.");
 
         var existingReview = await _reviewRepository.Query()
-            .AnyAsync(r => r.ReviewerUserId == reviewerUserId && r.CampaignId == application.CampaignId, ct);
+            .AnyAsync(r => r.ReviewerUserId == reviewerUserId 
+                && r.CampaignId == application.CampaignId 
+                && r.TargetId == application.InfluencerId, ct);
         if (existingReview)
-            throw new InvalidOperationException("You have already reviewed this campaign collaboration.");
+            throw new InvalidOperationException("You have already submitted a review for this influencer in this campaign.");
 
         var review = new Review
         {
@@ -82,9 +86,11 @@ public class ReviewService : IReviewService
             throw new InvalidOperationException("Can only review after a successful collaboration.");
 
         var existingReview = await _reviewRepository.Query()
-            .AnyAsync(r => r.ReviewerUserId == reviewerUserId && r.CampaignId == application.CampaignId, ct);
+            .AnyAsync(r => r.ReviewerUserId == reviewerUserId 
+                && r.CampaignId == application.CampaignId 
+                && r.TargetId == application.Campaign.BrandId, ct);
         if (existingReview)
-            throw new InvalidOperationException("You have already reviewed this campaign collaboration.");
+            throw new InvalidOperationException("You have already submitted a review for this brand in this campaign.");
 
         var review = new Review
         {

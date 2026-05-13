@@ -14,17 +14,20 @@ public class ReportService : IReportService
     private readonly IInfluencerRepository _influencerRepository;
     private readonly IRepository<Domain.Entities.Application> _applicationRepository;
     private readonly IRepository<CampaignReport> _reportRepository;
+    private readonly IRepository<Review> _reviewRepository;
     private readonly IFileStorage _fileStorage;
 
     public ReportService(
         IInfluencerRepository influencerRepository,
         IRepository<Domain.Entities.Application> applicationRepository,
         IRepository<CampaignReport> reportRepository,
+        IRepository<Review> reviewRepository,
         IFileStorage fileStorage)
     {
         _influencerRepository = influencerRepository;
         _applicationRepository = applicationRepository;
         _reportRepository = reportRepository;
+        _reviewRepository = reviewRepository;
         _fileStorage = fileStorage;
     }
 
@@ -96,7 +99,7 @@ public class ReportService : IReportService
         return new ReportResponse(
             report.Id, report.ApplicationId, application.CampaignId, report.PostUrl, report.PostingDate, report.StartDate, report.EndDate,
             report.Views, report.Likes, report.Comments, report.Shares, ToPublicScreenshotPath(report.ScreenshotPath), report.Status,
-            report.RejectionReason, report.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, application.Campaign.Title,
+            report.RejectionReason, report.ReviewedAt, influencer.Id, influencer.Name, influencer.User?.Email ?? string.Empty, application.Campaign.Title,
             MapPlatformInsights(report));
     }
 
@@ -117,11 +120,29 @@ public class ReportService : IReportService
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync(ct);
 
-        return reports.Select(r => new ReportResponse(
-            r.Id, r.ApplicationId, r.Application.CampaignId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
-            r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
-            r.RejectionReason, r.ReviewedAt, influencer.Name, influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
-            MapPlatformInsights(r))).ToList();
+        var reportResponses = new List<ReportResponse>();
+        foreach (var r in reports)
+        {
+            var review = await _reviewRepository.Query()
+                .Include(rev => rev.Reviewer)
+                .Include(rev => rev.Campaign)
+                .FirstOrDefaultAsync(rev => rev.CampaignId == r.Application.CampaignId 
+                    && rev.TargetId == r.Application.InfluencerId 
+                    && rev.TargetType == ReviewTargetType.Influencer, ct);
+
+            reportResponses.Add(new ReportResponse(
+                r.Id, r.ApplicationId, r.Application.CampaignId, r.PostUrl, r.PostingDate, r.StartDate, r.EndDate,
+                r.Views, r.Likes, r.Comments, r.Shares, ToPublicScreenshotPath(r.ScreenshotPath), r.Status,
+                r.RejectionReason, r.ReviewedAt, r.Application.InfluencerId, influencer.Name, influencer.User?.Email ?? string.Empty, r.Application.Campaign.Title,
+                MapPlatformInsights(r),
+                review != null ? new ReviewResponse(
+                    review.Id, review.ReviewerUserId, review.Reviewer?.Email ?? "Brand", 
+                    review.ReviewerRole.ToString(), review.TargetId, review.Rating, 
+                    review.Comment, review.CampaignId, review.Campaign?.Title ?? "", review.CreatedAt) : null
+            ));
+        }
+
+        return reportResponses;
     }
 
     private static string ToPublicScreenshotPath(string relativePath)

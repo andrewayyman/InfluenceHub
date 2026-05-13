@@ -38,7 +38,7 @@ const Navbar = ({ isSidebarOpen, onOpenSidebar, triggerRef }) => {
   const action = getRoleAction(role);
 
   return (
-    <nav className="ih-nav-shell sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b backdrop-blur-xl px-4 sm:px-6">
+    <nav className="ih-nav-shell sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b backdrop-blur-xl px-4 sm:px-6 lg:px-12">
       <div className="flex items-center gap-4">
         <button
           ref={triggerRef}

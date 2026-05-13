@@ -70,4 +70,10 @@ export const influencerService = {
 
   getPublicProfile: (influencerId, signal) =>
     apiRequest(`/api/Influencers/GetPublicProfile/${influencerId}`, { method: "GET", signal }),
+
+  getMyReviews: (influencerId, token, signal) =>
+    apiRequest(`/api/Reviews/GetInfluencerReviews/${influencerId}`, { method: "GET", token, signal }),
+
+  getMyReviewSummary: (influencerId, token, signal) =>
+    apiRequest(`/api/Reviews/GetInfluencerReviewSummary/${influencerId}`, { method: "GET", token, signal }),
 };

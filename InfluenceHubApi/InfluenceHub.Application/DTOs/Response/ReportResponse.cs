@@ -18,10 +18,12 @@ public record ReportResponse(
     ReportStatus Status,
     string? RejectionReason,
     DateTime? ReviewedAt,
+    Guid InfluencerId,
     string InfluencerName,
     string InfluencerEmail,
     string CampaignTitle,
-    List<PlatformReportInsightResponse> PlatformInsights
+    List<PlatformReportInsightResponse> PlatformInsights,
+    ReviewResponse? Review = null
 );
 
 public record PlatformReportInsightResponse(

@@ -24,7 +24,7 @@ const socialLinks = [
 
 const Footer = () => {
   return (
-    <footer className="ih-nav-panel border-t px-6 pb-8 pt-14 sm:pt-16">
+    <footer className="ih-nav-panel   px-6 pb-8 pt-14 sm:pt-16">
       <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,0.55fr))]">
         <div className="max-w-md">
           <div className="mb-4 inline-flex items-center gap-3">

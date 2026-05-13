@@ -22,7 +22,7 @@ const badgeToneClasses = {
 
 export const AdminPage = ({ children }) => (
   <div className="ih-app-shell ih-motion-stage min-h-screen px-4 py-8 sm:px-6 sm:py-10 lg:px-12">
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 ih-min-0">
+    <div className="flex w-full flex-col gap-8 ih-min-0">
       {children}
     </div>
   </div>

@@ -246,203 +246,208 @@ const AdminDashboard = () => {
 
   return (
     <AdminPage>
-
+      <AdminHero
+        kicker="Platform Overview"
+        title="Command Center"
+        description="Monitor marketplace health, moderate new accounts, and manage taxonomy. Your oversight ensures a high-quality environment for brands and creators."
+        aside={(
+          <div className="grid grid-cols-2 gap-3 h-full">
+            <div className="rounded-2xl bg-brand-500/10 border border-brand-500/20 p-4 flex flex-col justify-center">
+              <p className="text-brand-600 text-[10px] font-bold uppercase tracking-widest">Live Campaigns</p>
+              <p className="ih-text-primary text-2xl font-bold mt-1">{campaignPulse.open}</p>
+            </div>
+            <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4 flex flex-col justify-center">
+              <p className="text-emerald-600 text-[10px] font-bold uppercase tracking-widest">Applications</p>
+              <p className="ih-text-primary text-2xl font-bold mt-1">{stats?.totalApplications || 0}</p>
+            </div>
+            <div className="rounded-2xl bg-amber-500/10 border border-amber-500/20 p-4 flex flex-col justify-center">
+              <p className="text-amber-600 text-[10px] font-bold uppercase tracking-widest">New Users</p>
+              <p className="ih-text-primary text-2xl font-bold mt-1">{dashboardData?.recentUsers.length || 0}</p>
+            </div>
+            <div className="rounded-2xl bg-slate-500/10 border border-slate-500/20 p-4 flex flex-col justify-center">
+              <p className="text-slate-600 text-[10px] font-bold uppercase tracking-widest">Support</p>
+              <p className="ih-text-primary text-2xl font-bold mt-1">{dashboardData?.unreadMessages.length || 0}</p>
+            </div>
+          </div>
+        )}
+      />
 
       {error ? <ErrorState message={error} onRetry={() => loadDashboard()} /> : null}
 
-      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
-        <AdminMetricCard index={0} accentClass="ih-metric-card-brand" icon={Users} label="Total users" value={stats?.totalUsers || 0} note="All registered accounts across the marketplace." />
-        <AdminMetricCard index={1} accentClass="ih-metric-card-warm" icon={ClipboardList} label="Campaigns" value={stats?.totalCampaigns || 0} note="Campaigns created and tracked by the platform." />
-        <AdminMetricCard index={2} accentClass="ih-metric-card-success" icon={MessageSquareText} label="Applications" value={stats?.totalApplications || 0} note="Applications moving brands toward influencer selection." />
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-1">
-
-
-        <AdminPanel tone="emerald">
-          <AdminPanelHeader
-            kicker="Campaign pulse"
-            title="Current delivery shape"
-            description="A quick read on how active work is moving across the marketplace."
-          />
-
-          <div className="space-y-4">
-            <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4 ih-grid-min">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="ih-text-muted text-sm">Open campaigns</p>
-                  <p className="mt-2 text-3xl font-semibold ih-text-primary ih-truncate" title={campaignPulse.open}>{campaignPulse.open}</p>
-                </div>
-                <StatusBadge tone="brand">Needs monitoring</StatusBadge>
-              </div>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4 ih-grid-min">
-                <p className="ih-text-muted text-sm">Completed</p>
-                <p className="mt-2 text-2xl font-semibold ih-text-primary ih-truncate" title={campaignPulse.completed}>{campaignPulse.completed}</p>
-              </div>
-              <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4 ih-grid-min">
-                <p className="ih-text-muted text-sm">Closed</p>
-                <p className="mt-2 text-2xl font-semibold ih-text-primary ih-truncate" title={campaignPulse.closed}>{campaignPulse.closed}</p>
-              </div>
-            </div>
-            <TransitionLink to="/dashboard/admin/campaigns" className="ih-button-secondary ih-focus-ring inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-sm">
-              Go to campaigns
-            </TransitionLink>
+      {/* Main Command Grid */}
+      <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+        
+        {/* Primary Activity Column */}
+        <div className="space-y-8">
+          
+          {/* Quick Stats Grid */}
+          <div className="grid gap-4 sm:grid-cols-3">
+            <AdminMetricCard index={0} accentClass="ih-metric-card-brand" icon={Users} label="Total Users" value={stats?.totalUsers || 0} note="Growth tracked since launch." />
+            <AdminMetricCard index={1} accentClass="ih-metric-card-warm" icon={ClipboardList} label="Campaigns" value={stats?.totalCampaigns || 0} note="Active marketplace volume." />
+            <AdminMetricCard index={2} accentClass="ih-metric-card-success" icon={MessageSquareText} label="Engagements" value={stats?.totalApplications || 0} note="Brand-Influencer connects." />
           </div>
-        </AdminPanel>
-      </div>
 
-      <AdminPanel tone="emerald">
-        <AdminPanelHeader
-          kicker="Tag governance"
-          title="Seed and expand matching tags"
-          description="Create shared tags once so brands and influencers can assign the same taxonomy across campaign matching."
-        />
-
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
-          <form onSubmit={handleCreateTag} className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="ih-icon-chip ih-icon-chip-brand flex h-10 w-10 items-center justify-center rounded-2xl">
-                <Tags size={18} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold ih-text-primary">Create new tag</p>
-                <p className="ih-text-muted text-sm">Keep names short and reusable across brands and creators.</p>
-              </div>
-            </div>
-
-            <label className="mb-2 block text-sm font-medium ih-text-primary" htmlFor="tagName">Tag name</label>
-            <input
-              id="tagName"
-              type="text"
-              value={tagName}
-              onChange={(event) => setTagName(event.target.value)}
-              className="ih-input w-full"
-              placeholder="e.g. Streetwear"
+          {/* Recent Users List */}
+          <AdminPanel>
+            <AdminPanelHeader
+              kicker="Moderate"
+              title="Newest Platform Members"
+              description="Review recently joined accounts for quality and authenticity."
+              actions={(
+                <TransitionLink to="/dashboard/admin/users" className="ih-button-secondary px-4 py-2 text-xs font-bold flex items-center gap-2">
+                  View All <ArrowUpRight size={14} />
+                </TransitionLink>
+              )}
             />
 
-            {tagError ? <p className="mt-3 text-sm text-red-400">{tagError}</p> : null}
-
-            <button
-              type="submit"
-              disabled={isSavingTag}
-              className="ih-button-primary ih-focus-ring mt-4 inline-flex items-center gap-2 px-4 py-2 text-sm disabled:opacity-50"
-            >
-              {isSavingTag ? "Saving..." : "Create tag"}
-            </button>
-          </form>
-
-          <div className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold ih-text-primary">Current tag library</p>
-                <p className="ih-text-muted text-sm">These tags are available to brands and influencers right now.</p>
-              </div>
-              <StatusBadge tone="brand">{tags.length} tags</StatusBadge>
-            </div>
-
-            <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto">
-              {tags.length > 0 ? tags.map((tag) => (
-                <span key={tag.id} className="rounded-full border border-slate-200 px-3 py-1.5 text-xs text-slate-800">
-                  {tag.name}
-                </span>
-              )) : (
-                <p className="text-sm ih-text-muted">No tags available yet.</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </AdminPanel>
-
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(300px,0.95fr)]">
-        <AdminPanel>
-          <AdminPanelHeader
-            kicker="Newest accounts"
-            title="Recent brand and influencer signups"
-            description="Use this list to spot suspicious accounts early and keep onboarding healthy."
-            actions={(
-              <TransitionLink to="/dashboard/admin/users" className="ih-link ih-focus-ring rounded-sm text-sm font-medium">
-                Manage users
-              </TransitionLink>
-            )}
-          />
-
-          <div className="overflow-x-auto">
-            <table className="min-w-[42rem] w-full text-left">
-              <thead className="ih-table-head border-b text-sm">
-                <tr>
-                  <th className="pb-3" scope="col">User</th>
-                  <th scope="col">Role</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dashboardData?.recentUsers.map((user) => (
-                  <tr key={user.id} className="ih-table-row border-b last:border-none">
-                    <td className="py-4 min-w-[12rem]">
-                      <p className="ih-text-primary font-medium ih-clamp-2" title={user.displayName}>{user.displayName}</p>
-                      <p className="ih-text-muted mt-1 text-sm ih-wrap ih-clamp-2" title={user.email}>{user.email}</p>
-                    </td>
-                    <td>
-                      <StatusBadge tone={getStatusTone(user.roleName)}>{user.roleName}</StatusBadge>
-                    </td>
-                    <td>
-                      <StatusBadge tone={getStatusTone(user.isActive)}>{getActivityLabel(user.isActive)}</StatusBadge>
-                    </td>
-                    <td className="ih-text-secondary text-sm ih-truncate" title={formatDateTime(user.createdAt)}>{formatDateTime(user.createdAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </AdminPanel>
-
-        <AdminPanel tone="brand">
-          <AdminPanelHeader
-            kicker="Contact follow-up"
-            title="Messages still waiting for reply"
-            description="Keep inbound requests moving so the marketplace always feels responsive."
-            actions={(
-              <TransitionLink to="/dashboard/admin/messages" className="ih-link ih-focus-ring rounded-sm text-sm font-medium">
-                Open inbox
-              </TransitionLink>
-            )}
-          />
-
-          {dashboardData?.unreadMessages.length ? (
-            <div className="space-y-4">
-              {dashboardData.unreadMessages.slice(0, 4).map((message) => (
-                <article key={message.id} className="rounded-[1.35rem] border border-slate-200 bg-slate-50/4 p-4 ih-grid-min">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="ih-min-0">
-                      <p className="text-sm font-semibold ih-text-primary ih-clamp-2" title={message.subject}>{message.subject}</p>
-                      <p className="ih-text-muted mt-1 text-sm ih-wrap ih-clamp-2" title={`${message.name} · ${message.email}`}>
-                        {message.name} · {message.email}
-                      </p>
+            <div className="space-y-3">
+              {dashboardData?.recentUsers.map((user) => (
+                <div key={user.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/30 hover:bg-slate-50 transition-colors">
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="h-10 w-10 shrink-0 rounded-full bg-brand-500/10 border border-brand-500/20 flex items-center justify-center font-bold text-brand-600">
+                      {user.displayName?.charAt(0).toUpperCase()}
                     </div>
-                    <StatusBadge tone={message.isReplied ? "success" : "warning"}>{getMessageLabel(message.isReplied)}</StatusBadge>
+                    <div className="min-w-0">
+                      <p className="ih-text-primary font-bold truncate text-sm">{user.displayName}</p>
+                      <p className="ih-text-muted text-xs truncate">{user.email}</p>
+                    </div>
                   </div>
-                  <p className="ih-text-secondary mt-3 text-sm leading-6 ih-wrap ih-clamp-3" title={getMessagePreview(message)}>{getMessagePreview(message)}</p>
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                    <p className="ih-text-subtle text-xs uppercase tracking-[0.18em] ih-truncate" title={formatDateTime(message.createdAt)}>{formatDateTime(message.createdAt)}</p>
-                    <button
-                      type="button"
-                      onClick={() => handleMarkReplied(message.id)}
-                      disabled={replyingId === message.id}
-                      className="ih-button-secondary ih-focus-ring px-3 py-2 text-sm"
-                    >
-                      {replyingId === message.id ? "Updating..." : "Mark replied"}
-                    </button>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <StatusBadge tone={getStatusTone(user.roleName)}>{user.roleName}</StatusBadge>
+                    <span className="text-[10px] text-slate-400 font-medium hidden sm:inline">{formatDate(user.createdAt)}</span>
                   </div>
-                </article>
+                </div>
               ))}
             </div>
-          ) : (
-            <EmptyState title="No waiting contact messages" description="Support follow-up is clear. New contact submissions will land here automatically." />
-          )}
-        </AdminPanel>
+          </AdminPanel>
+
+          {/* Unread Messages */}
+          <AdminPanel tone="brand">
+            <AdminPanelHeader
+              kicker="Support"
+              title="Pending Inbound Inquiries"
+              description="Respond to contact requests to maintain high marketplace trust."
+              actions={(
+                <TransitionLink to="/dashboard/admin/messages" className="ih-button-secondary px-4 py-2 text-xs font-bold flex items-center gap-2">
+                  Inbox <ArrowUpRight size={14} />
+                </TransitionLink>
+              )}
+            />
+
+            {dashboardData?.unreadMessages.length ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {dashboardData.unreadMessages.slice(0, 4).map((message) => (
+                  <article key={message.id} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition-all">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="ih-min-0">
+                        <p className="text-sm font-bold ih-text-primary truncate" title={message.subject}>{message.subject}</p>
+                        <p className="ih-text-muted mt-0.5 text-[11px] truncate">
+                          {message.name}
+                        </p>
+                      </div>
+                      <StatusBadge tone="warning">New</StatusBadge>
+                    </div>
+                    <p className="ih-text-secondary text-xs leading-relaxed line-clamp-2 mb-4 h-8" title={getMessagePreview(message)}>
+                      {getMessagePreview(message)}
+                    </p>
+                    <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-50">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{formatDate(message.createdAt)}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleMarkReplied(message.id)}
+                        disabled={replyingId === message.id}
+                        className="text-xs font-bold text-brand-600 hover:text-brand-700 disabled:opacity-50"
+                      >
+                        {replyingId === message.id ? "..." : "Resolve"}
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <EmptyState title="All clear!" description="No pending contact messages at this time." />
+            )}
+          </AdminPanel>
+        </div>
+
+        {/* Sidebar Oversight Column */}
+        <div className="space-y-8">
+          
+          {/* Campaign Pulse */}
+          <AdminPanel tone="emerald" className="h-fit">
+            <AdminPanelHeader
+              title="Market Health"
+              description="Live campaign distribution."
+            />
+
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="ih-text-muted text-[10px] font-bold uppercase tracking-widest">Open Ops</p>
+                    <p className="mt-1 text-3xl font-black ih-text-primary">{campaignPulse.open}</p>
+                  </div>
+                  <div className="h-10 w-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600">
+                    <ShieldCheck size={20} />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                  <p className="ih-text-muted text-[10px] font-bold uppercase tracking-tighter">Finished</p>
+                  <p className="mt-1 text-xl font-bold ih-text-primary">{campaignPulse.completed}</p>
+                </div>
+                <div className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+                  <p className="ih-text-muted text-[10px] font-bold uppercase tracking-tighter">Archived</p>
+                  <p className="mt-1 text-xl font-bold ih-text-primary">{campaignPulse.closed}</p>
+                </div>
+              </div>
+
+              <TransitionLink to="/dashboard/admin/campaigns" className="ih-button-primary w-full py-3 text-sm flex items-center justify-center gap-2">
+                Manage Delivery
+              </TransitionLink>
+            </div>
+          </AdminPanel>
+
+          {/* Tag Governance */}
+          <AdminPanel tone="default" className="h-fit">
+            <AdminPanelHeader
+              title="Taxonomy"
+              description="Manage global tags."
+            />
+
+            <form onSubmit={handleCreateTag} className="mb-6">
+              <div className="relative">
+                <Tags size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={tagName}
+                  onChange={(event) => setTagName(event.target.value)}
+                  className="ih-input w-full pl-9 py-2.5 text-sm"
+                  placeholder="New tag..."
+                />
+              </div>
+              {tagError ? <p className="mt-2 text-[10px] text-red-500 font-bold">{tagError}</p> : null}
+              <button
+                type="submit"
+                disabled={isSavingTag}
+                className="ih-button-secondary w-full mt-3 py-2 text-xs font-bold"
+              >
+                {isSavingTag ? "Saving..." : "Add Tag"}
+              </button>
+            </form>
+
+            <div className="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto pr-1">
+              {tags.map((tag) => (
+                <span key={tag.id} className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600 border border-slate-200">
+                  {tag.name}
+                </span>
+              ))}
+            </div>
+          </AdminPanel>
+
+        </div>
       </div>
     </AdminPage>
   );
