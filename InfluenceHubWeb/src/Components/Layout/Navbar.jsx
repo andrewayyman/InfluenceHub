@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { TransitionLink } from "../Motion/TransitionLink";
 import { useOverlayAccessibility } from "../../hooks/useOverlayAccessibility";
 import { prefersReducedMotion } from "../../utils/overdrive";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navigationLinks = [
   { label: "Home", sectionId: "Hero" },
@@ -12,8 +13,17 @@ const navigationLinks = [
 
 const Navbar = ({ showSectionLinks = true }) => {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const mobileMenuRef = useRef(null);
   const mobileToggleRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useOverlayAccessibility({
     containerRef: mobileMenuRef,
@@ -37,25 +47,32 @@ const Navbar = ({ showSectionLinks = true }) => {
   };
 
   return (
-    <nav className="ih-nav-shell fixed top-0 z-50 w-full border-b backdrop-blur-xl">
+    <nav 
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+        scrolled 
+          ? "bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm" 
+          : "bg-transparent border-transparent"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
         <div className="min-w-0">
-          <TransitionLink to="/" className="ih-focus-ring inline-flex items-center gap-3 rounded-sm text-xl font-semibold tracking-[-0.03em] ih-text-primary sm:text-2xl">
-            <span className="ih-brand-mark">IH</span>
-            <span>InfluiX</span>
+          <TransitionLink to="/" className="ih-focus-ring group inline-flex items-center gap-3 rounded-xl text-xl font-bold tracking-tight text-slate-900 sm:text-2xl transition-transform hover:scale-[1.02]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-md group-hover:shadow-lg transition-shadow">
+              IH
+            </span>
+            <span className="bg-gradient-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent">InfluiX</span>
           </TransitionLink>
-          <p className="ih-text-subtle mt-1 hidden text-xs tracking-[0.22em] uppercase sm:block">Campaign matching and reporting for MENA teams</p>
         </div>
 
         <div className={`hidden items-center md:flex ${showSectionLinks ? "gap-8" : "gap-0"}`}>
           {showSectionLinks ? (
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 bg-slate-100/50 backdrop-blur-md px-2 py-1.5 rounded-2xl border border-slate-200/50">
               {navigationLinks.map((link) => (
                 <button
                   key={link.label}
                   type="button"
                   onClick={() => handleSectionClick(link.sectionId)}
-                  className="ih-link ih-focus-ring rounded-sm text-sm font-medium"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-white transition-all shadow-sm shadow-transparent hover:shadow-slate-200/50"
                 >
                   {link.label}
                 </button>
@@ -63,12 +80,12 @@ const Navbar = ({ showSectionLinks = true }) => {
             </div>
           ) : null}
 
-          <div className="flex items-center gap-3">
-            <TransitionLink to="/auth/login" className="ih-link-strong ih-focus-ring rounded-sm px-2 py-2 text-sm font-medium">
-              Login
+          <div className="flex items-center gap-4 ml-2">
+            <TransitionLink to="/auth/login" className="text-sm font-semibold text-slate-600 hover:text-purple-600 transition-colors px-2 py-2">
+              Sign In
             </TransitionLink>
-            <TransitionLink to="/auth/register" className="ih-button-primary ih-focus-ring rounded-xl px-5 py-2.5 text-sm font-semibold">
-              Create account
+            <TransitionLink to="/auth/register" className="ih-focus-ring inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-md hover:bg-slate-800 transition-all hover:scale-105 active:scale-95">
+              Start Free
             </TransitionLink>
           </div>
         </div>
@@ -76,62 +93,68 @@ const Navbar = ({ showSectionLinks = true }) => {
         <button
           ref={mobileToggleRef}
           type="button"
-          className="ih-focus-ring ih-text-primary rounded-lg p-2.5 md:hidden"
+          className="ih-focus-ring text-slate-700 hover:bg-slate-100 rounded-xl p-2.5 md:hidden transition-colors"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-controls="mobile-navigation"
           aria-haspopup="dialog"
           aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         >
-          {open ? <X size={28} aria-hidden="true" /> : <Menu size={28} aria-hidden="true" />}
+          {open ? <X size={26} aria-hidden="true" /> : <Menu size={26} aria-hidden="true" />}
         </button>
       </div>
 
-      {open && (
-        <div
-          id="mobile-navigation"
-          ref={mobileMenuRef}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="mobile-navigation-heading"
-          tabIndex={-1}
-          className="ih-nav-panel border-t px-6 py-6 md:hidden"
-        >
-          <p id="mobile-navigation-heading" className="ih-kicker mb-3">Site navigation</p>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            id="mobile-navigation"
+            ref={mobileMenuRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-navigation-heading"
+            tabIndex={-1}
+            className="border-t border-slate-200/60 bg-white/95 backdrop-blur-2xl px-6 py-6 md:hidden shadow-2xl overflow-hidden"
+          >
+            <p id="mobile-navigation-heading" className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Navigation</p>
 
-          {showSectionLinks ? (
-            <div className="space-y-2">
-              {navigationLinks.map((link) => (
-                <button
-                  key={link.label}
-                  type="button"
-                  onClick={() => handleSectionClick(link.sectionId)}
-                  className="ih-link ih-focus-ring block w-full rounded-sm py-2 text-left text-base"
-                >
-                  {link.label}
-                </button>
-              ))}
+            {showSectionLinks ? (
+              <div className="space-y-2 mb-6">
+                {navigationLinks.map((link) => (
+                  <button
+                    key={link.label}
+                    type="button"
+                    onClick={() => handleSectionClick(link.sectionId)}
+                    className="block w-full rounded-xl px-4 py-3 text-left text-lg font-semibold text-slate-700 hover:bg-slate-50 hover:text-purple-600 transition-colors"
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            <div className={`flex flex-col gap-3 ${showSectionLinks ? "border-t border-slate-100 pt-6" : ""}`}>
+              <TransitionLink
+                to="/auth/login"
+                className="w-full block rounded-xl border-2 border-slate-200 px-4 py-3.5 text-center text-base font-bold text-slate-700 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+                onClick={() => setOpen(false)}
+              >
+                Sign In
+              </TransitionLink>
+              <TransitionLink
+                to="/auth/register"
+                className="w-full block rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3.5 text-center text-base font-bold text-white shadow-md hover:shadow-lg transition-all"
+                onClick={() => setOpen(false)}
+              >
+                Create Account
+              </TransitionLink>
             </div>
-          ) : null}
-
-          <div className={`flex flex-col gap-3 ${showSectionLinks ? "ih-divider-top mt-5 pt-5" : "mt-2"}`}>
-            <TransitionLink
-              to="/auth/login"
-              className="ih-button-secondary ih-focus-ring block rounded-xl px-4 py-3 text-center"
-              onClick={() => setOpen(false)}
-            >
-              Login
-            </TransitionLink>
-            <TransitionLink
-              to="/auth/register"
-              className="ih-button-primary ih-focus-ring block rounded-xl px-4 py-3 text-center"
-              onClick={() => setOpen(false)}
-            >
-              Create account
-            </TransitionLink>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

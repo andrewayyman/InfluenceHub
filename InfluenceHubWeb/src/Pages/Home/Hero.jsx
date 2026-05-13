@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { TransitionLink } from "../../Components/Motion/TransitionLink";
 import { prefersReducedMotion } from "../../utils/overdrive";
+import { motion } from "framer-motion";
 
 /* ─── Proof-point data ────────────────────────────────────────────────────── */
 const proofPoints = [
@@ -44,19 +45,31 @@ const featurePills = [
   { label: "ROI tracking", cls: "ih-pill-warm" },
 ];
 
+/* ─── Animation Variants ─────────────────────────────────────────────────── */
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
 /* ─── Hero ────────────────────────────────────────────────────────────────── */
 const Hero = () => {
-  const handleScrollToServices = () => {
-    document.getElementById("services")?.scrollIntoView({
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
-      block: "start",
-    });
-  };
+  const isReducedMotion = prefersReducedMotion();
 
   return (
     <section
       id="Hero"
-      className="ih-section-shell ih-hero-section relative overflow-hidden px-6 pb-24 pt-36 sm:pt-44"
+      className="ih-section-shell ih-hero-section relative overflow-hidden px-6 pb-24 pt-36 sm:pt-44 min-h-[90vh] flex items-center justify-center"
       aria-labelledby="hero-heading"
     >
       {/* ── Decorative beam at top ── */}
@@ -65,164 +78,187 @@ const Hero = () => {
         aria-hidden="true"
       />
 
-      {/* ── Ambient aurora orbs ── */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-[8%] top-28 h-[28rem] w-[28rem] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, var(--ih-aurora-plum) 0%, transparent 70%)",
-          filter: "blur(60px)",
-          animation: prefersReducedMotion()
-            ? "none"
-            : "ih-home-orb-drift 20s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute right-[6%] top-32 h-[22rem] w-[22rem] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, var(--ih-aurora-emerald) 0%, transparent 70%)",
-          filter: "blur(60px)",
-          animation: prefersReducedMotion()
-            ? "none"
-            : "ih-home-orb-drift 16s 2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-16 left-[38%] h-[18rem] w-[18rem] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, var(--ih-aurora-warm) 0%, transparent 70%)",
-          filter: "blur(50px)",
-          animation: prefersReducedMotion()
-            ? "none"
-            : "ih-home-orb-drift 14s 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite",
-        }}
-      />
+      {/* ── Background Grid & Noise ── */}
+      <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/20 via-transparent to-transparent"></div>
+
+      {/* ── Ambient aurora orbs (Animated via Framer Motion) ── */}
+      {!isReducedMotion && (
+        <>
+          <motion.div
+            animate={{
+              y: [0, -30, 0],
+              scale: [1, 1.05, 1],
+              opacity: [0.4, 0.6, 0.4]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            aria-hidden="true"
+            className="pointer-events-none absolute left-[5%] top-20 h-[32rem] w-[32rem] rounded-full"
+            style={{
+              background: "radial-gradient(circle, var(--ih-aurora-plum) 0%, transparent 70%)",
+              filter: "blur(70px)",
+            }}
+          />
+          <motion.div
+            animate={{
+              y: [0, 40, 0],
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            aria-hidden="true"
+            className="pointer-events-none absolute right-[2%] top-10 h-[28rem] w-[28rem] rounded-full"
+            style={{
+              background: "radial-gradient(circle, var(--ih-aurora-emerald) 0%, transparent 70%)",
+              filter: "blur(70px)",
+            }}
+          />
+          <motion.div
+            animate={{
+              x: [0, -30, 0],
+              y: [0, 20, 0],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-10 left-[40%] h-[20rem] w-[20rem] rounded-full"
+            style={{
+              background: "radial-gradient(circle, var(--ih-aurora-warm) 0%, transparent 70%)",
+              filter: "blur(60px)",
+            }}
+          />
+        </>
+      )}
 
       {/* ── Main content ── */}
-      <div className="relative mx-auto max-w-5xl text-center">
+      <motion.div 
+        className="relative mx-auto max-w-5xl text-center z-10"
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+      >
         {/* Kicker badge */}
-        <div
-          className="ih-hero-kicker-badge inline-flex items-center gap-2 mb-8 bg-slate-100/80 px-4 py-1.5 rounded-full ih-text-muted border border-slate-200"
-          data-ih-reveal
-          style={{ "--ih-delay": "60ms" }}
-        >
-          <Zap size={13} className="text-amber-500" aria-hidden="true" />
-          <span className="text-xs font-semibold uppercase tracking-wider">Platform Overview</span>
-        </div>
+        <motion.div variants={fadeInUp} className="flex justify-center mb-8">
+          <div className="ih-hero-kicker-badge inline-flex items-center gap-2 bg-white/70 backdrop-blur-md px-5 py-2 rounded-full border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+            </span>
+            <span className="text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent">
+              Platform Overview
+            </span>
+          </div>
+        </motion.div>
 
         {/* Headline */}
-        <h1
+        <motion.h1
           id="hero-heading"
-          className="ih-hero-headline mb-7 text-5xl font-extrabold tracking-tight sm:text-7xl"
-          data-ih-reveal
-          style={{ "--ih-delay": "130ms" }}
+          variants={fadeInUp}
+          className="ih-hero-headline mb-8 text-5xl font-extrabold tracking-tight sm:text-7xl lg:text-[5rem] leading-[1.1]"
         >
-          Create campaigns.{" "}
-          <span className="bg-gradient-to-r from-purple-600 to-emerald-500 bg-clip-text text-transparent">Match influencers.</span>{" "}
+          Create campaigns. <br className="hidden sm:block" />
+          <span className="relative inline-block">
+            <span className="absolute -inset-2 rounded-lg bg-gradient-to-r from-purple-600/20 to-emerald-500/20 blur-xl opacity-50"></span>
+            <span className="relative bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-500 bg-clip-text text-transparent">
+              Match influencers.
+            </span>
+          </span>{" "}
+          <br className="hidden sm:block" />
           Track results.
-        </h1>
+        </motion.h1>
 
         {/* Supporting text */}
-        <p
-          className="ih-text-secondary mx-auto mb-10 max-w-2xl text-lg leading-8 sm:text-xl"
-          data-ih-reveal
-          style={{ "--ih-delay": "200ms" }}
+        <motion.p
+          variants={fadeInUp}
+          className="ih-text-secondary mx-auto mb-12 max-w-2xl text-lg leading-relaxed sm:text-xl font-medium"
         >
-          Launch campaigns, match influencers, and track results—all in one place.
-        </p>
+          The all-in-one platform to launch high-converting campaigns, connect with top-tier influencers, and measure ROI with precision.
+        </motion.p>
 
         {/* CTA group */}
-        <div
-          className="ih-hero-cta-group mb-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
-          data-ih-reveal
-          style={{ "--ih-delay": "280ms" }}
+        <motion.div
+          variants={fadeInUp}
+          className="ih-hero-cta-group mb-16 flex flex-col items-center gap-5 sm:flex-row sm:justify-center"
         >
-          <TransitionLink
-            to="/auth/login"
-            id="hero-cta-login"
-            className="ih-button-secondary ih-hero-cta ih-focus-ring inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 text-base font-medium"
-          >
-            Sign In
-          </TransitionLink>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+            <TransitionLink
+              to="/auth/register"
+              id="hero-cta-register"
+              className="group relative inline-flex items-center justify-center gap-3 rounded-2xl px-10 py-4 text-lg font-bold text-white overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 shadow-[0_10px_40px_-10px_rgba(124,58,237,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(124,58,237,0.6)] transition-all duration-300"
+            >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[ih-trace-sheen_1.5s_ease-in-out_infinite]" />
+              <span className="relative">Start Free Trial</span>
+              <ArrowRight
+                size={20}
+                aria-hidden="true"
+                className="relative transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </TransitionLink>
+          </motion.div>
 
-          <TransitionLink
-            to="/auth/register"
-            id="hero-cta-register"
-            className="ih-button-primary ih-hero-cta ih-focus-ring inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 text-base font-semibold"
-          >
-            Create Account
-            <ArrowRight
-              size={17}
-              aria-hidden="true"
-              className="ih-home-cta-icon"
-            />
-          </TransitionLink>
-        </div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+            <TransitionLink
+              to="/auth/login"
+              id="hero-cta-login"
+              className="inline-flex items-center justify-center gap-2.5 rounded-2xl px-10 py-4 text-lg font-semibold bg-white border-2 border-slate-200 text-slate-700 hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700 transition-all duration-300 shadow-sm"
+            >
+              Sign In
+            </TransitionLink>
+          </motion.div>
+        </motion.div>
 
         {/* Feature pills */}
-        <div
-          className="mb-20 flex flex-wrap justify-center gap-2.5"
-          data-ih-reveal
-          style={{ "--ih-delay": "340ms" }}
+        <motion.div
+          variants={fadeInUp}
+          className="mb-20 flex flex-wrap justify-center gap-3"
         >
-          {featurePills.map((pill) => (
-            <span
+          {featurePills.map((pill, idx) => (
+            <motion.span
               key={pill.label}
-              className={`ih-pill-tint ${pill.cls}`}
+              whileHover={{ y: -2 }}
+              className={`ih-pill-tint px-4 py-2 rounded-xl text-sm font-semibold border ${pill.cls} backdrop-blur-sm bg-white/50 cursor-default shadow-sm`}
             >
               {pill.label}
-            </span>
+            </motion.span>
           ))}
-        </div>
+        </motion.div>
 
         {/* ── Proof points strip ── */}
-        <div
-          className="ih-hero-proof-strip"
-          data-ih-reveal
-          style={{ "--ih-delay": "420ms" }}
+        <motion.div
+          variants={fadeInUp}
+          className="mx-auto max-w-4xl rounded-3xl bg-white/60 backdrop-blur-xl border border-slate-200/60 p-8 shadow-xl shadow-slate-200/50"
           aria-label="Platform statistics"
         >
-          {proofPoints.map((point, i) => {
-            const Icon = point.icon;
-            return (
-              <React.Fragment key={point.label}>
-                {/* Separator */}
-                {i > 0 && (
-                  <div
-                    className="ih-hero-proof-divider"
-                    aria-hidden="true"
-                  />
-                )}
-                <div className="ih-hero-proof-item">
-                  <div
-                    className={`ih-icon-chip h-10 w-10 shrink-0 rounded-xl ${point.iconClass}`}
-                  >
-                    <Icon size={18} aria-hidden="true" />
+          <div className="grid gap-8 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/60">
+            {proofPoints.map((point, i) => {
+              const Icon = point.icon;
+              return (
+                <motion.div 
+                  key={point.label} 
+                  className={`flex flex-col items-center text-center ${i !== 0 ? 'pt-8 sm:pt-0' : ''}`}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <div className={`mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl ${point.iconClass} shadow-inner`}>
+                    <Icon size={26} aria-hidden="true" />
                   </div>
-                  <div className="text-left">
-                    <p className={`text-2xl font-bold leading-none ${point.valueClass}`}>
-                      {point.value}
-                    </p>
-                    <p className="mt-1 text-sm font-semibold ih-text-primary/90">
-                      {point.label}
-                    </p>
-                    <p className="ih-text-muted text-xs leading-5">
-                      {point.sub}
-                    </p>
-                  </div>
-                </div>
-              </React.Fragment>
-            );
-          })}
-        </div>
-      </div>
+                  <p className={`text-4xl font-extrabold tracking-tight mb-2 ${point.valueClass}`}>
+                    {point.value}
+                  </p>
+                  <p className="text-sm font-bold text-slate-800 uppercase tracking-wide mb-1">
+                    {point.label}
+                  </p>
+                  <p className="text-xs font-medium text-slate-500">
+                    {point.sub}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
 
 export default Hero;
+

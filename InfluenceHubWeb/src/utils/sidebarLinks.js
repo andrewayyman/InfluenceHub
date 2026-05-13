@@ -64,6 +64,11 @@ export const sidebarLinks = {
       path: "/dashboard/brand/reports",
       icon: BarChart3,
     },
+    {
+      name: "Payments",
+      path: "/dashboard/brand/payments",
+      icon: DollarSign,
+    },
   ],
 
   /*

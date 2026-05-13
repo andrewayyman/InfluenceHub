@@ -135,14 +135,14 @@ public class PaymentService : IPaymentService
         payment.PaymentMethod = request.PaymentMethod.Trim();
         payment.TransactionReference = request.TransactionReference?.Trim();
         payment.BrandNotes = request.BrandNotes?.Trim();
-        payment.Status = PaymentStatus.AwaitingProof;
+        payment.Status = PaymentStatus.Completed;
+        payment.PaidAt = DateTime.UtcNow;
 
         if (proofStream is not null)
         {
             var relativePath = await _fileStorage.SavePaymentProofAsync(payment.Id, proofStream, extension ?? ".png", ct);
             payment.ProofUrl = ToPublicPaymentProofPath(relativePath);
             payment.ProofUploadedAt = DateTime.UtcNow;
-            payment.Status = PaymentStatus.ProofUploaded;
         }
 
         _paymentRepository.Update(payment);
@@ -259,6 +259,23 @@ public class PaymentService : IPaymentService
         await _paymentRepository.SaveChangesAsync(ct);
 
         return MapToDetailResponse(payment);
+    }
+
+    public async Task<IReadOnlyList<PaymentResponse>> GetBrandPaymentsAsync(Guid brandUserId, CancellationToken ct = default)
+    {
+        var brand = await _brandRepository.GetByUserIdAsync(brandUserId, ct);
+        if (brand is null) return [];
+
+        var payments = await _paymentRepository.Query()
+            .Include(p => p.Campaign)
+                .ThenInclude(c => c.Brand)
+            .Include(p => p.Influencer)
+                .ThenInclude(i => i.User)
+            .Where(p => p.BrandId == brand.Id)
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync(ct);
+
+        return payments.Select(MapToResponseSync).ToList();
     }
 
     public async Task<IReadOnlyList<PaymentResponse>> GetInfluencerPaymentsAsync(Guid influencerUserId, CancellationToken ct = default)
@@ -379,21 +396,23 @@ public class PaymentService : IPaymentService
 
     private static bool IsAuthorizedForPayment(Payment payment, Guid userId, string role)
     {
-        return role switch
+        var normalizedRole = role?.ToLowerInvariant() ?? "";
+        return normalizedRole switch
         {
-            "Admin" => true,
-            "Brand" => payment.Brand?.UserId == userId,
-            "Influencer" => payment.Influencer?.UserId == userId,
+            "admin" => true,
+            "brand" => (payment.Brand?.UserId == userId) || (payment.Campaign?.Brand?.UserId == userId) || (payment.Campaign?.BrandId == userId), // check multiple ways just in case
+            "influencer" => payment.Influencer?.UserId == userId,
             _ => false,
         };
     }
 
     private static bool IsAuthorizedForPaymentDispute(Payment payment, Guid userId, string role)
     {
-        return role switch
+        var normalizedRole = role?.ToLowerInvariant() ?? "";
+        return normalizedRole switch
         {
-            "Brand" => payment.Brand?.UserId == userId,
-            "Influencer" => payment.Influencer?.UserId == userId,
+            "brand" => (payment.Brand?.UserId == userId) || (payment.Campaign?.Brand?.UserId == userId),
+            "influencer" => payment.Influencer?.UserId == userId,
             _ => false,
         };
     }

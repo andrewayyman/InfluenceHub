@@ -6,6 +6,7 @@ import Hero from "./Hero";
 import Services from "./Services";
 import Subscription from "./Subscription";
 import { prefersReducedMotion } from "../../utils/overdrive";
+import { motion } from "framer-motion";
 
 const Home = () => {
   const location = useLocation();
@@ -28,28 +29,30 @@ const Home = () => {
   }, [location.hash]);
 
   return (
-    <div className="ih-home-shell ih-page-shell ih-motion-stage relative min-h-screen overflow-hidden">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="ih-home-shell ih-page-shell relative min-h-screen overflow-hidden bg-slate-50"
+    >
       <a href="#main-content" className="ih-skip-link">
         Skip to main content
       </a>
 
-      <div aria-hidden="true" className="ih-home-atmosphere pointer-events-none" />
-      <div aria-hidden="true" className="ih-home-grid pointer-events-none" />
-      <div aria-hidden="true" className="ih-home-sheen pointer-events-none" />
-      <div aria-hidden="true" className="ih-home-orb ih-home-orb-plum pointer-events-none" />
-      <div aria-hidden="true" className="ih-home-orb ih-home-orb-emerald pointer-events-none" />
-      <div aria-hidden="true" className="ih-home-orb ih-home-orb-warm pointer-events-none" />
+      {/* Global subtle background patterns */}
+      <div aria-hidden="true" className="ih-home-atmosphere pointer-events-none opacity-50" />
+      <div aria-hidden="true" className="ih-home-grid pointer-events-none opacity-20" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar />
-        <main id="main-content">
+        <main id="main-content" className="flex-grow">
           <Hero />
           <Services />
           <Subscription />
         </main>
         <Footer />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -20,6 +20,7 @@ const CreateCampaign = lazy(() => import("../Pages/brand/CreateCampaign"));
 const BrandCampaigns = lazy(() => import("../Pages/brand/BrandCampaigns"));
 const CampaignApplications = lazy(() => import("../Pages/brand/CampaignApplications"));
 const BrandReports = lazy(() => import("../Pages/brand/BrandReports"));
+const BrandPayments = lazy(() => import("../Pages/brand/BrandPayments"));
 
 const InfluencerDashboard = lazy(() => import("../Pages/influencer/InfluencerDashboard"));
 const SuggestedCampaigns = lazy(() => import("../Pages/influencer/SuggestedCampaigns"));
@@ -124,6 +125,10 @@ export const router = createBrowserRouter([
       {
         path: "reports",
         element: withSuspense(<BrandReports />),
+      },
+      {
+        path: "payments",
+        element: withSuspense(<BrandPayments />),
       },
     ],
   },

@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff, ArrowRight, Building2, User } from "lucide-react";
 import { register as registerRequest } from "../../services/api/authService";
 import { TransitionLink } from "../../Components/Motion/TransitionLink";
 import { navigateWithOverdrive } from "../../utils/overdrive";
+import { motion, AnimatePresence } from "framer-motion";
 
 const roleOptions = [
   {
     label: "Brand",
     value: "Brand",
-    helper: "Create campaigns and review applications.",
-    activeClass: "ih-choice-chip-brand-active",
+    icon: Building2,
+    helper: "Create campaigns & review.",
+    activeClass: "border-brand-500 bg-brand-50/50 ring-1 ring-brand-500/20 dark:bg-brand-500/10 dark:border-brand-500/50",
+    iconClass: "bg-brand-100 text-brand-600 dark:bg-brand-900/50 dark:text-brand-400"
   },
   {
     label: "Influencer",
     value: "Influencer",
-    helper: "Apply to campaigns and submit reports.",
-    activeClass: "ih-choice-chip-emerald-active",
+    icon: User,
+    helper: "Apply & submit reports.",
+    activeClass: "border-emerald-500 bg-emerald-50/50 ring-1 ring-emerald-500/20 dark:bg-emerald-500/10 dark:border-emerald-500/50",
+    iconClass: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400"
   },
 ];
 
@@ -33,8 +39,25 @@ const RegisterSchema = Yup.object().shape({
     .required("Confirm your password"),
 });
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
 const Register = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (values, { setStatus, setSubmitting }) => {
     setStatus(null);
@@ -58,226 +81,329 @@ const Register = () => {
   };
 
   return (
-    <div className="ih-auth-shell ih-page-shell ih-motion-stage relative flex min-h-[calc(100vh-4rem)] w-full items-center justify-center overflow-hidden px-4 pb-10 pt-24 sm:px-6">
-      <div aria-hidden="true" className="ih-auth-atmosphere pointer-events-none absolute inset-0" />
-      <div aria-hidden="true" className="ih-auth-grid pointer-events-none absolute inset-0" />
+    <div className="ih-auth-shell relative flex min-h-[calc(100vh-4rem)] w-full items-center justify-center overflow-hidden px-4 pb-10 pt-24 sm:px-6 dark:bg-slate-950">
+      {/* Animated Atmosphere */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5 }}
+        aria-hidden="true" 
+        className="ih-auth-atmosphere pointer-events-none absolute inset-0 dark:opacity-20" 
+      />
+      <div aria-hidden="true" className="ih-auth-grid pointer-events-none absolute inset-0 dark:opacity-10" />
 
-      <div className="ih-auth-card relative w-full max-w-lg rounded-[1.75rem] p-6 sm:p-8" data-ih-reveal style={{ "--ih-delay": "90ms" }}>
-        <div className="inline-flex items-center gap-3">
-          <span className="ih-brand-mark">IH</span>
-          <div>
-            <p className="ih-kicker">Create account</p>
-            <p className="ih-text-subtle mt-1 text-xs uppercase tracking-[0.18em]">
-              Brands and influencers
-            </p>
-          </div>
-        </div>
+      {/* Decorative Orbs */}
+      <motion.div 
+        animate={{ 
+          y: [0, -20, 0],
+          opacity: [0.3, 0.5, 0.3],
+          scale: [1, 1.05, 1]
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -left-20 top-20 h-72 w-72 rounded-full bg-brand-400/20 mix-blend-multiply blur-[80px] dark:bg-brand-600/20"
+      />
+      <motion.div 
+        animate={{ 
+          y: [0, 20, 0],
+          opacity: [0.2, 0.4, 0.2],
+          scale: [1, 1.1, 1]
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="pointer-events-none absolute -right-20 bottom-20 h-72 w-72 rounded-full bg-emerald-400/20 mix-blend-multiply blur-[80px] dark:bg-emerald-600/20"
+      />
 
-        <h2 className="mb-2 mt-6 text-3xl font-semibold ih-text-primary">
-          Create your InfluiX account
-        </h2>
-        <p className="ih-text-muted mb-8 leading-7">
-          Pick your role, add your details, and set up the account you will use to sign in.
-        </p>
-
-        <Formik
-          initialValues={{
-            role: "",
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-          }}
-          validationSchema={RegisterSchema}
-          onSubmit={handleSubmit}
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={staggerContainer}
+        className="relative z-10 w-full max-w-xl"
+      >
+        <motion.div 
+          variants={fadeInUp}
+          className="relative overflow-hidden rounded-[2rem] border border-white/50 bg-white/70 p-8 shadow-[0_8px_40px_rgb(0,0,0,0.04)] backdrop-blur-2xl dark:border-slate-800/60 dark:bg-slate-900/80 dark:shadow-[0_8px_40px_rgb(0,0,0,0.2)] sm:p-10"
         >
-          {({ isSubmitting, errors, status, touched, values }) => (
-            <Form className="space-y-4">
+          {/* Glassmorphism shine effect */}
+          <div className="pointer-events-none absolute -inset-[100%] z-[-1] animate-[ih-trace-sheen_8s_linear_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-white/5" />
 
-              <fieldset>
-                <legend className="ih-label">Account type</legend>
-                <p id="register-role-help" className="ih-helper-text mt-0">
-                  Choose how you will use InfluiX.
-                </p>
-                <div
-                  className="mt-4 grid grid-cols-2 gap-3"
-                  role="radiogroup"
-                  aria-describedby="register-role-help register-role-error"
-                  aria-invalid={touched.role && errors.role ? "true" : "false"}
-                >
-                  {roleOptions.map((option) => {
-                    const isSelected = values.role === option.value;
+          <motion.div variants={fadeInUp} className="inline-flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/20 dark:shadow-brand-500/10">
+              <span className="text-xl font-bold tracking-tight">IH</span>
+            </div>
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-white">Create Account</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Join The Platform
+              </p>
+            </div>
+          </motion.div>
 
-                    return (
-                      <label
-                        key={option.value}
-                        className={`ih-focus-ring ih-choice-chip inline-flex min-h-[5.5rem] w-full cursor-pointer items-start gap-3 rounded-2xl px-4 py-3 text-left ${
-                          isSelected ? option.activeClass : ""
-                        }`}
-                      >
-                        <span className="mt-0.5">
+          <motion.div variants={fadeInUp}>
+            <h2 className="mb-2 mt-8 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Get started with InfluiX
+            </h2>
+            <p className="mb-8 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+              Pick your role, add your details, and set up your account in seconds.
+            </p>
+          </motion.div>
+
+          <Formik
+            initialValues={{
+              role: "",
+              name: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
+            }}
+            validationSchema={RegisterSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting, errors, status, touched, values, setFieldValue }) => (
+              <Form className="space-y-6">
+
+                <motion.fieldset variants={fadeInUp}>
+                  <legend className="mb-3 block text-sm font-medium text-slate-700 dark:text-slate-300">Choose your role</legend>
+                  <div
+                    className="grid grid-cols-2 gap-3"
+                    role="radiogroup"
+                  >
+                    {roleOptions.map((option) => {
+                      const isSelected = values.role === option.value;
+                      const Icon = option.icon;
+
+                      return (
+                        <label
+                          key={option.value}
+                          className={`group relative flex cursor-pointer flex-col rounded-2xl border p-4 transition-all duration-200 hover:shadow-md ${
+                            isSelected 
+                              ? option.activeClass 
+                              : "border-slate-200 bg-white/50 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-slate-600"
+                          }`}
+                        >
                           <Field
                             type="radio"
                             name="role"
                             value={option.value}
-                            className="ih-focus-ring h-4 w-4"
+                            className="sr-only"
                           />
-                        </span>
-                        <span className="min-w-0">
-                          <span className="block text-sm font-semibold text-current">{option.label}</span>
-                          <span className="mt-1 block text-xs leading-5 text-current/80">
+                          <div className="mb-2 flex items-center justify-between">
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${
+                              isSelected ? option.iconClass : "bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
+                            }`}>
+                              <Icon size={20} />
+                            </div>
+                            <div className={`flex h-5 w-5 items-center justify-center rounded-full border transition-colors ${
+                              isSelected ? "border-brand-500 bg-brand-500 dark:border-brand-400 dark:bg-brand-400" : "border-slate-300 dark:border-slate-600"
+                            }`}>
+                              {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                            </div>
+                          </div>
+                          <span className={`block font-semibold transition-colors ${
+                            isSelected ? "text-slate-900 dark:text-white" : "text-slate-700 dark:text-slate-300"
+                          }`}>
+                            {option.label}
+                          </span>
+                          <span className={`mt-1 block text-[13px] leading-relaxed transition-colors ${
+                            isSelected ? "text-slate-600 dark:text-slate-400" : "text-slate-500 dark:text-slate-500"
+                          }`}>
                             {option.helper}
                           </span>
-                        </span>
-                      </label>
-                    );
-                  })}
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <AnimatePresence>
+                    {touched.role && errors.role && (
+                      <motion.p 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        className="text-[13px] font-medium text-red-500"
+                      >
+                        {errors.role}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </motion.fieldset>
+
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <motion.div variants={fadeInUp}>
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300" htmlFor="register-name">
+                      Full name
+                    </label>
+                    <Field
+                      id="register-name"
+                      type="text"
+                      name="name"
+                      autoComplete="name"
+                      placeholder="John Doe"
+                      className={`w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:placeholder-slate-500 dark:focus:border-brand-400 dark:focus:bg-slate-800 ${
+                        touched.name && errors.name ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/10 dark:border-red-500/50" : ""
+                      }`}
+                    />
+                    <AnimatePresence>
+                      {touched.name && errors.name && (
+                        <motion.p 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          className="text-[13px] font-medium text-red-500"
+                        >
+                          {errors.name}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+
+                  <motion.div variants={fadeInUp}>
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300" htmlFor="register-email">
+                      Email address
+                    </label>
+                    <Field
+                      id="register-email"
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      placeholder="name@company.com"
+                      className={`w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:placeholder-slate-500 dark:focus:border-brand-400 dark:focus:bg-slate-800 ${
+                        touched.email && errors.email ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/10 dark:border-red-500/50" : ""
+                      }`}
+                    />
+                    <AnimatePresence>
+                      {touched.email && errors.email && (
+                        <motion.p 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          className="text-[13px] font-medium text-red-500"
+                        >
+                          {errors.email}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
                 </div>
-                {touched.role && errors.role ? (
-                  <p id="register-role-error" className="ih-error-text" role="alert">
-                    {errors.role}
-                  </p>
-                ) : null}
-              </fieldset>
 
-              <div>
-                <label className="ih-label" htmlFor="register-name">
-                  Name
-                </label>
-                <Field
-                  id="register-name"
-                  type="text"
-                  name="name"
-                  autoComplete="name"
-                  placeholder="Full name"
-                  aria-invalid={touched.name && errors.name ? "true" : "false"}
-                  aria-describedby="register-name-help register-name-error"
-                  className={`ih-input ih-focus-ring ${
-                    touched.name && errors.name ? "ih-input-error" : ""
-                  }`}
-                />
-                <p id="register-name-help" className="ih-helper-text">
-                  This is shown on your profile and campaigns.
-                </p>
-                {touched.name && errors.name ? (
-                  <p id="register-name-error" className="ih-error-text" role="alert">
-                    {errors.name}
-                  </p>
-                ) : null}
-              </div>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <motion.div variants={fadeInUp}>
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300" htmlFor="register-password">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Field
+                        id="register-password"
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        autoComplete="new-password"
+                        placeholder="At least 6 chars"
+                        className={`w-full rounded-xl border border-slate-200 bg-white/50 py-3.5 pl-4 pr-12 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:placeholder-slate-500 dark:focus:border-brand-400 dark:focus:bg-slate-800 ${
+                          touched.password && errors.password ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/10 dark:border-red-500/50" : ""
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-300"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    <AnimatePresence>
+                      {touched.password && errors.password && (
+                        <motion.p 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          className="text-[13px] font-medium text-red-500"
+                        >
+                          {errors.password}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
 
-              <div>
-                <label className="ih-label" htmlFor="register-email">
-                  Email address
-                </label>
-                <Field
-                  id="register-email"
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  placeholder="name@company.com"
-                  aria-invalid={touched.email && errors.email ? "true" : "false"}
-                  aria-describedby="register-email-help register-email-error"
-                  className={`ih-input ih-focus-ring ${
-                    touched.email && errors.email ? "ih-input-error" : ""
-                  }`}
-                />
-                <p id="register-email-help" className="ih-helper-text">
-                  We use this for sign-in and campaign updates.
-                </p>
-                {touched.email && errors.email ? (
-                  <p id="register-email-error" className="ih-error-text" role="alert">
-                    {errors.email}
-                  </p>
-                ) : null}
-              </div>
+                  <motion.div variants={fadeInUp}>
+                    <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300" htmlFor="register-confirm-password">
+                      Confirm Password
+                    </label>
+                    <div className="relative">
+                      <Field
+                        id="register-confirm-password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        autoComplete="new-password"
+                        placeholder="Repeat password"
+                        className={`w-full rounded-xl border border-slate-200 bg-white/50 py-3.5 pl-4 pr-12 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all duration-200 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:placeholder-slate-500 dark:focus:border-brand-400 dark:focus:bg-slate-800 ${
+                          touched.confirmPassword && errors.confirmPassword ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/10 dark:border-red-500/50" : ""
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-300"
+                      >
+                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    <AnimatePresence>
+                      {touched.confirmPassword && errors.confirmPassword && (
+                        <motion.p 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          className="text-[13px] font-medium text-red-500"
+                        >
+                          {errors.confirmPassword}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                </div>
 
-              <div>
-                <label className="ih-label" htmlFor="register-password">
-                  Password
-                </label>
-                <Field
-                  id="register-password"
-                  type="password"
-                  name="password"
-                  autoComplete="new-password"
-                  placeholder="Create a password"
-                  aria-invalid={touched.password && errors.password ? "true" : "false"}
-                  aria-describedby="register-password-help register-password-error"
-                  className={`ih-input ih-focus-ring ${
-                    touched.password && errors.password ? "ih-input-error" : ""
-                  }`}
-                />
-                <p id="register-password-help" className="ih-helper-text">
-                  At least 6 characters.
-                </p>
-                {touched.password && errors.password ? (
-                  <p id="register-password-error" className="ih-error-text" role="alert">
-                    {errors.password}
-                  </p>
-                ) : null}
-              </div>
-
-              <div>
-                <label className="ih-label" htmlFor="register-confirm-password">
-                  Confirm password
-                </label>
-                <Field
-                  id="register-confirm-password"
-                  type="password"
-                  name="confirmPassword"
-                  autoComplete="new-password"
-                  placeholder="Re-enter your password"
-                  aria-invalid={touched.confirmPassword && errors.confirmPassword ? "true" : "false"}
-                  aria-describedby="register-confirm-password-help register-confirm-password-error"
-                  className={`ih-input ih-focus-ring ${
-                    touched.confirmPassword && errors.confirmPassword ? "ih-input-error" : ""
-                  }`}
-                />
-                <p id="register-confirm-password-help" className="ih-helper-text">
-                  Enter the same password again.
-                </p>
-                {touched.confirmPassword && errors.confirmPassword ? (
-                  <p
-                    id="register-confirm-password-error"
-                    className="ih-error-text"
+                {status ? (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-xl bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-900/20 dark:text-red-400" 
                     role="alert"
                   >
-                    {errors.confirmPassword}
-                  </p>
+                    {status}
+                  </motion.div>
                 ) : null}
-              </div>
 
-              <p className="ih-text-subtle text-sm leading-6">
-                Admin accounts are managed separately. Brand and influencer access starts here.
-              </p>
+                <motion.div variants={fadeInUp} className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    aria-busy={isSubmitting}
+                    className="group relative flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 py-4 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-brand-500/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100 dark:from-brand-500 dark:to-brand-400"
+                  >
+                    {isSubmitting ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    ) : (
+                      <>
+                        Create Account
+                        <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+              </Form>
+            )}
+          </Formik>
 
-              {status ? (
-                <p className="ih-error-text" role="alert">{status}</p>
-              ) : null}
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                aria-busy={isSubmitting}
-                className="ih-button-primary ih-focus-ring w-full py-3"
+          <motion.div variants={fadeInUp} className="mt-8 text-center">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Already have an account?{" "}
+              <TransitionLink
+                to="/auth/login"
+                className="font-semibold text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300"
               >
-                {isSubmitting ? "Creating account..." : "Create account"}
-              </button>
-            </Form>
-          )}
-        </Formik>
-
-        <p className="ih-divider-top ih-text-muted mt-6 pt-5 text-center">
-          Already have an account?{" "}
-          <TransitionLink
-            to="/auth/login"
-            className="ih-link ih-focus-ring rounded-sm font-medium"
-          >
-            Login
-          </TransitionLink>
-        </p>
-      </div>
+                Log in here
+              </TransitionLink>
+            </p>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

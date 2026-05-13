@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowUpRight,
   BarChart3,
@@ -44,6 +45,7 @@ import {
 
 const ReportModal = ({ report, onClose, onStatusChange }) => {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [feedback, setFeedback] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -94,6 +96,7 @@ const ReportModal = ({ report, onClose, onStatusChange }) => {
       if (actionType === "Approve") {
         await updateReportStatus(token, report.id, "Approved");
         onStatusChange(report.id, "Approved");
+        navigate("/dashboard/brand/payments");
       } else if (actionType === "Reject") {
         if (!feedback) {
           setError("Feedback is required to reject a report.");

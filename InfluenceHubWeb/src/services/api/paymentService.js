@@ -16,3 +16,18 @@ export const getAllPayments = (token, params, signal) =>
 
 export const getPaymentSummary = (token, signal) =>
   apiRequest("/api/Payments/GetPaymentSummary", withToken(token, { signal }));
+
+export const getPaymentDetails = (token, paymentId, signal) =>
+  apiRequest(`/api/Payments/GetPaymentDetails/${paymentId}`, withToken(token, { signal }));
+
+export const getBrandPayments = (token, signal) =>
+  apiRequest("/api/Payments/GetBrandPayments", withToken(token, { signal }));
+
+export const uploadPaymentProof = (token, paymentId, formData) =>
+  apiRequest(`/api/Payments/UploadProof/${paymentId}`, withToken(token, { 
+    method: "POST", 
+    body: formData,
+    headers: {
+      // Don't set Content-Type here, let fetch handle the boundary for FormData
+    }
+  }));

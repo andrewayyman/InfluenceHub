@@ -93,7 +93,9 @@ export const apiRequest = async (path, options = {}) => {
   const { body, headers = {}, method = "GET", signal, token } = options;
   const requestHeaders = { ...headers };
 
-  if (body !== undefined) {
+  const isFormData = body instanceof FormData;
+
+  if (body !== undefined && !isFormData && !requestHeaders["Content-Type"]) {
     requestHeaders["Content-Type"] = JSON_CONTENT_TYPE;
   }
 
@@ -104,7 +106,7 @@ export const apiRequest = async (path, options = {}) => {
   const response = await fetch(resolveApiUrl(path), {
     method,
     headers: requestHeaders,
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: body !== undefined ? (isFormData ? body : JSON.stringify(body)) : undefined,
     signal,
   });
 

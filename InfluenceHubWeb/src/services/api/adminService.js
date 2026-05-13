@@ -94,3 +94,8 @@ export const getPaymentSummary = (token, signal) => apiRequest(
   `/api/admin/getpaymentsummary`,
   withToken(token, { signal }),
 );
+
+export const getPaymentDetails = (token, paymentId, signal) => apiRequest(
+  `/api/Payments/GetPaymentDetails/${paymentId}`,
+  withToken(token, { signal }),
+);

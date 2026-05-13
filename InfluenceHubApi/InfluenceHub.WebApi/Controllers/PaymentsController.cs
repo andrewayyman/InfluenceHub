@@ -26,6 +26,14 @@ public class PaymentsController : BaseApiController
         return Ok(payment);
     }
 
+    [Authorize(Roles = "Brand")]
+    [HttpGet]
+    public async Task<IActionResult> GetBrandPayments(CancellationToken ct)
+    {
+        var payments = await _paymentService.GetBrandPaymentsAsync(UserId, ct);
+        return Ok(payments);
+    }
+
     [Authorize(Roles = "Influencer")]
     [HttpGet]
     public async Task<IActionResult> GetMyPayments(CancellationToken ct)
@@ -50,7 +58,7 @@ public class PaymentsController : BaseApiController
         return Ok(summary);
     }
 
-    [Authorize(Roles = "Brand,Influencer")]
+    [Authorize(Roles = "Brand,Influencer,Admin")]
     [HttpGet("{paymentId:guid}")]
     public async Task<IActionResult> GetPaymentDetails(Guid paymentId, CancellationToken ct)
     {

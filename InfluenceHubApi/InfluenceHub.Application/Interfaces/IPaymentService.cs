@@ -13,6 +13,7 @@ public interface IPaymentService
     Task<PaymentDetailResponse> DisputeAsync(Guid paymentId, Guid userId, string role, DisputeRequest request, CancellationToken ct = default);
     Task<PaymentDetailResponse> AdminConfirmPaymentAsync(Guid paymentId, Guid adminUserId, CancellationToken ct = default);
     Task<PaymentDetailResponse> ResolveDisputeAsync(Guid paymentId, Guid adminUserId, ResolveDisputeRequest request, CancellationToken ct = default);
+    Task<IReadOnlyList<PaymentResponse>> GetBrandPaymentsAsync(Guid brandUserId, CancellationToken ct = default);
     Task<IReadOnlyList<PaymentResponse>> GetInfluencerPaymentsAsync(Guid influencerUserId, CancellationToken ct = default);
     Task<IReadOnlyList<PaymentResponse>> GetAllPaymentsAsync(string? status, string? search, CancellationToken ct = default);
     Task<PaymentSummaryResponse> GetPaymentSummaryAsync(CancellationToken ct = default);
