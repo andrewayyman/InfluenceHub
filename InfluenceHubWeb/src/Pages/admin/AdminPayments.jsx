@@ -139,21 +139,6 @@ const PaymentDetailsModal = ({ paymentId, onClose }) => {
                       <span className="text-sm text-slate-500">Payment Method</span>
                       <span className="text-sm font-medium ih-text-primary text-right">{payment.paymentMethod || "N/A"}</span>
                     </div>
-                    <div className="flex justify-between items-center gap-4">
-                      <span className="text-sm text-slate-500">Transaction Ref</span>
-                      <span className="text-sm font-medium ih-text-primary font-mono text-right">{payment.transactionReference || "N/A"}</span>
-                    </div>
-                    {payment.influencerPaymentInfo && (
-                      <div className="flex flex-col gap-1 mt-2">
-                        <span className="text-sm text-slate-500">Receiver Account Details (Masked)</span>
-                        <div className="text-sm text-slate-700 bg-white p-3 rounded-lg border border-slate-200 break-words">
-                          {payment.influencerPaymentInfo.bankAccountNumber ? `Bank: ${payment.influencerPaymentInfo.bankName} - ${payment.influencerPaymentInfo.bankAccountNumber.slice(-4).padStart(payment.influencerPaymentInfo.bankAccountNumber.length, "*")}` : ""}
-                          {payment.influencerPaymentInfo.walletNumber ? `Wallet: ${payment.influencerPaymentInfo.walletProvider} - ${payment.influencerPaymentInfo.walletNumber.slice(-4).padStart(payment.influencerPaymentInfo.walletNumber.length, "*")}` : ""}
-                          {payment.influencerPaymentInfo.instapayPhone ? `Instapay: ${payment.influencerPaymentInfo.instapayPhone.slice(-4).padStart(payment.influencerPaymentInfo.instapayPhone.length, "*")}` : ""}
-                          {!payment.influencerPaymentInfo.bankAccountNumber && !payment.influencerPaymentInfo.walletNumber && !payment.influencerPaymentInfo.instapayPhone && "Details unavailable"}
-                        </div>
-                      </div>
-                    )}
                     {payment.brandNotes && (
                       <div className="flex flex-col gap-1 mt-2">
                         <span className="text-sm text-slate-500">Notes/Memo</span>
@@ -172,10 +157,10 @@ const PaymentDetailsModal = ({ paymentId, onClose }) => {
                           <img src={resolveApiUrl(payment.proofUrl)} alt="Payment Proof" className="max-w-full max-h-[250px] object-contain" />
                         </div>
                         <div className="flex gap-3">
-                          <a href={resolveApiUrl(payment.proofUrl)} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-slate-200 hover:bg-slate-50 transition-colors rounded-xl text-sm font-medium ih-text-primary shadow-sm">
+                          <a href={resolveApiUrl(payment.proofUrl)} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-slate-200 hover:bg-slate-50 transition-colors rounded-xl text-sm font-bold text-slate-700 shadow-sm">
                             <ExternalLink size={16} /> Open
                           </a>
-                          <a href={resolveApiUrl(payment.proofUrl)} download className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-[color:var(--ih-brand)] hover:bg-[color:var(--ih-brand-dark)] transition-colors rounded-xl text-sm font-medium text-white shadow-sm">
+                          <a href={resolveApiUrl(payment.proofUrl)} download className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-900 hover:bg-slate-800 transition-colors rounded-xl text-sm font-bold text-white shadow-sm">
                             <Download size={16} /> Download
                           </a>
                         </div>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { DollarSign, Search, TrendingUp, X, UploadCloud, FileImage, FileText, CheckCircle, Clock, Check, AlertCircle, Receipt, ExternalLink, Download } from "lucide-react";
+import { DollarSign, Search, TrendingUp, X, UploadCloud, FileImage, FileText, CheckCircle, Clock, Check, AlertCircle, Receipt, ExternalLink, Download, CreditCard, Landmark, Smartphone, Wallet, MoreHorizontal } from "lucide-react";
 import {
   AdminPage as DashboardPage,
   AdminPanel as Panel,
@@ -28,21 +28,17 @@ const STATUS_OPTIONS = [
 ];
 
 const PAYMENT_METHODS = [
-  "InstaPay",
-  "Bank Transfer",
-  "Vodafone Cash",
-  "PayPal",
-  "Credit/Debit Card",
-  "Electronic Wallet",
-  "Other",
+  { id: "InstaPay", icon: Smartphone },
+  { id: "Bank Transfer", icon: Landmark },
+  { id: "Vodafone Cash", icon: Wallet },
+  { id: "PayPal", icon: CreditCard },
+  { id: "Credit/Debit Card", icon: CreditCard },
+  { id: "Other", icon: MoreHorizontal },
 ];
 
 const PaymentSubmissionModal = ({ payment, onClose, onSuccess }) => {
   const { token } = useAuth();
   const [method, setMethod] = useState("");
-  const [senderName, setSenderName] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [transactionRef, setTransactionRef] = useState("");
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
@@ -82,16 +78,9 @@ const PaymentSubmissionModal = ({ payment, onClose, onSuccess }) => {
     setError("");
 
     try {
-      const mergedNotes = [
-        senderName ? `Sender Name: ${senderName}` : "",
-        accountNumber ? `Account/Wallet: ${accountNumber}` : "",
-        notes ? `Notes: ${notes}` : ""
-      ].filter(Boolean).join("\n");
-
       const formData = new FormData();
       formData.append("paymentMethod", method);
-      if (transactionRef) formData.append("transactionReference", transactionRef);
-      if (mergedNotes) formData.append("brandNotes", mergedNotes);
+      if (notes) formData.append("brandNotes", notes);
       formData.append("proofFile", file);
 
       await uploadPaymentProof(token, payment.id, formData);
@@ -133,57 +122,28 @@ const PaymentSubmissionModal = ({ payment, onClose, onSuccess }) => {
             <div className="space-y-4">
               <h3 className="text-sm font-bold ih-text-primary flex items-center gap-2"><DollarSign size={18}/> Payment Information</h3>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-2">Payment Method *</label>
-                  <select
-                    className="ih-input w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                    value={method}
-                    onChange={(e) => setMethod(e.target.value)}
-                    required
-                    disabled={isSubmitting}
-                  >
-                    <option value="">Select Method...</option>
-                    {PAYMENT_METHODS.map(m => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-2">Transaction Ref</label>
-                  <input
-                    type="text"
-                    className="ih-input w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                    placeholder="e.g. TXN-123456"
-                    value={transactionRef}
-                    onChange={(e) => setTransactionRef(e.target.value)}
-                    disabled={isSubmitting}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-2">Sender Name</label>
-                  <input
-                    type="text"
-                    className="ih-input w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                    placeholder="Name on account"
-                    value={senderName}
-                    onChange={(e) => setSenderName(e.target.value)}
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-2">Account/Wallet Number</label>
-                  <input
-                    type="text"
-                    className="ih-input w-full bg-slate-50 border-slate-200 focus:bg-white transition-colors"
-                    placeholder="Last 4 digits or full"
-                    value={accountNumber}
-                    onChange={(e) => setAccountNumber(e.target.value)}
-                    disabled={isSubmitting}
-                  />
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-2">Payment Method *</label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {PAYMENT_METHODS.map(m => {
+                    const Icon = m.icon;
+                    return (
+                      <button
+                        key={m.id}
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={() => setMethod(m.id)}
+                        className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all ${
+                          method === m.id
+                            ? "border-[color:var(--ih-brand)] bg-[color:var(--ih-brand-light)] text-[color:var(--ih-brand)] shadow-sm"
+                            : "border-slate-100 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:border-slate-200"
+                        }`}
+                      >
+                        <Icon size={24} className="mb-2" />
+                        <span className="text-xs font-bold text-center">{m.id}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -212,30 +172,33 @@ const PaymentSubmissionModal = ({ payment, onClose, onSuccess }) => {
                   disabled={isSubmitting}
                   required
                 />
-                <div className={`flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[1.5rem] transition-all ${file ? "border-emerald-400 bg-emerald-50/30" : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-brand-400"}`}>
+                <div className={`flex flex-col items-center justify-center p-10 border-2 border-dashed rounded-3xl transition-all ${file ? "border-[color:var(--ih-brand)] bg-[color:var(--ih-brand-light)]/30" : "border-slate-200 bg-slate-50 hover:bg-slate-100/50 hover:border-slate-300"}`}>
                   {filePreview ? (
-                    <div className="relative h-32 mb-4">
-                      <img src={filePreview} alt="Preview" className="h-full object-contain rounded-lg shadow-sm" />
+                    <div className="relative h-40 mb-4 group">
+                      <img src={filePreview} alt="Preview" className="h-full w-full object-contain rounded-xl shadow-sm" />
+                      <div className="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm font-bold backdrop-blur-sm">
+                        Replace File
+                      </div>
                     </div>
                   ) : file ? (
-                    <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center text-emerald-500 shadow-sm mb-4">
+                    <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center text-[color:var(--ih-brand)] shadow-sm mb-4">
                       <FileText size={32} />
                     </div>
                   ) : (
-                    <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center text-slate-400 shadow-sm mb-4">
-                      <FileImage size={32} />
+                    <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center text-slate-400 shadow-sm mb-4">
+                      <UploadCloud size={32} />
                     </div>
                   )}
                   
                   {file ? (
                     <div className="text-center">
-                      <p className="text-sm font-bold text-emerald-700">{file.name}</p>
-                      <p className="text-xs text-emerald-600/70 mt-1">{(file.size / 1024 / 1024).toFixed(2)} MB • Click to replace</p>
+                      <p className="text-sm font-bold text-[color:var(--ih-brand)]">{file.name}</p>
+                      <p className="text-xs text-[color:var(--ih-brand)]/70 mt-1 font-medium">{(file.size / 1024 / 1024).toFixed(2)} MB • Click to replace</p>
                     </div>
                   ) : (
                     <div className="text-center">
                       <p className="text-sm font-bold ih-text-primary">Click to upload or drag and drop</p>
-                      <p className="text-xs text-slate-500 mt-1">PNG, JPG or PDF (max. 5MB)</p>
+                      <p className="text-xs text-slate-500 mt-1 font-medium">PNG, JPG or PDF (max. 5MB)</p>
                     </div>
                   )}
                 </div>
@@ -260,7 +223,7 @@ const PaymentSubmissionModal = ({ payment, onClose, onSuccess }) => {
               <button
                 type="submit"
                 disabled={isSubmitting || !method || !file}
-                className="flex-[2] py-4 rounded-[1.5rem] font-black text-white bg-[color:var(--ih-brand)] hover:bg-[color:var(--ih-brand-dark)] shadow-[0_10px_30px_rgba(99,102,241,0.3)] transition-all active:scale-[0.98] disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
+                className="flex-[2] py-4 rounded-[1.5rem] font-black text-white bg-slate-900 hover:bg-slate-800 shadow-[0_8px_20px_rgba(0,0,0,0.12)] transition-all active:scale-[0.98] disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>Processing...</>
@@ -341,10 +304,6 @@ const CompletedPaymentModal = ({ paymentId, onClose }) => {
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Method</p>
                   <p className="text-sm font-bold ih-text-primary">{payment.paymentMethod || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Transaction Ref</p>
-                  <p className="text-sm font-bold ih-text-primary font-mono">{payment.transactionReference || "N/A"}</p>
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Status</p>
@@ -564,14 +523,14 @@ const BrandPayments = () => {
                       {p.status === "Pending" ? (
                         <button 
                           onClick={() => setSubmittingPayment(p)}
-                          className="inline-flex items-center gap-2 bg-[#FF6B00] hover:bg-[#d65a00] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95"
+                          className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all active:scale-95"
                         >
                           Pay Now <ExternalLink size={16} />
                         </button>
                       ) : (
                         <button 
                           onClick={() => setViewingPaymentId(p.id)}
-                          className="inline-flex items-center gap-2 bg-green-300 hover:bg-green-200 text-green-900 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all active:scale-95"
+                          className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all active:scale-95"
                         >
                           Receipt
                         </button>
