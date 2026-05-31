@@ -71,6 +71,25 @@ export const getActivityLabel = (value) => (value ? "Active" : "Disabled");
 
 export const getMessageLabel = (value) => (value ? "Replied" : "Needs reply");
 
+export const getContactSourceLabel = (value) => {
+  if (!value) {
+    return "Public";
+  }
+
+  return humanizeEnum(value);
+};
+
+export const getContactSourceTone = (value) => {
+  switch (value) {
+    case "Brand":
+      return "brand";
+    case "Influencer":
+      return "emerald";
+    default:
+      return "neutral";
+  }
+};
+
 export const getEngagementTotal = (report) => (report.likes || 0) + (report.comments || 0) + (report.shares || 0);
 
 export const getEngagementRate = (report) => {

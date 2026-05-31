@@ -5,5 +5,5 @@ namespace InfluenceHub.Application.Interfaces;
 
 public interface IContactService
 {
-    Task<ContactResponse> CreateMessageAsync(ContactRequest request, CancellationToken ct = default);
+    Task<ContactResponse> CreateMessageAsync(ContactRequest request, Guid? senderUserId = null, CancellationToken ct = default);
 }

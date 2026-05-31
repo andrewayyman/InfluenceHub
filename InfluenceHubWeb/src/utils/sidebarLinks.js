@@ -69,6 +69,11 @@ export const sidebarLinks = {
       path: "/dashboard/brand/payments",
       icon: DollarSign,
     },
+    {
+      name: "Contact Admin",
+      path: "/dashboard/brand/contact",
+      icon: MessageSquare,
+    },
   ],
 
   /*
@@ -121,6 +126,11 @@ export const sidebarLinks = {
       name: "Earnings",
       path: "/dashboard/influencer/earnings",
       icon: DollarSign,
+    },
+    {
+      name: "Contact Admin",
+      path: "/dashboard/influencer/contact",
+      icon: MessageSquare,
     },
   ],
 

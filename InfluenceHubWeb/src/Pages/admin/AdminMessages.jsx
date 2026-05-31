@@ -1,7 +1,6 @@
 ﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { MailCheck, MessageSquareMore, MessagesSquare } from "lucide-react";
+import { MailCheck } from "lucide-react";
 import {
-  AdminHero,
   AdminPage,
   AdminPanel,
   AdminPanelHeader,
@@ -19,6 +18,8 @@ import {
   markContactReplied,
 } from "../../services/api/adminService";
 import {
+  getContactSourceLabel,
+  getContactSourceTone,
   getMessageLabel,
   getMessagePreview,
   MESSAGE_STATUS_OPTIONS,
@@ -80,22 +81,6 @@ const AdminMessages = () => {
     () => messages.find((message) => message.id === selectedId) || null,
     [messages, selectedId],
   );
-
-  const summary = useMemo(() => messages.reduce((result, message) => {
-    result.total += 1;
-
-    if (message.isReplied) {
-      result.replied += 1;
-    } else {
-      result.pending += 1;
-    }
-
-    return result;
-  }, {
-    total: 0,
-    pending: 0,
-    replied: 0,
-  }), [messages]);
 
   const handleMarkReplied = async (message) => {
     try {
@@ -171,9 +156,12 @@ const AdminMessages = () => {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="text-sm font-semibold ih-text-primary">{message.subject}</p>
-                        <p className="ih-text-muted mt-1 text-sm">{message.name} آ· {message.email}</p>
+                        <p className="ih-text-muted mt-1 text-sm">{message.name} - {message.email}</p>
                       </div>
-                      <StatusBadge tone={message.isReplied ? "success" : "warning"}>{getMessageLabel(message.isReplied)}</StatusBadge>
+                      <div className="flex flex-wrap justify-end gap-2">
+                        <StatusBadge tone={getContactSourceTone(message.senderRole)}>{getContactSourceLabel(message.senderRole)}</StatusBadge>
+                        <StatusBadge tone={message.isReplied ? "success" : "warning"}>{getMessageLabel(message.isReplied)}</StatusBadge>
+                      </div>
                     </div>
                     <p className="ih-text-secondary mt-3 text-sm leading-6">{getMessagePreview(message)}</p>
                     <p className="ih-text-subtle mt-4 text-xs uppercase tracking-[0.18em]">{formatDateTime(message.createdAt)}</p>
@@ -188,15 +176,22 @@ const AdminMessages = () => {
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       <p className="text-xl font-semibold ih-text-primary">{selectedMessage.subject}</p>
-                      <p className="ih-text-muted mt-1 text-sm">From {selectedMessage.name} آ· {selectedMessage.email}</p>
+                      <p className="ih-text-muted mt-1 text-sm">From {selectedMessage.name} - {selectedMessage.email}</p>
                     </div>
-                    <StatusBadge tone={selectedMessage.isReplied ? "success" : "warning"}>{getMessageLabel(selectedMessage.isReplied)}</StatusBadge>
+                    <div className="flex flex-wrap gap-2">
+                      <StatusBadge tone={getContactSourceTone(selectedMessage.senderRole)}>{getContactSourceLabel(selectedMessage.senderRole)}</StatusBadge>
+                      <StatusBadge tone={selectedMessage.isReplied ? "success" : "warning"}>{getMessageLabel(selectedMessage.isReplied)}</StatusBadge>
+                    </div>
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-3 sm:grid-cols-3">
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                       <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Received</p>
                       <p className="mt-2 text-sm font-medium ih-text-primary">{formatDateTime(selectedMessage.createdAt)}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                      <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Source</p>
+                      <p className="mt-2 text-sm font-medium ih-text-primary">{getContactSourceLabel(selectedMessage.senderRole)}</p>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                       <p className="ih-text-subtle text-xs uppercase tracking-[0.18em]">Status</p>

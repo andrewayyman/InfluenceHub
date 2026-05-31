@@ -67,7 +67,7 @@ public class AdminService : IAdminService
             query = query.Where(c => c.IsReplied == isReplied.Value);
 
         var messages = await query.OrderByDescending(c => c.CreatedAt).ToListAsync(ct);
-        return messages.Select(m => new ContactResponse(m.Id, m.Name, m.Email, m.Subject, m.Message, m.IsReplied, m.CreatedAt)).ToList();
+        return messages.Select(m => new ContactResponse(m.Id, m.Name, m.Email, m.Subject, m.Message, m.IsReplied, m.CreatedAt, m.SenderRole)).ToList();
     }
 
     public async Task<bool> MarkContactRepliedAsync(Guid messageId, CancellationToken ct = default)

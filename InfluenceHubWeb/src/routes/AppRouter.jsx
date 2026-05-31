@@ -21,6 +21,7 @@ const BrandCampaigns = lazy(() => import("../Pages/brand/BrandCampaigns"));
 const CampaignApplications = lazy(() => import("../Pages/brand/CampaignApplications"));
 const BrandReports = lazy(() => import("../Pages/brand/BrandReports"));
 const BrandPayments = lazy(() => import("../Pages/brand/BrandPayments"));
+const ContactSupportWorkspace = lazy(() => import("../Components/ContactSupportWorkspace"));
 
 const InfluencerDashboard = lazy(() => import("../Pages/influencer/InfluencerDashboard"));
 const SuggestedCampaigns = lazy(() => import("../Pages/influencer/SuggestedCampaigns"));
@@ -130,6 +131,10 @@ export const router = createBrowserRouter([
         path: "payments",
         element: withSuspense(<BrandPayments />),
       },
+      {
+        path: "contact",
+        element: withSuspense(<ContactSupportWorkspace />),
+      },
     ],
   },
   {
@@ -151,6 +156,7 @@ export const router = createBrowserRouter([
       { path: "ratings", element: withSuspense(<InfluencerRatings />) },
       { path: "earnings", element: withSuspense(<MyEarnings />) },
       { path: "profile", element: withSuspense(<InfluencerProfile />) },
+      { path: "contact", element: withSuspense(<ContactSupportWorkspace />) },
     ],
   },
   {

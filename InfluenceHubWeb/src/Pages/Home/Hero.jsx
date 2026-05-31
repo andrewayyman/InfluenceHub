@@ -186,7 +186,7 @@ const Hero = () => {
               className="group relative inline-flex items-center justify-center gap-3 rounded-2xl px-10 py-4 text-lg font-bold text-white overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 shadow-[0_10px_40px_-10px_rgba(124,58,237,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(124,58,237,0.6)] transition-all duration-300"
             >
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[ih-trace-sheen_1.5s_ease-in-out_infinite]" />
-              <span className="relative">Start Free Trial</span>
+              <span className="relative">Start</span>
               <ArrowRight
                 size={20}
                 aria-hidden="true"

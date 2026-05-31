@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  AlertCircle,
   ArrowUpRight,
   ClipboardList,
   MessageSquareText,
@@ -30,19 +29,13 @@ import {
 } from "../../services/api/adminService";
 import { createTag, getTags } from "../../services/api/tagService";
 import {
-  getActivityLabel,
-  getEngagementRate,
-  getEngagementTotal,
-  getMessageLabel,
+  getContactSourceLabel,
+  getContactSourceTone,
   getMessagePreview,
   getStatusTone,
-  humanizeEnum,
 } from "../../utils/admin";
 import {
-  formatCompactNumber,
   formatDate,
-  formatDateTime,
-  formatPercent,
 } from "../../utils/formatters";
 import { isAbortError } from "../../services/api/client";
 
@@ -341,11 +334,10 @@ const AdminDashboard = () => {
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="ih-min-0">
                         <p className="text-sm font-bold ih-text-primary truncate" title={message.subject}>{message.subject}</p>
-                        <p className="ih-text-muted mt-0.5 text-[11px] truncate">
-                          {message.name}
-                        </p>
+                        <p className="ih-text-muted mt-0.5 text-[11px] truncate">{message.name}</p>
+                        <p className="ih-text-subtle mt-1 text-[10px] truncate uppercase tracking-[0.18em]">{message.email}</p>
                       </div>
-                      <StatusBadge tone="warning">New</StatusBadge>
+                      <StatusBadge tone={getContactSourceTone(message.senderRole)}>{getContactSourceLabel(message.senderRole)}</StatusBadge>
                     </div>
                     <p className="ih-text-secondary text-xs leading-relaxed line-clamp-2 mb-4 h-8" title={getMessagePreview(message)}>
                       {getMessagePreview(message)}
