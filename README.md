@@ -159,35 +159,6 @@ InfluenceHub is a two-tier application (API + SPA) with clear separation of conc
 - **Input Validation**: DTOs with validation attributes; service layer checks (e.g., minimum follower requirements, campaign status checks)
 - **Logging**: ILogger integration in services and middleware for error tracking
 
-## Testing Strategy
-
-- Unit tests planned for services and validators (not yet committed to repo)
-- Integration tests against Entity Framework (in-memory or LocalDb)
-- Controllers tested indirectly via API calls during development
-
-## CI / CD and Deployment
-
-**Not yet configured** in the repository; ready for:
-- GitHub Actions workflow for build, test, and publish
-- Container image builds (Docker) for API and web assets
-- Entity Framework migrations as part of deployment
-
-## Code Quality & Conventions
-
-**Backend (.NET):**
-- Layered clean architecture (Domain → Application → Infrastructure → WebApi)
-- Dependency Injection via ConfigureServices
-- Async/await throughout
-- DTOs for API request/response contracts
-- Fluent API for EF Core configuration
-
-**Frontend (React):**
-- Functional components with hooks
-- Component composition with single responsibility
-- Formik + Yup for form handling and validation
-- Tailwind CSS for styling
-- ESLint for code quality
-
 ## Technical Decisions & Rationale
 
 - **C#/.NET**: Strong typing, mature async/await support, excellent Entity Framework ecosystem, and first-class dependency injection
@@ -198,28 +169,6 @@ InfluenceHub is a two-tier application (API + SPA) with clear separation of conc
 - **Repository Pattern**: Abstraction layer for data access, testability, and flexibility
 - **React Context**: Sufficient for current auth state needs without external state manager overhead
 
-## Not Yet Implemented
 
-- Background job processing (mentioned in architecture but no Hangfire/queue implementation)
-- Analytics pipeline (ElasticSearch, Kafka, BigQuery)
-- Redis caching layer
-- OpenTelemetry distributed tracing
-- Circuit-breaker patterns for external APIs
-- Contract tests for API integrations
-- End-to-end (E2E) tests
-- Production deployment configuration (Kubernetes, Azure App Service, AWS ECS)
-- API versioning beyond v1
-
-## Guidelines for Contributors
-
-- Follow the layered architecture: changes should respect domain/application/infrastructure/presentation boundaries
-- Add validators and DTOs for new request types
-- Use the repository pattern for data access
-- Include entity configurations for new EF Core entities
-- Update migrations when modifying the database schema
-- Keep controllers thin; business logic belongs in Application services
-- Test critical paths and error scenarios
-
----
 
 **Last Updated**: June 2026
