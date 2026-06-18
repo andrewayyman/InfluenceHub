@@ -159,16 +159,4 @@ InfluenceHub is a two-tier application (API + SPA) with clear separation of conc
 - **Input Validation**: DTOs with validation attributes; service layer checks (e.g., minimum follower requirements, campaign status checks)
 - **Logging**: ILogger integration in services and middleware for error tracking
 
-## Technical Decisions & Rationale
 
-- **C#/.NET**: Strong typing, mature async/await support, excellent Entity Framework ecosystem, and first-class dependency injection
-- **React + Vite**: Fast development experience, modern bundling, excellent dev tooling, and wide component library ecosystem
-- **SQL Server + EF Core**: Relational guarantees for transactional data, migrations for schema versioning, and rich query support
-- **JWT Authentication**: Stateless token-based auth, suitable for API-first architecture
-- **Repository Pattern**: Abstraction layer for data access, testability, and flexibility
-- **Repository Pattern**: Abstraction layer for data access, testability, and flexibility
-- **React Context**: Sufficient for current auth state needs without external state manager overhead
-
-
-
-**Last Updated**: June 2026
