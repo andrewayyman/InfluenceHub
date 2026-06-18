@@ -1,147 +1,225 @@
 # InfluenceHub — Architecture & Technical Design
 
-This document describes the repository's architecture, code organization, and the technical decisions that drive the design. It is intended as a living reference for maintainers and contributors who need to understand how the system is organized and why certain choices were made. This is *not* an onboarding or installation guide.
+This document describes the repository's architecture and the technical decisions that drive the design.
 
-## Repository layout (high level)
+## Repository Layout
 
-- /InfluenceHubApi — C# (.NET) backend project(s). Responsible for core business logic, data access, API surface, background processing, and integrations with external systems (social platforms, data pipelines, 3rd-party APIs).
-- /InfluenceHubWeb — JavaScript frontend (React + Vite). Responsible for the user interface, dashboards, data visualizations, and client-side interactions.
-- README.md — this architecture & decisions document.
-- .gitignore and other repo-level config files
+- `/InfluenceHubApi` — C# (.NET 8) backend with clean architecture (Domain, Application, Infrastructure, WebApi layers)
+- `/InfluenceHubWeb` — JavaScript frontend using React 19 + Vite
+- `README.md` — This architecture document
 
-Note: Directory names are authoritative for the current codebase: the backend is implemented in C# and the web UI in JavaScript.
+## High-Level Architecture
 
-## High-level architecture
+InfluenceHub is a two-tier application (API + SPA) with clear separation of concerns:
 
-InfluenceHub is split as a two-tier application (API + SPA) with clear separation of concerns:
+- **Client (SPA)**: React application built with Vite. Communicates with the backend using HTTP REST API (JSON). Handles UI rendering, forms, and client-side routing.
+- **Server (API)**: C#/.NET Web API exposing resource-oriented endpoints for campaign management, applications, reports, and user authentication. Implements business logic, access control, and data persistence.
+- **Database**: SQL Server relational database (using Entity Framework Core) for transactional domain data.
 
-- Client (SPA): Single Page Application built with React and Vite. Talks to the backend using a well-defined HTTP API (JSON REST). Responsible for rendering dashboards, charts, and interactive management views.
-- Server (API): C#/.NET Web API exposing domain endpoints for campaign management, attribution, analytics, and integrations. Implements business rules, access control, persistence, and background processing.
-- Persistence & Analytics: The repository does not contain a concrete DB schema here, but the architecture assumes a hybrid data strategy: a relational database for transactional domain data and a purpose-built store or analytics pipeline (e.g., time-series DB, data warehouse, or Elasticsearch) for analytics and reporting.
-- Background processing / integration workers: For long-running tasks (ingesting platform webhooks, processing event streams, aggregation), background jobs are preferred over synchronous requests.
+## Key Implemented Components
 
-This separation supports independent development, scaling, and deployment of the API and UI.
+### Backend (C# / .NET 8)
 
-## Key components and responsibilities
+**Architecture Layers:**
+- **Domain Layer** (`InfluenceHub.Domain`): Entity definitions, enums (UserRole, CampaignStatus, ApplicationStatus, BudgetType), and repository interfaces
+- **Application Layer** (`InfluenceHub.Application`): Service layer with business logic, DTOs for request/response, validators (using Formik/Yup-inspired patterns), and dependency injection configuration
+- **Infrastructure Layer** (`InfluenceHub.Infrastructure`): Entity Framework Core DbContext, SQL Server data access, repository implementations, migrations, and file storage adapter
+- **WebApi Layer** (`InfluenceHub.WebApi`): ASP.NET Core controllers, middleware, JWT authentication, CORS policy, Swagger/OpenAPI documentation, and startup configuration
 
-- InfluenceHubApi
-  - API controllers: expose endpoints grouped by domain (campaigns, creators, metrics, integrations).
-  - Application / Service layer: orchestrates use cases, enforces business rules, and coordinates persistence and external calls.
-  - Domain models / DTOs: domain entities and data transfer objects.
-  - Persistence layer: repository pattern or ORM layer (likely Entity Framework Core for a .NET project) to interact with a relational database.
-  - Integration adapters: connector modules for social platforms and tracking providers. Keep adapters small and replaceable.
-  - Background workers: scheduled or queue-driven jobs for ingestion, aggregation, and export tasks. These should be isolated from the request path and idempotent.
+**Key Technologies & Patterns:**
+- **Database**: Entity Framework Core 8.0 with SQL Server
+  - DbContext: `InfluenceHubDbContext` with DbSets for Users, Brands, Influencers, Campaigns, Tags, Applications, CampaignReports, ContactMessages, Reviews, Payments, CommissionSettings
+  - Repository Pattern: Generic `IRepository<T>` interface with concrete implementations (UserRepository, BrandRepository, InfluencerRepository, CampaignRepository)
+  - Migrations: Applied using EF Core migrations (phases tracked: Phase2, Phase3)
+  - Fluent API Configuration: Entity configurations via `IEntityTypeConfiguration<T>` for constraints, indexes, and relationships
 
-- InfluenceHubWeb
-  - Page-level routes and views: dashboards, campaign explorer, creator profiles, and reporting pages.
-  - Component library: shared UI primitives, charts, and data table components.
-  - Data layer: API client(s) that centralize communication with the backend; optimistic UI updates and cache strategies are handled here.
-  - State management: prefer local component state and React Context for simple needs; introduce a dedicated state manager only when the app complexity requires it.
+- **Authentication & Authorization**:
+  - JWT Bearer token authentication (configurable via appsettings)
+  - Claims-based authorization with role extraction (NameIdentifier, Role claims)
+  - Role-based access control: Admin, Brand, Influencer roles
+  - Seed system data on startup (admin user, predefined tags)
 
-## Data model & storage decisions (guiding principles)
+- **API Design**:
+  - RESTful endpoints grouped by domain (campaigns, brands, influencers, applications, reports, etc.)
+  - BaseApiController with protected UserId property for extracting authenticated user identity
+  - Global exception handling via `GlobalExceptionHandler` middleware (maps domain exceptions to HTTP status codes)
+  - CORS policy enabled for local development (localhost:5173, localhost:4173)
+  - Swagger/OpenAPI integration for API documentation
 
-- Primary transactional data (campaigns, creators, assignments, payments, configuration) should live in a relational database (SQL Server or PostgreSQL). Relational guarantees and strong consistency are valuable for correctness of campaign management and billing.
-- Event and time-series analytics (engagement events, impressions, conversions) should be ingested into an analytics pipeline separate from the transactional DB. Options include:
-  - Stream ingestion (Kafka, Kinesis) into a data warehouse (BigQuery, Snowflake) or time-series DB.
-  - ElasticSearch / OpenSearch for search-backed analytics and ad-hoc queries.
-- Use Redis (or similar) for short-lived caching, rate-limiting counters, and leader-election for scheduled jobs.
-- Design for data retention policies: analytics data should be partitioned and TTLed as appropriate to control cost.
+- **Business Logic**:
+  - Campaign management: Create, update, list campaigns with tag association and budget tracking
+  - Influencer applications: Apply for campaigns (minimum 10k followers requirement), accept/reject applications
+  - Report submission: Influencers submit campaign reports with screenshots and platform insights (JSON)
+  - Payment processing and commission settings (Commission: 10% default)
+  - Review and rating system
+  - File storage: Local file upload/download via `/uploads` endpoint
 
-## API design & versioning
+- **Data Handling**:
+  - JSON serialization for complex fields (Platforms array, Links array, MediaFiles array, PlatformInsights)
+  - Decimal precision for financial data (Budget, ProposedBudget: 18,2 precision)
+  - Timestamp tracking (CreatedAt, UpdatedAt) on most entities
+  - Soft relationships via foreign keys with cascade/restrict delete behavior
 
-- Use clear resource-oriented REST endpoints (e.g., GET /api/v1/campaigns, POST /api/v1/campaigns/:id/actions/activate).
-- Include API versioning in the URL (v1) to allow iterative, non-breaking changes.
-- Favor small, well-scoped endpoints that return only the data the client needs. Provide aggregation endpoints for dashboard tiles to avoid over-fetching.
-- Use consistent error payloads and HTTP status codes. Include error codes in responses to enable programmatic handling by the frontend.
+### Frontend (JavaScript / React 19)
+
+**Architecture & Setup:**
+- **Build Tool**: Vite (v7.1)
+- **Framework**: React 19 with Functional Components and Hooks
+- **Routing**: React Router v7 (BrowserRouter with AppRouter)
+- **Styling**: Tailwind CSS v4 with Vite integration
+
+**UI Components & Libraries:**
+- **Form Handling**: Formik (v2.4.9) for form state + Yup (v1.7.1) for validation
+- **Charts & Data Visualization**: Recharts (v3.8.1) for dashboard analytics
+- **Icons**: Lucide React (v0.577) and React Icons (v5.6)
+- **Animations**: Framer Motion (v12.38) for smooth transitions
+- **CSS**: Tailwind CSS (v4.2) with PostCSS and Autoprefixer
+
+**Project Structure:**
+- `/src/Components` — Reusable UI components
+- `/src/Pages` — Page-level components (routes)
+- `/src/layouts` — Layout wrappers
+- `/src/routes` — AppRouter configuration with route definitions
+- `/src/services` — API client layer for backend communication
+- `/src/context` — React Context for global state (AuthContext for authentication state)
+- `/src/hooks` — Custom React hooks
+- `/src/utils` — Helper functions and utilities
+- `/src/assets` — Images and static assets
+
+**State Management:**
+- React Context API (AuthContext) for authentication state
+- Component-level state via React hooks (useState, useReducer, useEffect)
+- No external state manager (Redux/Zustand) implemented
+
+**Development & Quality:**
+- ESLint (v9) with React hooks plugin for code quality
+- Vite dev server with HMR (Hot Module Replacement)
+- Build optimization via Vite
+- Scripts: `dev` (start dev server), `build` (production build), `lint`, `preview` (preview build)
+
+## Data Model & Storage
+
+**Entities Implemented:**
+- Users: Email authentication, password hashing (SHA256 + Base64), role-based (Admin, Brand, Influencer)
+- Brands: Company/brand profiles linked to users
+- Influencers: Creator profiles with follower count, bio, platforms, and tags
+- Campaigns: Marketing campaigns created by brands with budget, deadline, location, platforms, and tags
+- Applications: Influencer applications to campaigns with proposal, budget, media files, and status tracking
+- CampaignReports: Post-campaign reports with screenshots and platform-specific insights
+- Tags: Predefined content tags (Lifestyle, Fashion, Beauty, Fitness, Travel, Food, Tech, Gaming, Finance, Education, Health, Parenting, Home Decor, Comedy, Music, Sports, Sustainability, Luxury)
+- Relationships: CampaignTag, InfluencerTag (join tables), ContactMessages, Reviews, Payments, CommissionSettings
+
+**Constraints & Indexes:**
+- Unique indexes on Email (Users), UserId (Brands)
+- Composite unique indexes on (CampaignId, InfluencerId) for Applications
+- Status and Deadline indexes on Campaigns for query optimization
+- Foreign key constraints with cascade/restrict delete behavior
+
+## API Design & Endpoints
+
+**Versioning**: v1 (in URL path: `/api/[controller]/[action]`)
+
+**Example Endpoint Groups:**
+- Campaigns: Create, update, retrieve, filter by status/tags
+- Brands: Get profile, update profile, list campaigns
+- Influencers: Get profile, update profile, list applications
+- Applications: Submit application, accept/reject, list for campaign/user
+- Reports: Submit report (with file upload), retrieve report ROI
+- Auth: Register, login (JWT token response)
+- Contact: Submit contact messages
+
+**Response Format**: JSON with consistent error payloads (message field)
 
 ## Authentication & Authorization
 
-- Authenticate requests with JWT bearer tokens or OAuth2 where applicable. For server-to-server integrations, use short-lived client credentials.
-- Use role-based access control (RBAC) on top of authentication. Map permissions to domain actions (e.g., campaign.create, campaign.update, campaign.read.analytics).
-- For endpoints returning sensitive PII, apply additional authorization checks and logging.
+**Token-Based**: JWT Bearer tokens with configurable issuer, audience, and signing key
+**Claims**:
+- NameIdentifier (user ID)
+- Role (Admin, Brand, Influencer)
 
-## Integration & External APIs
+**Roles**:
+- Admin: System administration, settings management
+- Brand: Campaign creation and management
+- Influencer: Apply for campaigns, submit reports
 
-- Encapsulate each external integration behind a small adapter module. The adapter interface should define:
-  - send(payload) / fetch(params)
-  - retry/backoff behavior
-  - idempotency keys for safe retries
-  - transformation between the external model and the internal domain model
-- Queue or buffer webhook and streaming events to avoid blocking incoming requests and to provide resilience against transient downstream failures.
+**Protected Endpoints**: Decorated with `[Authorize]` and role-specific `[Authorize(Roles = "Brand")]` attributes
 
-## Background jobs and async processing
+## Security Considerations
 
-- All heavy or long-running work (bulk imports, data aggregation, enrichment, external API polling) should be executed in background jobs.
-- Prefer message queues (RabbitMQ, SQS) or durable job processors (Hangfire, Azure Functions, or Kubernetes CronJobs) to implement retries, backoff, and failure handling.
-- Design jobs to be idempotent and to expose progress and status for troubleshooting.
+- Password Hashing: SHA256 with Base64 encoding
+- JWT Configuration: Issuer/Audience validation, expiry checks, signing key verification
+- CORS: Restricted to configured local origins (localhost:5173, localhost:4173)
+- HTTPS Redirection enabled
+- File Upload Validation: Extension check and stream handling
+- Secrets: Configurable via appsettings.json and environment variables (Jwt:Key, Jwt:Issuer, Jwt:Audience, ConnectionString)
 
-## Observability (logging, metrics, tracing)
+## Error Handling & Validation
 
-- Structured logging (JSON) with correlation IDs propagated from the frontend through the API and background jobs.
-- Request correlation header (e.g., X-Request-ID) to connect logs, traces and metrics.
-- Instrument key events and latencies with metrics (Prometheus-friendly metrics, or cloud provider metrics).
-- Distributed tracing (OpenTelemetry) to debug cross-service flows (UI → API → integrations).
-- Capture business metrics separately (campaign completions, payouts, ingestion lag) and expose them to dashboards.
+- **Exception Handling**: Global middleware catches InvalidOperationException, ArgumentException, UnauthorizedAccessException and maps to appropriate HTTP status codes (400, 401, 500)
+- **Input Validation**: DTOs with validation attributes; service layer checks (e.g., minimum follower requirements, campaign status checks)
+- **Logging**: ILogger integration in services and middleware for error tracking
 
-## Error handling & resiliency
+## Testing Strategy
 
-- Use standardized error responses with machine-friendly error codes and human readable messages.
-- Implement retries with exponential backoff for transient external failures.
-- Circuit-breaker patterns for unstable third-party APIs to prevent cascading failures.
-- Graceful shutdown for in-process background workers to finish inflight work or checkpoint progress.
+- Unit tests planned for services and validators (not yet committed to repo)
+- Integration tests against Entity Framework (in-memory or LocalDb)
+- Controllers tested indirectly via API calls during development
 
-## Security considerations
+## CI / CD and Deployment
 
-- Keep secrets out of the repository. Use a secrets manager (AWS Secrets Manager, Azure Key Vault, HashiCorp Vault) and inject secrets at runtime.
-- Enforce TLS for all transport and secure cookies for any session usage.
-- Apply least-privilege principles to DB users and external API credentials.
-- Protect webhooks endpoints with verification (HMAC signatures, token checks) and rate-limit them.
-- Regularly scan dependencies for vulnerabilities and keep the stacks up to date.
+**Not yet configured** in the repository; ready for:
+- GitHub Actions workflow for build, test, and publish
+- Container image builds (Docker) for API and web assets
+- Entity Framework migrations as part of deployment
 
-## Testing strategy
+## Code Quality & Conventions
 
-- Unit tests for business logic in the API and for critical UI components.
-- Integration tests for persistence boundaries (run against a disposable DB or in-memory provider) and contract tests for external adapters (mocked endpoints).
-- End-to-end tests for critical user flows in the SPA against a staging backend.
-- Maintain a test-data strategy that avoids leaking production PII to test environments.
+**Backend (.NET):**
+- Layered clean architecture (Domain → Application → Infrastructure → WebApi)
+- Dependency Injection via ConfigureServices
+- Async/await throughout
+- DTOs for API request/response contracts
+- Fluent API for EF Core configuration
 
-## CI / CD and deployment
+**Frontend (React):**
+- Functional components with hooks
+- Component composition with single responsibility
+- Formik + Yup for form handling and validation
+- Tailwind CSS for styling
+- ESLint for code quality
 
-- Use GitHub Actions (recommended) or another CI system to run linting, unit tests, and build steps. Gate merges on tests and static analysis.
-- Build and publish container images for the API and static assets for the web UI. Store artifacts in a registry (GitHub Container Registry, Docker Hub, or cloud provider registry).
-- Deployments may target a container platform (Kubernetes, Azure App Service, AWS ECS) or serverless hosting depending on operational needs. Use infrastructure-as-code (Terraform, ARM templates) for reproducible environments.
-- Run database migrations as part of the deployment pipeline; ensure migrations are backward compatible where possible.
+## Technical Decisions & Rationale
 
-## Code quality and conventions
+- **C#/.NET**: Strong typing, mature async/await support, excellent Entity Framework ecosystem, and first-class dependency injection
+- **React + Vite**: Fast development experience, modern bundling, excellent dev tooling, and wide component library ecosystem
+- **SQL Server + EF Core**: Relational guarantees for transactional data, migrations for schema versioning, and rich query support
+- **JWT Authentication**: Stateless token-based auth, suitable for API-first architecture
+- **Repository Pattern**: Abstraction layer for data access, testability, and flexibility
+- **Repository Pattern**: Abstraction layer for data access, testability, and flexibility
+- **React Context**: Sufficient for current auth state needs without external state manager overhead
 
-- API: follow .NET naming and architecture conventions (layered architecture, DI for services, small controllers, thin controllers / thick services pattern).
-- Web: follow React best practices (component composition, prop-driven components, single-responsibility components). Prefer functional components and hooks.
-- Use linting (ESLint / StyleCop) and formatters (Prettier / dotnet-format) in CI to maintain consistent style.
+## Not Yet Implemented
 
-## Technical decisions — rationale
+- Background job processing (mentioned in architecture but no Hangfire/queue implementation)
+- Analytics pipeline (ElasticSearch, Kafka, BigQuery)
+- Redis caching layer
+- OpenTelemetry distributed tracing
+- Circuit-breaker patterns for external APIs
+- Contract tests for API integrations
+- End-to-end (E2E) tests
+- Production deployment configuration (Kubernetes, Azure App Service, AWS ECS)
+- API versioning beyond v1
 
-- C#/.NET for the backend: chosen for strong typing, productivity for API development, mature ecosystem for background processing and enterprise integrations, and first-class support for async processing.
-- React + Vite for the frontend: fast development experience, modern bundling, and excellent integration with modern toolchains and component libraries.
-- Two-tier separation (API + SPA): simplifies scaling, allows independent deployments and clearer security boundaries, and makes it easier to support multiple client types in the future (mobile apps, third-party integrations).
-- Hybrid storage (relational + analytics pipeline): balances need for transactional correctness with scale & cost trade-offs for analytics workloads.
-- Background jobs and adapters: keeps external integration complexity isolated and improves resiliency.
+## Guidelines for Contributors
 
-## Guidelines for contributors (architecture-aware)
-
-- Keep changes small and focused; prefer several small PRs over a single large change.
-- When adding integrations, add them as adapters following the existing adapter contract and include unit and integration tests for failure modes.
-- For schema changes, include migration scripts and consider the impact on analytics pipelines and downstream consumers.
-- Add architecture notes to this document when introducing new cross-cutting concerns or changing major design choices.
-
-## Open questions / TODOs
-
-- Define the authoritative persistence engine and include the DB schema and migration tooling in the repo.
-- Formalize the integrations list and the adapter contracts for each external platform.
-- Add CI configuration files and a deployment guide that maps repo artefacts to target environments.
-- Add observability dashboards and sample traces to speed up on-call support.
+- Follow the layered architecture: changes should respect domain/application/infrastructure/presentation boundaries
+- Add validators and DTOs for new request types
+- Use the repository pattern for data access
+- Include entity configurations for new EF Core entities
+- Update migrations when modifying the database schema
+- Keep controllers thin; business logic belongs in Application services
+- Test critical paths and error scenarios
 
 ---
 
-If you'd like, I can:
-- Commit this README update to the repository (I will update README.md in the default branch).
-- Or, adjust the document to match concrete implementation details (for example, list the exact DB engine, queue system, and adapters used) if you can point me to files in the repo that confirm them.
+**Last Updated**: June 2026
